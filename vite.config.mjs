@@ -280,18 +280,26 @@ export default defineConfig(async ({ command }) => {
     },
     server: {
       watch: {
-        ignored: [
-          '**/assets/css/generated.daisyui.css',
-          '**/assets/css/generated.fonts.css',
-          '**/assets/css/syntax.css',
-          '**/.venv/**',
-          '**/dist/**',
-          '**/index.html',
-          '**/sitemap.xml',
-          '**/blog/**',
-          '**/posts/**',
-          '**/tags/**'
-        ]
+        ignored: (p) => {
+          const relPath = path.relative(__dirname, p).replace(/\\/g, '/');
+          if (!relPath || relPath === '.') return false;
+          if (relPath.startsWith('..')) return true;
+
+          const whitelisted = ['templates', 'content', 'assets', 'config.yaml', 'vite.config.mjs'];
+          const isWhitelisted = whitelisted.some(base => relPath === base || relPath.startsWith(base + '/'));
+          
+          if (isWhitelisted) {
+            const isGeneratedCss = [
+              'assets/css/generated.daisyui.css',
+              'assets/css/generated.fonts.css',
+              'assets/css/syntax.css'
+            ].some(gen => relPath === gen);
+            
+            return isGeneratedCss;
+          }
+          
+          return true;
+        }
       }
     }
   };
