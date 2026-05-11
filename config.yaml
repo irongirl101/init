@@ -1,6 +1,6 @@
-site_name: "site"
-author: "you"
-base_url: "you.com"
+site_name: "init"
+author: "aditi"
+base_url: "willfigurethisout.com"
 
 theme:
   default: "hacktoberfest25"
