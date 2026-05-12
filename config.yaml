@@ -3,21 +3,22 @@ author: "aditi"
 base_url: "willfigurethisout.com"
 
 theme:
-  default: "hacktoberfest25"
+  default: "frank"
   include:
     - "hacktoberfest25"
     - "dracula"
+    - "frank"
   custom:
-    hacktoberfest25: |
+    frank: |
       /* Raw CSS Theme */
       prefers-dark: true;
       color-scheme: dark;
-      --color-base-100: #1C1C3F;
-      --color-base-200: #403F7D;
-      --color-base-300: #5E577C;
+      --color-base-100: #086952;
+      --color-base-200: #0f4034;
+      --color-base-300: #2cb091;
       --color-base-content: oklch(1.000 0.000 0.0);
-      --color-primary: #A0A0FF;
-      --color-primary-content: #1C1C3F;
+      --color-primary: #2cb091;
+      --color-primary-content: #086952;
       --color-secondary: #5A5AB5;
       --color-secondary-content: #FFFFFF;
       --color-accent: #C2C2FF;
