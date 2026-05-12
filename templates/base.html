@@ -12,7 +12,8 @@ site.theme.default is defined else (site.theme if site.theme is defined else "dr
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col">
-  <div class="navbar bg-base-100 fixed top-0 left-0 z-50">
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
     <div class="flex-1">
       <a href="/" class="btn btn-ghost text-xl">{{ site.site_name }}</a>
     </div>
@@ -24,6 +25,7 @@ site.theme.default is defined else (site.theme if site.theme is defined else "dr
       </ul>
     </div>
   </div>
+</div>
 
   <main class="flex-grow container mx-auto p-8">
     {% block content %}{% endblock %}

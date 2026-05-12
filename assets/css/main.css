@@ -4,34 +4,55 @@
 @import "./generated.daisyui.css";
 
 .hero{
-    padding-top: 8rem;
+    padding-top: 6rem;
 }
+
 html,
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  background-color: #04241c;
-}
 
+  overflow-x: hidden;
+
+  background-color: #04241c;
+
+  min-height: 100%;
+}
 #res-canvas {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
 
   width: 100vw;
   height: 100vh;
 
   z-index: 1;
+
   pointer-events: none;
-  opacity: 0.35;
+
+  opacity: 0.65;
 }
 
+main,
+.hero,
 .card,
 .divider,
-main,
-footer,
-nav {
+footer {
   position: relative;
   z-index: 10;
+}
+
+.glass-navbar {
+  width: calc(100% - 32px);
+  max-width: 1400px;
+  border-radius: 22px;
+
+  z-index: 50;
+  background: transparent;
+  backdrop-filter: blur(2px) saturate(140%);
+
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: none; 
+    
+
+  overflow: hidden;
 }

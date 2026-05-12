@@ -250,7 +250,7 @@ function renderAtThreshold(): void {
   ctx.beginPath();
 
   // stronger/more visible lines
-  ctx.strokeStyle = "rgba(255,255,255,0.16)";
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
   ctx.lineWidth = 1.2;
 
   for (let y = 0; y < rows - 1; y++) {
