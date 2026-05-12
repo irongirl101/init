@@ -2,7 +2,7 @@
 title: "Home"
 layout: "main"
 hero_title: "Aditi Vignesh"
-hero_subtitle: "about you"
+hero_subtitle: "i do dum stuff on the internet"
 hero_image: "/assets/images/hero.png"
 social_links:
     - name: "GitHub"
