@@ -13,12 +13,12 @@ theme:
       /* Raw CSS Theme */
       prefers-dark: true;
       color-scheme: dark;
-      --color-base-100: #086952;
+      --color-base-100: #04241c;
       --color-base-200: #0f4034;
-      --color-base-300: #2cb091;
+      --color-base-300: #208c73;
       --color-base-content: oklch(1.000 0.000 0.0);
-      --color-primary: #2cb091;
-      --color-primary-content: #086952;
+      --color-primary: #208c73;
+      --color-primary-content: #02241c;
       --color-secondary: #5A5AB5;
       --color-secondary-content: #FFFFFF;
       --color-accent: #C2C2FF;
