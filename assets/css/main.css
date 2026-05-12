@@ -2,3 +2,36 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @import "./generated.daisyui.css";
+
+.hero{
+    padding-top: 8rem;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #04241c;
+}
+
+#res-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.card,
+.divider,
+main,
+footer,
+nav {
+  position: relative;
+  z-index: 10;
+}
