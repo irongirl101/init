@@ -62,6 +62,7 @@ def clean_output(directory):
         "assets",
         "content",
         "dist",
+        "docs",
         "node_modules",
         "src",
         "templates",
