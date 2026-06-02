@@ -3,7 +3,8 @@
   "version": "0.17.3",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "keywords": [],
   "author": "Andey Hemanth",
@@ -15,6 +16,7 @@
     "daisyui": "^5.0.50",
     "dotenv": "^17.2.1",
     "fast-glob": "^3.3.3",
+    "gh-pages": "^6.3.0",
     "glob": "^11.0.3",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
