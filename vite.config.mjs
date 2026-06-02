@@ -198,6 +198,21 @@ const py_build_plugin = () => {
               fs.unlinkSync(src);
             }
           }
+
+          // Copy CSS files from assets/css to dist/assets/css
+          const cssSrcDir = path.join(__dirname, 'assets', 'css');
+          const cssDstDir = path.join(__dirname, 'dist', 'assets', 'css');
+          if (fs.existsSync(cssSrcDir)) {
+            if (!fs.existsSync(cssDstDir)) {
+              fs.mkdirSync(cssDstDir, { recursive: true });
+            }
+            const cssFiles = fs.readdirSync(cssSrcDir).filter(f => f.endsWith('.css'));
+            for (const cssFile of cssFiles) {
+              const src = path.join(cssSrcDir, cssFile);
+              const dst = path.join(cssDstDir, cssFile);
+              fs.copyFileSync(src, dst);
+            }
+          }
           
           // Post-process HTML files to point script to built asset
           const htmlFiles = glob.sync(path.join(__dirname, 'dist', '**/*.html'));
