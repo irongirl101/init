@@ -1,6 +1,6 @@
 ---
 title: "My First Blog Post"
-date: "2026 -xx-xx"
+date: "2026-xx-xx"
 layout: "post"
 tags:
     - "introduction"

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-5xl font-extrabold tracking-tight mb-6">{{ page.title }}</h1>
+<canvas id="res-canvas"></canvas>
+
+    <h1 class="text-5xl font-bold mb-6 mt-14">{{ page.title }}</h1>
 
     {% if content %}
     <article class="prose dark:prose-invert max-w-none">
@@ -10,7 +12,7 @@
     <div class="divider"></div>
     {% endif %}
 
-    <div class="space-y-8 mt-8">
+    <div class="space-y-8 mt-">
     {% for post in posts %}
         <div class="card bg-base-200 shadow-xl">
             <a href="{{ post.url }}/">
