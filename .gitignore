@@ -1,0 +1,15 @@
+package-lock.json
+/node_modules
+/node_modules/*
+/assets/images/*
+
+.env
+
+/assets/css/syntax.css
+/assets/css/generated.daisyui.css
+/assets/css/generated.fonts.css
+.cache
+/assets/images-processed/
+.venv
+dist
+.venv/*
