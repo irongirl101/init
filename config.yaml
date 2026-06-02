@@ -1,6 +1,6 @@
 site_name: "init"
 author: "aditi"
-base_url: "willfigurethisout.com"
+base_url: "/init"
 
 theme:
   default: "frank"
