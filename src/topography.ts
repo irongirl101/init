@@ -1,4 +1,6 @@
 import * as ChriscoursesPerlinNoise from "@chriscourses/perlin-noise";
+import "../assets/css/main.css";
+import "../assets/css/syntax.css";
 
 const canvas = document.getElementById(
   "res-canvas"

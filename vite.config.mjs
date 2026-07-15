@@ -164,7 +164,7 @@ if (!process.listenerCount('SIGINT')) {
   process.on('SIGINT', handleExit);
 }
 
-const py_build_plugin = () => {
+const py_build_plugin = (baseUrl = '') => {
   let ready = false;
 
   return {
@@ -214,23 +214,46 @@ const py_build_plugin = () => {
             }
           }
           
-          // Post-process HTML files to point script to built asset
+          // Post-process HTML files to point script/style to built assets
           const htmlFiles = glob.sync(path.join(__dirname, 'dist', '**/*.html'));
           const builtAssets = glob.sync(path.join(__dirname, 'dist', 'assets', '*.js'));
+          const builtCss = glob.sync(path.join(__dirname, 'dist', 'assets', '*.css'));
+          
+          const builtMainJs = builtAssets.find(f => f.includes('main'));
+          const builtMainCss = builtCss.find(f => f.includes('main'));
           
           for (const htmlFile of htmlFiles) {
             let content = fs.readFileSync(htmlFile, 'utf-8');
+            let modified = false;
             
             // Replace script src="/src/topography.ts" with actual built asset
-            // Find the built main JS file
-            const builtMainJs = builtAssets.find(f => f.includes('main'));
             if (builtMainJs) {
-              const assetName = path.basename(builtMainJs);
-              content = content.replace(
-                'src="/src/topography.ts"',
-                `src="/init/assets/${assetName}"`
-              );
-              fs.writeFileSync(htmlFile, content);
+              const jsAssetName = path.basename(builtMainJs);
+              const targetScript = 'src="/src/topography.ts"';
+              if (content.includes(targetScript)) {
+                content = content.replace(
+                  targetScript,
+                  `src="${baseUrl}/assets/${jsAssetName}"`
+                );
+                modified = true;
+              }
+            }
+
+            // Inject compiled CSS link before </head>
+            if (builtMainCss) {
+              const cssAssetName = path.basename(builtMainCss);
+              const linkTag = `<link rel="stylesheet" href="${baseUrl}/assets/${cssAssetName}">`;
+              if (!content.includes(linkTag)) {
+                content = content.replace(
+                  '</head>',
+                  `  ${linkTag}\n</head>`
+                );
+                modified = true;
+              }
+            }
+            
+            if (modified) {
+              fs.writeFileSync(htmlFile, content, 'utf-8');
             }
           }
           
@@ -377,7 +400,7 @@ export default defineConfig(async ({ command }) => {
   return {
     base: baseUrl,
     plugins: [
-      py_build_plugin(),
+      py_build_plugin(baseUrl),
       tailwindcss(),
     ],
     build: {

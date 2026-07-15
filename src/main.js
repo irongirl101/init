@@ -1,2 +1,2 @@
-import "../assets/css/main.css";
-import "../assets/css/syntax.css";
+import "./assets/css/main.css";
+import "./assets/css/syntax.css";
