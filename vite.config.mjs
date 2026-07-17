@@ -213,6 +213,40 @@ const py_build_plugin = (baseUrl = '') => {
               fs.copyFileSync(src, dst);
             }
           }
+
+          // Copy images from assets/images to dist/assets/images
+          const imgSrcDir = path.join(__dirname, 'assets', 'images');
+          const imgDstDir = path.join(__dirname, 'dist', 'assets', 'images');
+          if (fs.existsSync(imgSrcDir)) {
+            if (!fs.existsSync(imgDstDir)) {
+              fs.mkdirSync(imgDstDir, { recursive: true });
+            }
+            const imgFiles = fs.readdirSync(imgSrcDir);
+            for (const imgFile of imgFiles) {
+              const src = path.join(imgSrcDir, imgFile);
+              const dst = path.join(imgDstDir, imgFile);
+              if (fs.statSync(src).isFile()) {
+                fs.copyFileSync(src, dst);
+              }
+            }
+          }
+
+          // Copy processed images from assets/images-processed to dist/assets/images-processed
+          const procSrcDir = path.join(__dirname, 'assets', 'images-processed');
+          const procDstDir = path.join(__dirname, 'dist', 'assets', 'images-processed');
+          if (fs.existsSync(procSrcDir)) {
+            if (!fs.existsSync(procDstDir)) {
+              fs.mkdirSync(procDstDir, { recursive: true });
+            }
+            const procFiles = fs.readdirSync(procSrcDir);
+            for (const procFile of procFiles) {
+              const src = path.join(procSrcDir, procFile);
+              const dst = path.join(procDstDir, procFile);
+              if (fs.statSync(src).isFile()) {
+                fs.copyFileSync(src, dst);
+              }
+            }
+          }
           
           // Post-process HTML files to point script/style to built assets
           const htmlFiles = glob.sync(path.join(__dirname, 'dist', '**/*.html'));
