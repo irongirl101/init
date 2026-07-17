@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<canvas id ="res-canvas"></canvas>
   <div class="hero rounded-lg">
     <div class="hero-content flex-col lg:flex-row-reverse"> {% if page.hero_image %}
         <img src="{{ page.hero_image }}" class="max-w-xs md:max-w-sm rounded-lg" />
@@ -25,6 +24,95 @@
         <div class="mt-8">
             <a href="/contact.html" class="btn btn-primary">Contact Me</a>
             <a href="/resume.pdf" class="btn btn-outline ml-4">Download Resume</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider my-12"></div>
+
+  <!-- Timeline Section -->
+  <div id="timeline-section" class="my-20 max-w-4xl mx-auto px-4 relative">
+    <h2
+      class="text-4xl font-bold mb-16 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+      My Journey</h2>
+
+    <div class="relative pl-8 border-l-2 border-primary/20 space-y-12 ml-4 md:ml-8 timeline-container">
+
+      <!-- Timeline Item 1 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[40.5px] top-2.5 w-5 h-5 rounded-full bg-primary border-4 border-base-100 shadow-[0_0_12px_rgba(32,140,115,0.8)] transition-all duration-300">
+        </div>
+        <div
+          class="timeline-content-card bg-base-200/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-primary/30 transition-all duration-300">
+          <span class="text-xs font-semibold text-primary uppercase tracking-wider block mb-1">Present</span>
+          <h3 class="text-xl font-bold mb-2"></h3>
+          <p class="opacity-80 leading-relaxed text-sm md:text-base mb-4"></p>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">TypeScript</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Canvas 2D</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Vite</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Scroll Animations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Item 2 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[40.5px] top-2.5 w-5 h-5 rounded-full bg-primary border-4 border-base-100 shadow-[0_0_12px_rgba(32,140,115,0.8)] transition-all duration-300">
+        </div>
+        <div
+          class="timeline-content-card bg-base-200/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-primary/30 transition-all duration-300">
+          <span class="text-xs font-semibold text-primary uppercase tracking-wider block mb-1">Late 2025</span>
+          <h3 class="text-xl font-bold mb-2"></h3>
+          <p class="opacity-80 leading-relaxed text-sm md:text-base mb-4"></p>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Python</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Jinja2</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Tailwind CSS</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Node.js</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Item 3 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[40.5px] top-2.5 w-5 h-5 rounded-full bg-primary border-4 border-base-100 shadow-[0_0_12px_rgba(32,140,115,0.8)] transition-all duration-300">
+        </div>
+        <div
+          class="timeline-content-card bg-base-200/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-primary/30 transition-all duration-300">
+          <span class="text-xs font-semibold text-primary uppercase tracking-wider block mb-1">Mid 2024</span>
+          <h3 class="text-xl font-bold mb-2"></h3>
+          <p class="opacity-80 leading-relaxed text-sm md:text-base mb-4"></p>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Perlin Noise</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">WebGL</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Canvas API</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Math</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline Item 4 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[40.5px] top-2.5 w-5 h-5 rounded-full bg-primary border-4 border-base-100 shadow-[0_0_12px_rgba(32,140,115,0.8)] transition-all duration-300">
+        </div>
+        <div
+          class="timeline-content-card bg-base-200/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:border-primary/30 transition-all duration-300">
+          <span class="text-xs font-semibold text-primary uppercase tracking-wider block mb-1">2023</span>
+          <h3 class="text-xl font-bold mb-2"></h3>
+          <p class="opacity-80 leading-relaxed text-sm md:text-base mb-4"></p>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">HTML / CSS</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">JavaScript</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Git</span>
+            <span class="badge badge-sm badge-outline border-primary/30 text-primary">Open Source</span>
+          </div>
         </div>
       </div>
 

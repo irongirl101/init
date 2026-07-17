@@ -44,12 +44,9 @@ footer {
   width: calc(100% - 32px);
   max-width: 1400px;
   border-radius: 22px;
-
   z-index: 50;
-  background-color: color-mix(in srgb, var(--color-base-100, #04241c) 75%, transparent);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); 
-
-  overflow: hidden;
 }

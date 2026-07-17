@@ -305,3 +305,43 @@ function animate(): void {
 }
 
 animate();
+
+// JS Scroll Fallback to transition the body background color from green to black on scroll
+function initScrollFallback() {
+  const computedStyle = window.getComputedStyle(document.body);
+  let initialBgColor = computedStyle.backgroundColor || "rgb(4, 36, 28)";
+
+  const rgbMatch = initialBgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  const startR = rgbMatch ? parseInt(rgbMatch[1]) : 4;
+  const startG = rgbMatch ? parseInt(rgbMatch[2]) : 36;
+  const startB = rgbMatch ? parseInt(rgbMatch[3]) : 28;
+
+  const handleScroll = () => {
+    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+    const viewportHeight = window.innerHeight;
+    const transitionEnd = viewportHeight * 1.2;
+
+    let progress = scrollY / transitionEnd;
+    progress = Math.max(0, Math.min(1, progress));
+
+    const r = Math.round(startR * (1 - progress));
+    const g = Math.round(startG * (1 - progress));
+    const b = Math.round(startB * (1 - progress));
+    document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+    const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
+    if (glassNavbar) {
+      glassNavbar.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.15)`;
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("resize", handleScroll);
+  handleScroll();
+}
+
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", initScrollFallback);
+} else {
+  initScrollFallback();
+}
