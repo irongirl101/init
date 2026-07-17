@@ -44,78 +44,9 @@ footer {
   width: calc(100% - 32px);
   max-width: 1400px;
   border-radius: 22px;
-
   z-index: 50;
-  background-color: color-mix(in srgb, var(--color-base-100, #04241c) 75%, transparent);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); 
-
-  overflow: hidden;
 }
-
-/* Scroll-Driven Animations */
-@supports ((animation-timeline: scroll()) and (animation-range: 0px 100px)) {
-  @keyframes fade-to-black {
-    from {
-      background-color: var(--color-base-100, #04241c);
-    }
-    to {
-      background-color: #000000;
-    }
-  }
-
-  @keyframes item-reveal {
-    from {
-      opacity: 0;
-      transform: translateY(40px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  body {
-    animation: fade-to-black linear both;
-    animation-timeline: scroll();
-    animation-range: 0px 120vh;
-  }
-
-  .timeline-item {
-    animation: item-reveal auto linear both;
-    animation-timeline: view();
-    animation-range: entry 10% cover 40%;
-  }
-}
-
-
-/* Timeline Custom Styles & Transitions */
-.timeline-container {
-  border-color: color-mix(in srgb, var(--color-primary, #208c73) 20%, transparent);
-}
-
-.timeline-content-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.timeline-content-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  border-color: var(--color-primary, #208c73);
-  box-shadow: 
-    0 15px 35px -10px rgba(0, 0, 0, 0.6), 
-    0 0 20px -3px color-mix(in srgb, var(--color-primary, #208c73) 30%, transparent);
-}
-
-.timeline-node {
-  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary, #208c73) 50%, transparent);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.timeline-item:hover .timeline-node {
-  transform: scale(1.25);
-  box-shadow: 0 0 20px var(--color-primary, #208c73);
-  background-color: var(--color-accent, #C2C2FF);
-}
-
