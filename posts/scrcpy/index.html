@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #8 - Scrcpy | init</title>
+  <link rel="stylesheet" href="/init/assets/main-D2zowbUH.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #8 - Scrcpy</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-05-29</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Android.html">Android</a>
+            
+            <a class="badge badge-sm" href="/init/tags/TCP/IP.html">TCP/IP</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>I stumbled across this week's repository out of pure necessity when I was trying to mirror games from my android device built for just running emulations, over to my Mac to play the game on a much bigger screen and to stream to game to a couple of friends - then i found scrcpy. </p>
+<p>Scrcpy (pronounced as screencopy) is an application that mirrors Android devices (video and audio) connected via USB or TCP/IP and allows control using the computer's keyboard and mouse. It does not require root access or an app installed on the device. It works on Linux, Windows, and macOS.</p>
+<h1 id="it-focuses-on">It focuses on:<a class="headerlink" href="#it-focuses-on" title="Permanent link">&para;</a></h1>
+<ul>
+<li>lightness: native, displays only the device screen</li>
+<li>performance: 30~120fps, depending on the device</li>
+<li>quality: 1920×1080 or above</li>
+<li>low latency: 35~70ms</li>
+<li>low startup time: ~1 second to display the first image</li>
+<li>non-intrusiveness: nothing is left installed on the Android device</li>
+</ul>
+<h1 id="its-features-include">Its features include:<a class="headerlink" href="#its-features-include" title="Permanent link">&para;</a></h1>
+<ul>
+<li>audio forwarding (Android 11+)</li>
+<li>recording</li>
+<li>virtual display</li>
+<li>mirroring with Android device screen off</li>
+<li>copy-paste in both directions</li>
+<li>configurable quality and many more </li>
+</ul>
+<p>The application primarily uses the Android Debug Bridge (ADB) via a USB connection to communicate. The software functions by executing a server natively on the Android device, then communicating with the server via a socket over an ADB tunnel. The screen content is streamed as H.264 video, which the software then decodes and displays on the computer. The software pushes keyboard and mouse input to the Android device over the server.</p>
+<p>Repository Link: <a href="https://github.com/Genymobile/scrcpy">scrcpy</a></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-D_8Y7JP3.js"></script>
+</body>
+
+</html>

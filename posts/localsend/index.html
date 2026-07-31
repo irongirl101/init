@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #2 - LocalSend | init</title>
+  <link rel="stylesheet" href="/init/assets/main-D2zowbUH.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #2 - LocalSend</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-04-17</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/localsend.html">localsend</a>
+            
+            <a class="badge badge-sm" href="/init/tags/goat.html">goat</a>
+            
+            <a class="badge badge-sm" href="/init/tags/protocol.html">protocol</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Docs.html">Docs</a>
+            
+            <a class="badge badge-sm" href="/init/tags/networking.html">networking</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <h1 id="what-is-localsend">What is localsend?<a class="headerlink" href="#what-is-localsend" title="Permanent link">&para;</a></h1>
+<p>LocalSend is an app that allows you to securely share files and messages with nearby devices over your local network without needing an internet connection. </p>
+<p>(this is the best app to share files between iOS, Windows, MacOS or Linux; in my humble opinion) </p>
+<h1 id="why-localsend">Why LocalSend?<a class="headerlink" href="#why-localsend" title="Permanent link">&para;</a></h1>
+<ul>
+<li>It effectively acts like a decentralized alternative to options like airdrop, allowing you to share files, folders and clipboard content, across different OSs!</li>
+<li>LocalSend uses a secure communication protocol that allows devices to communicate with each other using a REST API. </li>
+<li>All data is sent securely over HTTPS, and the TLS/SSL certificate is generated on the fly on each device, ensuring maximum security, and making it super fast!</li>
+</ul>
+<p>As for the tech stack, it its primarily built with Dart and Flutter (both are open sourced languages built and maintained by Google!)</p>
+<p>They use their own protocol called the LocalSend Protocol <br />
+- so as to have a simple REST protocol that does not rely on any external servers.<br />
+- makes sure that machines can communicate, as some devices might not support multicast or might not be allowed to have an HTTP server running.<br />
+- It uses both TCP(HTTP) and UDP (multicast)</p>
+<p>Repository: <a href="https://github.com/localsend/localsend">Localsend</a><br />
+Documentation for protocol: <a href="https://github.com/localsend/protocol">Docs</a></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-D_8Y7JP3.js"></script>
+</body>
+
+</html>

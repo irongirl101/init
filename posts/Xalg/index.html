@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #6 - The X Algorithm | init</title>
+  <link rel="stylesheet" href="/init/assets/main-D2zowbUH.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #6 - The X Algorithm</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-05-15</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Algorithms.html">Algorithms</a>
+            
+            <a class="badge badge-sm" href="/init/tags/ML.html">ML</a>
+            
+            <a class="badge badge-sm" href="/init/tags/pipelines.html">pipelines</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>It combines in-network content (from accounts the user follows) (also known as Thunder) with out-of-network content (discovered through ML-based retrieval) and ranks everything using a Grok-based transformer model called Phoenix. </p>
+<p>It works on a multi stage pipeline, and curates a couple 100 feeds from billions of them for the user in under 200 milliseconds. </p>
+<h1 id="this-is-how-the-algorithm-works-based-on-pipeline-stages">This is how the algorithm works (based on pipeline stages):<a class="headerlink" href="#this-is-how-the-algorithm-works-based-on-pipeline-stages" title="Permanent link">&para;</a></h1>
+<ul>
+<li>Query Hydration - engagement history and metadata of the user</li>
+<li>Candidate sourcing and hydration - using thunder and phoenix to get metadata of the posts </li>
+<li>Pre Scoring Filters: removes posts according to age, duplicates etc. </li>
+<li>Scoring : based on predictions from Phoenix and other weights. </li>
+<li>Selection : sort by score and select the top K candidates</li>
+<li>Post-Selection Processing: Final validation of post candidates to be served</li>
+</ul>
+<p>The weights for engagement have also been made public - A reply that gets a reply from the author is worth 150x more than a like. A retweet is worth 20x a like. A bookmark is worth 10x.</p>
+<p>The code (based on Rust and Python) also includes the logic for the Home Mixer, which orchestrates the feed, and the logic for Community Notes ranking.</p>
+<p>More in depth points can be found in this link: <a href="https://github.com/xai-org/x-algorithm">XAlg</a></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-D_8Y7JP3.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #16 - Apollo 11 | init</title>
+  <link rel="stylesheet" href="/init/assets/main-D2zowbUH.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #16 - Apollo 11</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-07-24</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Apollo11.html">Apollo11</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Assembly.html">Assembly</a>
+            
+            <a class="badge badge-sm" href="/init/tags/history.html">history</a>
+            
+            <a class="badge badge-sm" href="/init/tags/AGC.html">AGC</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Emulation.html">Emulation</a>
+            
+            <a class="badge badge-sm" href="/init/tags/RAD.html">RAD</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>This repo, contains the ORIGINAL Apollo 11 guidance computer (AGC) source code for Command Module (Comanche055) and Lunar Module (Luminary099). Written entirely in custom AGC Assembly, this software wasn't just used to land humanity on the Moon—it also powered subsequent Apollo missions and early fly-by-wire aviation experiments. (also, it acts more like a calc rather than a full blown out computer XP) </p>
+<p>However, writing in the whole thing in AGC assembly language, requires more memory would have been needed for program storage than was actually physically provided within the AGC. </p>
+<p>There is a lot I would love to talk about AGC, but I am just gonna highlight on of the major problems they ran into: </p>
+<p>The AGC had no capability of loading programs into memory at runtime, except for extremely tiny code fragments (keyed in manually by the astronauts or uploaded via telemetry uplink). <br />
+All of the software needed for the mission was encoded in the "core ropes", and these had to be manufactured and hermetically sealed within the computer unit. In other words, all of the software needed to fit within the 38,912 15-bit words of core memory (36K of core rope and 2K of RAM).</p>
+<p>To solve this problem, the designers (Margaret Hamilton my goat + other MIT engineers) of the AGC chose to use part of the precious core memory to implement a virtual computer-within-the-computer--in much the same way as yaAGC is a virtual computer within another computer. This virtual computer, the "interpreter", was a subprogram (within the larger Colossus or Luminary program) which when activated, read its own instructions from memory and executed them. </p>
+<p>(It is important also to understand that yaAGC has no special support for the interpreter: yaAGC simply runs AGC4 machine code and, as far as it is concerned, the interpreter is just like any other subprogram within Luminary or Colossus. It "just works" with interpreter code.)</p>
+<p>Theres now a RAD (Rapid Application Development) Environment for the AGC!<br />
+(A RAD is a software-development tool that's typically used for quickly throwing together a graphical user interface, by dragging widgets around on the display screen to where you want them, and then writing some code that glues these widgets together.) <br />
+RAD here: <a href="https://github.com/NeilFraser/AGC-code">RAD</a></p>
+<p>Coming back to the apollo 11 code, theres multiple random easter eggs the devs have written to the astronauts that you can find! (hint: lines 247-248 in Luminary099/THE_LUNAR_LANDING.agc.)<br />
+As silicon RAM/ROM didn't exist in large quantities, the software was literally woven by hand. Female factory workers (many from local textile mills) used needles to thread copper wire through a magnetic core ring for a binary 1, and around it for a binary 0. The manufacturing process was so specialized that engineers nicknamed it the LOL (Little Old Ladies) method, and the code memory was called LOL memory. Changing a single line of code required re-weaving the rope entirely, taking weeks!</p>
+<p>theres a lot more yap about the language + how stuff works here: <a href="https://www.ibiblio.org/apollo/assembly_language_manual.html#gsc.tab=0">Manual</a> <br />
+also, if you want to try and emulate it: <a href="https://github.com/virtualagc/virtualagc">Emulation</a><br />
+Repository Link: <a href="https://github.com/chrislgarry/Apollo-11">Apollo11</a></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-D_8Y7JP3.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #17- Netflix Simian Army | init</title>
+  <link rel="stylesheet" href="/init/assets/main-D2zowbUH.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #17- Netflix Simian Army</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-07-31</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/choas engineering.html">choas engineering</a>
+            
+            <a class="badge badge-sm" href="/init/tags/netflix.html">netflix</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>The Netflix Simian Army is a suite of open source, automated testing tools -- featuring Chaos Monkey, Latency Monkey, and Chaos Gorilla -- designed to intentionally disable computer instances, block network traffic, and simulate major data center outages to test cloud system resilience. </p>
+<h1 id="now-why-is-it-called-simian">Now, why is it called Simian?<a class="headerlink" href="#now-why-is-it-called-simian" title="Permanent link">&para;</a></h1>
+<p>Simian means relating to, resembling, or being a monkey or an ape. The simian army brings the chaotic and destructive nature of wild monkeys to test out infrastructures, </p>
+<p>This ecosystem gave birth to the entire discipline now known as Chaos Engineering.</p>
+<h1 id="diving-a-bit-deeper-into-these-tools">Diving a bit deeper into these tools:<a class="headerlink" href="#diving-a-bit-deeper-into-these-tools" title="Permanent link">&para;</a></h1>
+<ul>
+<li>
+<p>Chaos Monkey - Randomly shuts down production instances during work hours to verify that services automatically recover without customer disruption.  It operates strictly during business hours to ensure engineers are awake and available to observe the fallout. The tool forces microservices to be stateless and redundant; if one instance dies, another must seamlessly spin up to take its place without breaking the user experience<br />
+Repo Link : <a href="https://github.com/netflix/chaosmonkey">chaos monkey</a></p>
+</li>
+<li>
+<p>Chaos Gorilla - Simulates the complete outage of an entire cloud availability zone to test regional load balancing and failover.  It mimics a massive cloud data center blackout. The tool verifies if Netflix's traffic-routing software can instantly shift millions of active video streams to a functioning data center in another zone without dropping connections.<br />
+Repo Link: <a href="https://github.com/Netflix/SimianArmy">Functionality is managed inside the master architecture</a></p>
+</li>
+<li>
+<p>Janitor Monkey (now, Swabbie) - This tool cleans up unneeded or abandoned cloud infrastructure resources. It searches for unused storage volumes, detached network interfaces, or forgotten server images, alerts the resource owner, and automatically deletes them after a set period. It reduces cloud waste and keeps operational costs down<br />
+Repo Link : <a href="https://github.com/spinnaker/swabbie">Swabbie</a></p>
+</li>
+</ul>
+<p>If you want more of the monkey madness : <a href="https://github.com/Netflix/SimianArmy/wiki/The-Chaos-Monkey-Army">Repo Army</a></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-D_8Y7JP3.js"></script>
+</body>
+
+</html>

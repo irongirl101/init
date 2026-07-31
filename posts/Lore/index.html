@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #15 - Lore VCS | init</title>
+  <link rel="stylesheet" href="/init/assets/main-D2zowbUH.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #15 - Lore VCS</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-07-17</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/VCS.html">VCS</a>
+            
+            <a class="badge badge-sm" href="/init/tags/git.html">git</a>
+            
+            <a class="badge badge-sm" href="/init/tags/games.html">games</a>
+            
+            <a class="badge badge-sm" href="/init/tags/vfx.html">vfx</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+            <a class="badge badge-sm" href="/init/tags/docs.html">docs</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>Lore is an open sourced version control system, designed for unprecedented scalability of both data and teams. It is optimized for projects that combine code with large binary assets -- primarily for game assets and entertainment, catering to devs and artists alike. Although, mainly built for Unreal Engine based games, the maintainers are actively expanding it to become the definitive ecosystem-agnostic VCS for games, VFX, and machine learning.</p>
+<p>Lore is a centralized, content-addressed system. It represents repository states using cryptographically secure Merkle trees and an immutable revision chain. This design choice allows for binary-first storage, robust data deduplication, and sparse, on-demand data hydration at a scale that leaves older systems sweating.</p>
+<h2 id="lore-v-git-or-perforce">Lore v Git or Perforce<a class="headerlink" href="#lore-v-git-or-perforce" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Handling Large Files: Git requires extensions like Git LFS (Large File Storage) for big assets, which can be slow. Lore natively chunk-addresses data -- if you change a few kilobytes in a massive 20GB asset, it only re-uploads the modified bytes.</li>
+<li>System Architecture: While Git is distributed and CLI-first, and Perforce is centralized but strictly proprietary, Lore acts as a high-performance hybrid. Built entirely in Rust, it is API-first, exposing its full range of capabilities via uniform SDK bindings for C/C++, C#, Python, Go, and JavaScript.</li>
+<li>Compression and Speed: Lore compresses media data far more efficiently than Git or Perforce, due to its usage of modern algorithms like BLAKE3 hashing. </li>
+</ul>
+<p>It is still in the 'non-prod-ready' stage. However, it is quickly proving to be one of the most exciting shifts in modern version control architecture!</p>
+<p>Repository Link: <a href="https://github.com/EpicGames/lore">Lore</a><br />
+Documentation Link: <a href="https://epicgames.github.io/lore/">Docs</a></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-D_8Y7JP3.js"></script>
+</body>
+
+</html>
