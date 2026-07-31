@@ -355,7 +355,7 @@ function animate(): void {
   
   const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
   if (glassNavbar) {
-    glassNavbar.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.15)`;
+    glassNavbar.style.setProperty("--navbar-bg-rgb", `${r}, ${g}, ${b}`);
   }
 
   // Check if mouse is within timelineSection bounds
