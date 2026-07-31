@@ -14,7 +14,7 @@
     <div class="space-y-8 mt-">
     {% for post in posts %}
         <div class="card bg-base-200 shadow-xl">
-            <a href="{{ post.url }}/">
+            <a href="{{ site.base_url }}{{ post.url }}/">
             <div class="card-body">
                 <h2 class="card-title">
                     {{ post.title }}

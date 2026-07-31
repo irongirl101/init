@@ -8,7 +8,7 @@
     {% for post in posts %}
         <div class="card bg-base-200 shadow-xl">
             <div class="card-body">
-                <h2 class="card-title"><a href="{{ post.url }}/">{{ post.title }}</a></h2>
+                <h2 class="card-title"><a href="{{ site.base_url }}{{ post.url }}/">{{ post.title }}</a></h2>
                 <p>Published on: {{ post.date }}</p>
             </div>
         </div>
@@ -16,6 +16,6 @@
     </div>
 
     <div class="mt-8">
-        <a href="/blog/" class="link">← Back to all posts</a>
+        <a href="{{ site.base_url }}/blog/" class="link">← Back to all posts</a>
     </div>
 {% endblock %}

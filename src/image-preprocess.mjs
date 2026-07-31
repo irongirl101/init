@@ -38,6 +38,20 @@ function getS3Client() {
     });
 }
 
+function isS3AuthFailure(error) {
+    if (!error || typeof error.message !== 'string') {
+        return false;
+    }
+    const message = error.message.toLowerCase();
+    return [
+        'access key id',
+        'invalid access key',
+        'invalid security',
+        'signature',
+        'credentials'    
+    ].some(token => message.includes(token));
+}
+
 export async function processImages(inputDir, outputDir, siteConfig = {}) {
     await fs.mkdir(outputDir, { recursive: true });
     
@@ -48,7 +62,7 @@ export async function processImages(inputDir, outputDir, siteConfig = {}) {
     }
     const targetFormats = configuredStats.filter(f => FORMAT_HANDLERS[f]);
 
-    const s3 = getS3Client();
+    let s3 = getS3Client();
     const bucket = process.env.S3_BUCKET;
 
     // Recursive file gathering
@@ -117,7 +131,10 @@ export async function processImages(inputDir, outputDir, siteConfig = {}) {
                          await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
                          s3ObjectExists = true;
                      } catch (e) {
-                         if (e.name !== 'NotFound' && e.$metadata?.httpStatusCode !== 404) {
+                         if (isS3AuthFailure(e)) {
+                             console.warn(`[img] S3 auth failure while checking ${key}: ${e.message}`);
+                             s3 = null;
+                         } else if (e.name !== 'NotFound' && e.$metadata?.httpStatusCode !== 404) {
                              console.warn(`[img] error checking ${key}: ${e.message}`);
                          }
                          // If 404, s3ObjectExists remains false
@@ -145,13 +162,22 @@ export async function processImages(inputDir, outputDir, siteConfig = {}) {
                              const contentType = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
                              
                              console.log(`[img] uploading ${outFile} to S3...`);
-                             await s3.send(new PutObjectCommand({
-                                 Bucket: bucket,
-                                 Key: key,
-                                 Body: fileBuffer,
-                                 ContentType: contentType,
-                                 // ACL removed
-                             }));
+                             try {
+                                 await s3.send(new PutObjectCommand({
+                                     Bucket: bucket,
+                                     Key: key,
+                                     Body: fileBuffer,
+                                     ContentType: contentType,
+                                     // ACL removed
+                                 }));
+                             } catch (e) {
+                                 if (isS3AuthFailure(e)) {
+                                     console.warn(`[img] S3 auth failure while uploading ${outFile}: ${e.message}`);
+                                     s3 = null;
+                                 } else {
+                                     throw e;
+                                 }
+                             }
                          }
                     } else {
                          // Local path
@@ -171,7 +197,24 @@ export async function processImages(inputDir, outputDir, siteConfig = {}) {
                     }
 
                 } catch (e) {
-                    console.error(`[img] fail ${file} (${w}px ${ext}): ${e.message}`);
+                    if (s3 && isS3AuthFailure(e)) {
+                        console.warn(`[img] fail ${file} (${w}px ${ext}): ${e.message}. Falling back to local asset generation.`);
+                        s3 = null;
+                        // Rebuild publicUrl as a local path after disabling S3
+                        publicUrl = path.posix.join(
+                            path.relative(process.cwd(), outputDir).split(path.sep).join('/'),
+                            outFile
+                        );
+                        (manifest[file][ext] ||= []);
+                        const existingIdx = manifest[file][ext].findIndex(x => x.width === w);
+                        if (existingIdx !== -1) {
+                            manifest[file][ext][existingIdx] = { width: w, path: publicUrl };
+                        } else {
+                            manifest[file][ext].push({ width: w, path: publicUrl });
+                        }
+                    } else {
+                        console.error(`[img] fail ${file} (${w}px ${ext}): ${e.message}`);
+                    }
                 }
             }
         }

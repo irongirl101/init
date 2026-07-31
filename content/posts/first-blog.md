@@ -1,25 +1,13 @@
 ---
-title: "My First Blog Post"
-date: "2026-01-01"
+title: "What are Open Source Fridays"
 layout: "post"
 tags:
     - "introduction"
-    - "demo"
+    - "OSF"
 ---
+Hello there! 
+I have been writing a lot of quips on open sourced projects, and release them every Friday on a massive WhatsApp community of our FOSS club PES OS, to showcase the importance of open source in our daily lives -- and to spread awareness on cool projects :D 
 
-This is the content of my first post. Welcome to the blog!
+Such quips, are known as Open Source Fridays -- and I have decided to post them here as well :) 
 
-Here's a code example:
-
-```python
-def hello_world():
-    print("Hello, World!")
-    return True
-```
-
-And here's some JavaScript:
-
-```javascript
-const greeting = "Hello from the blog!";
-console.log(greeting);
-```
+Happy Learning!
