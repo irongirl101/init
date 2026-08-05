@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crowdstrike Case Study | init</title>
+  <link rel="stylesheet" href="/init/assets/main-BbWgBV--.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Crowdstrike Case Study</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-08-05</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Cybersecurity.html">Cybersecurity</a>
+            
+            <a class="badge badge-sm" href="/init/tags/EDR.html">EDR</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Learning.html">Learning</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Case Study.html">Case Study</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Crowdstrike.html">Crowdstrike</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <h1 id="my-learnings-on-crowdstrike-falcon-related-worldwide-outage">My Learnings on Crowdstrike Falcon related worldwide outage<a class="headerlink" href="#my-learnings-on-crowdstrike-falcon-related-worldwide-outage" title="Permanent link">&para;</a></h1>
+<h3 id="to-understand-how-this-outage-turned-out-what-is-edr">To understand how this outage turned out, what is EDR?<a class="headerlink" href="#to-understand-how-this-outage-turned-out-what-is-edr" title="Permanent link">&para;</a></h3>
+<p>EDR (Endpoint Detection and Response) is a class of product that resides on the endpoint that detects and protects the endpoint against malware and cyberattacks; and allows to respond via forensic(investigates how the attack occured)<br />
+To stay on point on what attacks are persistent, EDR regularly pulls updates from the cloud (crowdstrike's for example) and applies them to stay on top of latest attack trends. </p>
+<p>In 2024, in a routine update from Crowdstrike, there was buggy kernel level code (disk layer) that was pushed without testing properly -- specifically, a Falcon Sensor content (cybersecurity agent provided by CrowdStrike Falcon for endpoint protection) for Windows. The EDR just simply pulled and pushed onto windows machines. <br />
+This update in particular had a specific file that caused this issue; to improve how Falcon handled Windows named-pipe communications. </p>
+<p>This caused a massive outage in the world -- windows showing BSODs everywhere. <br />
+It illustrated how a single faulty update in a widely used security product can cause major disruption and have a huge economic update. <br />
+Typical recovery steps included rebooting machines (ideally on Ethernet) to retrieve the fixed update, or booting each PC into Safe Mode/Recovery and manually deleting the problematic driver file. Many IT teams reported that fixing each machine took days, especially for BitLocker‐encrypted devices needing recovery keys. </p>
+<h3 id="more-on-falcon">More on Falcon<a class="headerlink" href="#more-on-falcon" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Falcon is an EDR agent. </li>
+<li>The agent is installed on client PCs and servers to monitor and block threats, running as a Windows kernel-mode driver for deep system access. </li>
+<li>Falcon runs with the highest privileges (ring 0)* - any fault, can crash the system.</li>
+</ul>
+<h3 id="channel-file-291">Channel File 291<a class="headerlink" href="#channel-file-291" title="Permanent link">&para;</a></h3>
+<ul>
+<li>a channel file was part of a rapid response content update, which is a lightweight config file</li>
+<li>the all infamous file, that caused the BSODs </li>
+<li>Crowdstrikes own investigation, revealed that the file had <em>one fewer data field</em> than expected, and the code that parsed it had no bounds-checking. The sensor expected 21 sensor fields -- and only received 20. </li>
+<li>Because the parser used a fixed-size array without validating its length, loading the file caused an out-of-bounds memory read. </li>
+<li>This violated a Windows kernel rule, forcing an “invalid page fault” and immediate system crash. </li>
+<li>Versioning was missing -- outdated file format was not detected. </li>
+<li>Inadequate testing led to this. </li>
+</ul>
+<p>Crowdstrike's content validation did not flag it either -- due to the combination of all the failures. </p>
+<h2 id="there-was-a-clear-lack-in-deployment">There was a clear lack in deployment:<a class="headerlink" href="#there-was-a-clear-lack-in-deployment" title="Permanent link">&para;</a></h2>
+<ul>
+<li>lack of deployment rollouts (did not follow canary -&gt; dev -&gt; stage -&gt;prod)</li>
+<li>lack of customer opt out in a sandbox, before rollout. </li>
+</ul>
+<h3 id="as-remeditation-crowdstrike-implemented-these">As remeditation, crowdstrike implemented these:<a class="headerlink" href="#as-remeditation-crowdstrike-implemented-these" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Enhanced bounds checking </li>
+<li>staged deployments </li>
+<li>customer deployment control </li>
+<li>kernel isolation discussions </li>
+</ul>
+<p>*ring 0 is the highest level of computer security access. it runs directly on hardware, controls the computer's central processing unit and memory, and belongs to the core operating system kernel.</p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-CoWwtgJc.js"></script>
+</body>
+
+</html>
