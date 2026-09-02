@@ -18,7 +18,7 @@ I have heard it come up in Apache Seatunnel, where the connector (as a unified i
 ## Now, what is Kafka? 
 It is a **data streaming platform**, that enables platforms to store, publish, process messages in real time and subscribe. Publish/subscribe (pub/sub) systems are characterized by senders pushing messages to a central point for classification. Subscribers receive messages of interest from the central point.
 
-![Kafka Flow](/assets/images-posts/arch1.png) _Image 1, ref: redhat :D_
+![Kafka Flow](<{{site.base_url}}/assets/images-posts/arch1.png>) _Image 1, ref: redhat :D_
 
 ### Messages 
 A message is a key-value pair of data for the consumer applications (along with metadata such as its timestamp and offset.). Each message is stored within a topic (a set of grouped messages). It does have a retention policy; where it is persisted and durable during its configured lifespan. 
@@ -55,7 +55,7 @@ Partition 1:
 Fun fact, the way messages are added to a specific partition, is via hashing :D (if theres a key attached, else uses a sticky-partition strategy for batches) 
 
 Right now, our architecture looks somewhat like this: 
-![Arch](/assets/images-posts/arch2.png)
+![Arch](<{{site.base_url}}/assets/images-posts/arch2.png>)
 _Image 2_
 
 But this is not how the cluster looks like (ref to image 1) A typical Kafka cluster contains multiple brokers, topics are 'hosted' on the brokers, and each topic is split into one or more partitions, and ofc course, each partition would have multiple messages(A broker is the central point where messages are published)
