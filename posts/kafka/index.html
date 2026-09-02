@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kafka | init</title>
+  <link rel="stylesheet" href="/init/assets/main-B6Or9fuo.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Kafka</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-09-02</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Open Source.html">Open Source</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Kafka.html">Kafka</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Learning.html">Learning</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Case Study.html">Case Study</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>Being a month into my Big Data classes at college, apart from all the other kewl apache frameworks we have delved into -- there is one architecture thats keep being mentioned, but not talked about much in detail <em>yet</em>. </p>
+<p>Of course, I am talking about apache kafka.</p>
+<p>I have heard it come up in Apache Seatunnel, where the connector (as a unified integration platform, it supports decoupling -- the connector can run on multiple engines like Flink or Spark without rewriting it). This is where, my professor mentioned something about kafka messages and kafka connect as a connector. She did not go further, so I decided to go down the rabbit hole myself. </p>
+<h2 id="now-what-is-kafka">Now, what is Kafka?<a class="headerlink" href="#now-what-is-kafka" title="Permanent link">&para;</a></h2>
+<p>It is a <strong>data streaming platform</strong>, that enables platforms to store, publish, process messages in real time and subscribe. Publish/subscribe (pub/sub) systems are characterized by senders pushing messages to a central point for classification. Subscribers receive messages of interest from the central point.</p>
+<p><img alt="Kafka Flow" src="/assets/images-posts/arch1.png" /> <em>Image 1, ref: redhat :D</em></p>
+<h3 id="messages">Messages<a class="headerlink" href="#messages" title="Permanent link">&para;</a></h3>
+<p>A message is a key-value pair of data for the consumer applications (along with metadata such as its timestamp and offset.). Each message is stored within a topic (a set of grouped messages). It does have a retention policy; where it is persisted and durable during its configured lifespan. </p>
+<p>The key (optional), usually identitfies the message, and determines (by default) which partition stores the message. The value actually contains the content of the message. </p>
+<p>For example:</p>
+<div class="codehilite"><pre><span></span><code>Key:   user123
+Value: &quot;User bought a laptop&quot;
+</code></pre></div>
+
+<p>Here, user123 could identify the user associated with the event, while the value describes what happened.</p>
+<h3 id="partitions">Partitions<a class="headerlink" href="#partitions" title="Permanent link">&para;</a></h3>
+<p>A partition, contains a subset of messages of the topic. Using multiple partitions enables improved performance in case of heavy load, data sharing, and replication. A topic is ultimately the sum of all events of all its partitions. Each partition contains a bunch messages, which is consumed in the order in which it was added. (Partitions can also have replicas on different Brokers!)</p>
+<p>For example:</p>
+<div class="codehilite"><pre><span></span><code>Topic: user-events
+
+Partition 0:
+    Offset 0 → user101 logged in
+    Offset 1 → user102 bought a laptop
+    Offset 2 → user101 added an item
+
+Partition 1:
+    Offset 0 → user103 logged in
+    Offset 1 → user104 bought a phone
+</code></pre></div>
+
+<p>Fun fact, the way messages are added to a specific partition, is via hashing :D (if theres a key attached, else uses a sticky-partition strategy for batches) </p>
+<p>Right now, our architecture looks somewhat like this: <br />
+<img alt="Arch" src="/assets/images-posts/arch2.png" /><br />
+<em>Image 2</em></p>
+<p>But this is not how the cluster looks like (ref to image 1) A typical Kafka cluster contains multiple brokers, topics are 'hosted' on the brokers, and each topic is split into one or more partitions, and ofc course, each partition would have multiple messages(A broker is the central point where messages are published)</p>
+<h3 id="producers-and-consumers">Producers and Consumers<a class="headerlink" href="#producers-and-consumers" title="Permanent link">&para;</a></h3>
+<p>As it is a pub-sub architecture, the producers publish (appends messages to the partition in a topic), consumers subscribe to that topic, and they can read any offset within a topic partition. </p>
+<p>Extra Info on consumers: Each consumer belongs to a consumer group, a list of consumer instances that ensures fault tolerance and scalable message processing. When a consumer group contains only one consumer, that consumer is responsible for processing all messages of all partitions. With multiple consumers in a group, each consumer receives messages from only a subset of the partitions. Thus, if you add more consumers to a consumer group than the number of partitions for a topic, the extra consumers stay idle without receiving any messages.</p>
+<h3 id="where-do-we-use-kafka">Where do we use Kafka?<a class="headerlink" href="#where-do-we-use-kafka" title="Permanent link">&para;</a></h3>
+<p>Kafka is mainly used when you have a lot of data/events being produced continuously, and you want different systems to consume and process that data reliably.<br />
+Its used for <br />
+- Stream Processing<br />
+- Connecting microservices<br />
+- Log and event collection<br />
+- and more :) </p>
+<p>Without Kafka:</p>
+<p>Order Service<br />
+     │<br />
+     ├────► Payment Service<br />
+     ├────► Inventory Service<br />
+     ├────► Delivery Service<br />
+     └────► Notification Service</p>
+<p>The Order Service has to directly communicate with every service that needs to know about the order.</p>
+<p>With Kafka:</p>
+<div class="codehilite"><pre><span></span><code>                Kafka
+                  ▲
+                  │
+            &quot;Order Created&quot;
+                  │
+            Order Service
+                  │
+      ┌───────────┼───────────┐
+      ▼           ▼           ▼
+   Payment    Inventory    Delivery
+</code></pre></div>
+
+<p>The Order Service simply publishes an "Order Created" event.</p>
+<p>It doesn't need to know which services are consuming that event.</p>
+<p>If we later introduce an Analytics Service:</p>
+<div class="codehilite"><pre><span></span><code>                Kafka
+                  │
+   ┌──────────────┼──────────────┐
+   ▼              ▼              ▼
+Payment       Inventory      Analytics
+</code></pre></div>
+
+<p>we can add another consumer without requiring the Order Service to directly integrate with it.</p>
+<p><strong>This is Decoupling.</strong></p>
+<h2 id="conclusion">Conclusion:<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>Circling back to why i even looked up on kafka, connectors. The Kafka connector, can move data quickly in and out of Kafka. Kafka Connect, a tool to manage data integration using an Apache Kafka cluster as the hub. Kafka Connect provides prebuilt connectors for databases, services, and other technologies. These connectors can be used to move data into a Kafka cluster from a given source, and out of a Kafka cluster to a given sink; the project has also made multiple tools to define your own connectors! <br />
+Source Connector: Database ─────► Kafka <br />
+Sink Connector: Kafka ────────► Database</p>
+<p>And also, decoupling. <strong>Kafka decouples producers from consumers by acting as an intermediary event log, allowing producers to publish events without knowing which consumers will process them or when.</strong></p>
+<p>This is what I learnt from a couple of hours of research, and I hope you did too :) </p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-WvOfwJlB.js"></script>
+</body>
+
+</html>
