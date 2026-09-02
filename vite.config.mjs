@@ -54,13 +54,13 @@ const resolvePythonExecutable = () => {
 
   const venvPythonBin = path.join(__dirname, '.venv/bin/python');
   const venvPythonScripts = path.join(__dirname, '.venv/Scripts/python.exe');
-  
+
   if (process.platform === 'win32') {
     if (fs.existsSync(venvPythonScripts)) return venvPythonScripts;
   } else {
     if (fs.existsSync(venvPythonBin)) return venvPythonBin;
   }
-  
+
   // Fallback check regardless of platform prediction (e.g. mingw/cygwin)
   if (fs.existsSync(venvPythonBin)) return venvPythonBin;
   if (fs.existsSync(venvPythonScripts)) return venvPythonScripts;
@@ -92,8 +92,8 @@ console.log(`[config] Using Python executable: ${pythonExecutable}`);
 const ensurePythonRequirements = () => {
   const venvPath = path.join(__dirname, '.venv');
   const isWindows = process.platform === 'win32';
-  
-  const venvPython = isWindows 
+
+  const venvPython = isWindows
     ? path.join(venvPath, 'Scripts', 'python.exe')
     : path.join(venvPath, 'bin', 'python');
 
@@ -176,7 +176,7 @@ const py_build_plugin = (baseUrl = '') => {
         try {
           const generatedDirs = ['blog', 'posts', 'tags'];
           const generatedFiles = ['index.html', 'sitemap.xml'];
-          
+
           // Move directories from root to dist
           for (const dir of generatedDirs) {
             const src = path.join(__dirname, dir);
@@ -188,7 +188,7 @@ const py_build_plugin = (baseUrl = '') => {
               fs.renameSync(src, dst);
             }
           }
-          
+
           // Move files from root to dist
           for (const file of generatedFiles) {
             const src = path.join(__dirname, file);
@@ -247,19 +247,19 @@ const py_build_plugin = (baseUrl = '') => {
               }
             }
           }
-          
+
           // Post-process HTML files to point script/style to built assets
           const htmlFiles = glob.sync(path.join(__dirname, 'dist', '**/*.html'));
           const builtAssets = glob.sync(path.join(__dirname, 'dist', 'assets', '*.js'));
           const builtCss = glob.sync(path.join(__dirname, 'dist', 'assets', '*.css'));
-          
+
           const builtMainJs = builtAssets.find(f => f.includes('main'));
           const builtMainCss = builtCss.find(f => f.includes('main'));
-          
+
           for (const htmlFile of htmlFiles) {
             let content = fs.readFileSync(htmlFile, 'utf-8');
             let modified = false;
-            
+
             // Replace script src="/src/topography.ts" with actual built asset
             if (builtMainJs) {
               const jsAssetName = path.basename(builtMainJs);
@@ -285,12 +285,12 @@ const py_build_plugin = (baseUrl = '') => {
                 modified = true;
               }
             }
-            
+
             if (modified) {
               fs.writeFileSync(htmlFile, content, 'utf-8');
             }
           }
-          
+
           console.log('Files moved successfully');
         } catch (e) {
           console.error('Failed to move files to dist:', e);
@@ -350,23 +350,23 @@ const py_build_plugin = (baseUrl = '') => {
           }
         }
         if (filePath.includes('/assets/images/')) {
-             if (event === 'add' || event === 'change' || event === 'unlink') {
-                 console.log(`[watcher] Image change detected: ${event} ${filePath}`);
-                 try {
-                     const siteConfig = loadSiteConfig();
-                     await processImages(inputDir, outputDir, siteConfig);
-                     build();
-                 } catch (e) {
-                     console.error('[watcher] Image processing failed', e);
-                 }
-             }
+          if (event === 'add' || event === 'change' || event === 'unlink') {
+            console.log(`[watcher] Image change detected: ${event} ${filePath}`);
+            try {
+              const siteConfig = loadSiteConfig();
+              await processImages(inputDir, outputDir, siteConfig);
+              build();
+            } catch (e) {
+              console.error('[watcher] Image processing failed', e);
+            }
+          }
         }
         if (event === 'change' && filePath.includes('/assets/css/')) {
           build();
         }
         if (event === 'unlink') {
           if (!filePath.includes('/assets/images/')) {
-              build();
+            build();
           }
         }
       });
@@ -387,16 +387,16 @@ export default defineConfig(async ({ command }) => {
     try {
       const output = execSync(`${pythonExecutable} src/main.py`);
       console.log(output.toString().trim());
-      
+
       // Move generated HTML files from docs to dist
       const generatedDirs = ['blog', 'posts', 'tags'];
       const generatedFiles = ['index.html', 'sitemap.xml'];
-      
+
       // Ensure dist exists
       if (!fs.existsSync('dist')) {
         fs.mkdirSync('dist', { recursive: true });
       }
-      
+
       // Move directories from docs to dist
       for (const dir of generatedDirs) {
         const src = path.join(__dirname, 'docs', dir);
@@ -408,7 +408,7 @@ export default defineConfig(async ({ command }) => {
           fs.renameSync(src, dst);
         }
       }
-      
+
       // Move files from docs to dist
       for (const file of generatedFiles) {
         const src = path.join(__dirname, 'docs', file);
@@ -427,7 +427,7 @@ export default defineConfig(async ({ command }) => {
   const inputFiles = glob.sync(['**/*.html', '!dist/**', '!node_modules/**', '!**/.venv/**', '!templates/**']);
   const siteConfig = loadSiteConfig();
   const baseUrl = siteConfig.base_url || '';
-  
+
   // For production builds, use topography.ts as the only entry point since HTML is generated by Python
   const rollupInputFiles = command === 'build' ? { main: path.join(__dirname, 'src/topography.ts') } : inputFiles;
 
@@ -453,17 +453,17 @@ export default defineConfig(async ({ command }) => {
 
           const whitelisted = ['templates', 'content', 'assets', 'config.yaml', 'vite.config.mjs'];
           const isWhitelisted = whitelisted.some(base => relPath === base || relPath.startsWith(base + '/'));
-          
+
           if (isWhitelisted) {
             const isGeneratedCss = [
               'assets/css/generated.daisyui.css',
               'assets/css/generated.fonts.css',
               'assets/css/syntax.css'
             ].some(gen => relPath === gen);
-            
+
             return isGeneratedCss;
           }
-          
+
           return true;
         }
       }

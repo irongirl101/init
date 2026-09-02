@@ -13,3 +13,5 @@ package-lock.json
 .venv
 dist
 .venv/*
+
+.DS_Store
