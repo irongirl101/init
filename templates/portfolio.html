@@ -40,6 +40,12 @@
         </button>
       </div>
 
+      <!-- Spotify Hades OST Player Toggle -->
+      <button id="spotify-bgm-toggle-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-amber-500/40 text-amber-300 font-mono text-[11px] px-3 hover:border-amber-400 hover:bg-amber-500/10 flex items-center gap-1.5" title="Hades Soundtrack Player">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Hades OST</span>
+      </button>
+
       <!-- SFX Toggle -->
       <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-base-content/10 font-mono text-[11px] px-3" title="Audio Ambience">
         Audio On
@@ -50,6 +56,24 @@
   <!-- VIEW 1: Museum Interactive Canvas -->
   <div id="museum-view" class="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] bg-black">
     
+    <!-- Top-Right Floating Spotify Hades OST Player HUD -->
+    <div id="spotify-player-widget" class="absolute top-4 right-4 z-20 pointer-events-auto transition-all duration-300 select-none flex flex-col items-end">
+      <div id="spotify-player-panel" class="bg-[#0e1217]/95 backdrop-blur-xl rounded-2xl border border-amber-500/40 shadow-[0_12px_40px_rgba(0,0,0,0.85)] p-3 w-[330px] max-w-[90vw] transition-all duration-300">
+        <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-300">Hades Original Soundtrack</span>
+          </div>
+          <button id="spotify-minimize-btn" class="btn btn-ghost btn-xs text-white/70 hover:text-white p-1" title="Minimize / Expand">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+        </div>
+        <div id="spotify-iframe-container" class="transition-all duration-300">
+          <iframe style="border-radius:12px; display: block;" src="https://open.spotify.com/embed/album/5jTYZA6b4VoSRnR5TMldgb?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+
     <!-- Top-Left In-Game HUD: Token Balance & Radar (1:1 with Concept Image) -->
     <div class="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-auto select-none">
       <div class="bg-[#12161a]/90 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-3 min-w-[190px]">

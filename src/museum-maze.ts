@@ -125,6 +125,49 @@ export function initMuseumMaze() {
     });
   }
 
+  // --- Spotify Player HUD Controls ---
+  const spotifyToggleBtn = document.getElementById("spotify-bgm-toggle-btn");
+  const spotifyWidget = document.getElementById("spotify-player-widget");
+  const spotifyPanel = document.getElementById("spotify-player-panel");
+  const spotifyIframeContainer = document.getElementById("spotify-iframe-container");
+  const spotifyMinimizeBtn = document.getElementById("spotify-minimize-btn");
+
+  let isSpotifyMinimized = false;
+
+  function toggleSpotifyPanel() {
+    if (!spotifyPanel || !spotifyIframeContainer) return;
+    isSpotifyMinimized = !isSpotifyMinimized;
+    if (isSpotifyMinimized) {
+      spotifyIframeContainer.classList.add("hidden");
+      spotifyPanel.classList.add("w-[230px]");
+      spotifyPanel.classList.remove("w-[330px]");
+      if (spotifyMinimizeBtn) {
+        spotifyMinimizeBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>`;
+      }
+    } else {
+      spotifyIframeContainer.classList.remove("hidden");
+      spotifyPanel.classList.remove("w-[230px]");
+      spotifyPanel.classList.add("w-[330px]");
+      if (spotifyMinimizeBtn) {
+        spotifyMinimizeBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
+      }
+    }
+  }
+
+  if (spotifyMinimizeBtn) {
+    spotifyMinimizeBtn.addEventListener("click", toggleSpotifyPanel);
+  }
+  if (spotifyToggleBtn) {
+    spotifyToggleBtn.addEventListener("click", () => {
+      if (!spotifyWidget) return;
+      if (spotifyWidget.classList.contains("hidden")) {
+        spotifyWidget.classList.remove("hidden");
+      } else {
+        toggleSpotifyPanel();
+      }
+    });
+  }
+
   // --- Dimensions & Coordinate Projections ---
   const COLS = 22;
   const ROWS = 22;
