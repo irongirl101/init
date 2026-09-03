@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museum Gallery | init</title>
-  <link rel="stylesheet" href="/init/assets/main-CcE39IGQ.css">
+  <link rel="stylesheet" href="/init/assets/main-Caj-uKhy.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col">
@@ -70,6 +70,12 @@
           Catalog Index
         </button>
       </div>
+
+      <!-- Spotify Hades OST Player Toggle -->
+      <button id="spotify-bgm-toggle-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-amber-500/40 text-amber-300 font-mono text-[11px] px-3 hover:border-amber-400 hover:bg-amber-500/10 flex items-center gap-1.5" title="Hades Soundtrack Player">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Hades OST</span>
+      </button>
 
       <!-- SFX Toggle -->
       <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-base-content/10 font-mono text-[11px] px-3" title="Audio Ambience">
@@ -1823,6 +1829,139 @@
   </form>
 </dialog>
 
+<!-- RETRO PIXEL-ART HADES MEDIA PLAYER (Outside Game Area, Draggable Floating Gadget) -->
+<div id="pixel-player-container" class="fixed bottom-6 right-6 z-40 select-none transition-shadow drop-shadow-[0_18px_45px_rgba(0,0,0,0.95)]" style="image-rendering: pixelated;">
+  <div class="relative w-[190px] sm:w-[215px] flex flex-col items-end">
+    
+    <!-- Drag Handle & Gadget Top Bar (Matches Homepage Emerald/Jade Scheme) -->
+    <div id="pixel-player-drag-handle" class="w-full flex items-center justify-between px-2 mb-1 text-[10px] font-mono bg-[#04241c]/95 backdrop-blur-md rounded-t-lg border-t border-x border-[#208c73]/40 py-1.5 cursor-grab active:cursor-grabbing shadow-lg">
+      <span class="flex items-center gap-1.5 pointer-events-none">
+        <span id="pixel-status-dot" class="w-2 h-2 bg-[#34d399] animate-pulse"></span>
+        <span class="tracking-widest uppercase font-bold text-[9px] text-[#34d399]">HADES.OST</span>
+      </span>
+      <div class="flex items-center gap-1.5">
+        <button id="pixel-mode-toggle-btn" class="text-[8px] font-mono px-1.5 py-0.5 bg-[#0f4034] text-[#a7f3d0] border border-[#208c73]/60 hover:bg-[#208c73]/40 transition-colors" title="Toggle Spotify Player">
+          SPOTIFY
+        </button>
+        <button id="pixel-player-minimize-btn" class="text-white/70 hover:text-white px-1 font-mono font-bold text-xs" title="Minimize">
+          ─
+        </button>
+      </div>
+    </div>
+
+    <!-- Handheld Chassis Body (Homepage Emerald #0f4034 & Stygian Gold Accents) -->
+    <div id="pixel-player-body" class="relative w-full aspect-[160/190] cursor-default transition-all duration-300">
+      <svg viewBox="0 0 160 190" class="w-full h-full block" style="shape-rendering: crispEdges;">
+        <!-- Outermost Black Pixel Border (Stepped Corners) -->
+        <rect x="8" y="4" width="136" height="182" fill="#000000" />
+        <rect x="4" y="8" width="144" height="174" fill="#000000" />
+
+        <!-- Right-Side Hardware Buttons (Obsidian with Gold Accent) -->
+        <rect x="148" y="32" width="6" height="26" fill="#000000" />
+        <rect x="146" y="34" width="6" height="22" fill="#04241c" />
+        <rect x="148" y="68" width="6" height="26" fill="#000000" />
+        <rect x="146" y="70" width="6" height="22" fill="#04241c" />
+
+        <!-- Chassis Main Body (Homepage Deep Emerald Jade #0f4034) -->
+        <rect x="10" y="10" width="132" height="170" fill="#0f4034" />
+        
+        <!-- Top & Left Pixel Highlights (Homepage Radiant Teal-Emerald #208c73) -->
+        <rect x="10" y="10" width="132" height="6" fill="#208c73" />
+        <rect x="10" y="10" width="6" height="170" fill="#208c73" />
+        
+        <!-- Bottom & Right Pixel Shadows (Homepage Deep Forest Abyss #04241c) -->
+        <rect x="10" y="174" width="132" height="6" fill="#04241c" />
+        <rect x="136" y="10" width="6" height="170" fill="#04241c" />
+
+        <!-- Screen Black Bezel -->
+        <rect x="22" y="20" width="108" height="150" fill="#000000" />
+        
+        <!-- Screen Inner Surface (Deep Abyssal Jade #031812) -->
+        <rect x="26" y="24" width="100" height="142" fill="#031812" />
+
+        <!-- Diagonal Pixel Glare / Reflection (Emerald Shaded) -->
+        <polygon points="26,24 82,24 26,80" fill="#092e24" />
+        <polygon points="26,24 62,24 26,60" fill="#114335" />
+        <polygon points="82,24 100,24 54,70 36,70" fill="#06221a" />
+        
+        <!-- Screen Corner Pixel Specks (Matching Reference Image) -->
+        <rect x="36" y="142" width="8" height="4" fill="#092e24" />
+        <rect x="32" y="150" width="6" height="4" fill="#092e24" />
+        <rect x="52" y="156" width="10" height="4" fill="#06221a" />
+        <rect x="114" y="138" width="6" height="6" fill="#092e24" />
+        <rect x="118" y="148" width="4" height="4" fill="#06221a" />
+
+        <!-- Neon Mint/Jade Audio Progress Line (Matching Reference Image) -->
+        <rect id="pixel-progress-line" x="32" y="108" width="88" height="4" fill="#34d399" />
+
+        <!-- Pixel Transport Buttons in Glowing Mint #34d399 -->
+        <!-- Prev Button (<) -->
+        <g id="pixel-btn-prev" class="cursor-pointer hover:opacity-75 transition-opacity">
+          <rect x="44" y="124" width="4" height="14" fill="#34d399" />
+          <rect x="48" y="121" width="4" height="20" fill="#34d399" />
+          <rect x="52" y="118" width="4" height="26" fill="#34d399" />
+          <rect x="48" y="125" width="4" height="12" fill="#031812" />
+        </g>
+
+        <!-- Play / Pause Button (|>) -->
+        <g id="pixel-btn-play" class="cursor-pointer hover:opacity-75 transition-opacity">
+          <!-- Play Triangle Glyph -->
+          <g id="pixel-glyph-play">
+            <rect x="72" y="118" width="4" height="26" fill="#34d399" />
+            <rect x="76" y="121" width="4" height="20" fill="#34d399" />
+            <rect x="80" y="124" width="4" height="14" fill="#34d399" />
+            <rect x="84" y="127" width="3" height="8" fill="#34d399" />
+          </g>
+          <!-- Pause Double-Bar Glyph -->
+          <g id="pixel-glyph-pause" class="hidden">
+            <rect x="72" y="118" width="5" height="26" fill="#34d399" />
+            <rect x="81" y="118" width="5" height="26" fill="#34d399" />
+          </g>
+        </g>
+
+        <!-- Next Button (>) -->
+        <g id="pixel-btn-next" class="cursor-pointer hover:opacity-75 transition-opacity">
+          <rect x="104" y="118" width="4" height="26" fill="#34d399" />
+          <rect x="100" y="121" width="4" height="20" fill="#34d399" />
+          <rect x="96" y="124" width="4" height="14" fill="#34d399" />
+          <rect x="100" y="125" width="4" height="12" fill="#031812" />
+        </g>
+      </svg>
+
+      <!-- Track Name In-Screen Pixel Display (Above the progress line) -->
+      <div class="absolute top-[64px] left-[28px] right-[28px] overflow-hidden pointer-events-none text-center">
+        <div id="pixel-track-title" class="text-[9px] font-mono text-[#34d399] whitespace-nowrap tracking-wider font-bold animate-pulse">
+          NO ESCAPE
+        </div>
+        <div id="pixel-track-artist" class="text-[7px] font-mono text-[#a7f3d0]/80 whitespace-nowrap tracking-widest uppercase">
+          FAINT BGM • DARREN KORB
+        </div>
+      </div>
+    </div>
+
+    <!-- Official Spotify Player Drawer (Directly playable Spotify album) -->
+    <div id="pixel-spotify-drawer" class="hidden w-full mt-2 bg-[#04241c] border-2 border-[#208c73] rounded-xl p-2 shadow-2xl transition-all duration-300">
+      <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[#208c73]/30 text-[9px] font-mono text-[#fbbf24]">
+        <span class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+          <span>SPOTIFY STREAM</span>
+        </span>
+        <button id="pixel-spotify-close-drawer" class="text-white/60 hover:text-white">✕</button>
+      </div>
+      <p class="text-[8px] font-mono text-[#a7f3d0]/70 mb-1 leading-tight">Click play on Spotify to stream official audio:</p>
+      <iframe style="border-radius:8px; display: block;" src="https://open.spotify.com/embed/album/5jTYZA6b4VoSRnR5TMldgb?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <!-- Minimized Pixel Badge (Shown when minimized) -->
+    <div id="pixel-player-badge" class="hidden cursor-pointer bg-[#04241c] border-2 border-[#208c73] px-3 py-1.5 rounded-lg shadow-xl flex items-center gap-2 hover:border-[#34d399] transition-colors">
+      <span class="w-2.5 h-2.5 bg-[#34d399] animate-pulse"></span>
+      <span class="text-[10px] font-mono font-bold text-[#34d399] tracking-wider">HADES.OST</span>
+      <span class="text-[10px] text-white/60 ml-1 font-mono">□</span>
+    </div>
+
+  </div>
+</div>
+
 <!-- Artwork data injected safely for the JS engine -->
 <script type="application/json" id="museum-artworks-data" data-base-url="/init">
   [{"category": "physical", "description": "An atmospheric study of water turbulence, pine forest silhouettes, and shifting twilight reflections framing a floating Japanese shrine torii gate.", "dimensions": "A4 / Crosshatch \u0026 Stipple Study", "id": "torii", "image": "/assets/images/portfolio/physical/torii.jpg", "medium": "Micron Pen \u0026 Ink on Paper", "starting_bid": 500, "title": "Torii Gate at Twilight", "year": "2024"}, {"category": "physical", "description": "An expressive, high-contrast ink drawing depicting WALL-E amidst the towering brick walls, decaying street lamp, and scattered debris of a forgotten city.", "dimensions": "A4 / Detailed Alleyway Study", "id": "walle-ink", "image": "/assets/images/portfolio/physical/Wall-E-V2.jpg", "medium": "Fine-Line Ink \u0026 Hatching on Paper", "starting_bid": 600, "title": "WALL-E: Urban Solitude", "year": "2024"}, {"category": "physical", "description": "A warm, textured portrait of WALL-E with evocative ocular lenses, oxidized metallic textures, and solar panel chest detailing.", "dimensions": "A4 / Color Study", "id": "walle-color", "image": "/assets/images/portfolio/physical/Wall-E-v1.jpeg", "medium": "Colored Pencil \u0026 Mixed Media", "starting_bid": 450, "title": "WALL-E: Solar Awakening", "year": "2024"}, {"category": "physical", "description": "Dynamic depiction of Hornet from Hollow Knight with her needle and thread caught in mid-motion, accented by energetic ink splatters.", "dimensions": "A4 / Line Art \u0026 Splatter", "id": "hornet-ink", "image": "/assets/images/portfolio/physical/hornet.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 450, "title": "Hornet: Needle \u0026 Thread", "year": "2024"}, {"category": "physical", "description": "Troupe Master Grimm perched atop an ornate gothic lantern holding a flickering scarlet flame, rendered with rich feather and cloth textures.", "dimensions": "A4 / Crosshatch Study", "id": "grimm-ink", "image": "/assets/images/portfolio/physical/grimm.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 650, "title": "Troupe Master Grimm", "year": "2024"}, {"category": "physical", "description": "The imposing silhouette of the Pure Vessel standing in ceremonial armor, draped in flowing dark robes with exquisite etched detailing.", "dimensions": "A4 / Ink Illustration", "id": "pure-vessel-ink", "image": "/assets/images/portfolio/physical/purevessel.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Pure Vessel", "year": "2024"}, {"category": "physical", "description": "A chiaroscuro ink illustration of John-117 in Mjolnir Powered Assault Armor, featuring meticulous directional crosshatching on armor plates and visor reflections.", "dimensions": "A4 / Chiaroscuro Study", "id": "master-chief", "image": "/assets/images/portfolio/physical/masterchief.jpg", "medium": "High-Density Crosshatch Ink on Paper", "starting_bid": 850, "title": "Master Chief: Spartan-117", "year": "2024"}, {"category": "physical", "description": "A dual split-portrait contrasting the human vulnerability of Tony Stark on the left with the stoic mechanical precision of the Iron Man helmet on the right.", "dimensions": "A4 / Split-Portrait Study", "id": "love-you-3000", "image": "/assets/images/portfolio/physical/love-you-3000.jpg", "medium": "Graphite \u0026 Charcoal on Paper", "starting_bid": 700, "title": "I Love You 3000", "year": "2020"}, {"category": "physical", "description": "A geometric ink study of Egyptian deity Anubis wearing an Ankh headpiece and golden nemes headdress, suspended above the all-seeing Eye of Horus.", "dimensions": "A4 / Symbolic Ink Drawing", "id": "anubis", "image": "/assets/images/portfolio/physical/Anubis.jpeg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Anubis: Jackal Deity", "year": "2024"}, {"category": "physical", "description": "A fiery acrylic painting of Fawkes the Phoenix rising with incandescent crimson and golden plumes against a dark canvas.", "dimensions": "A4 / Textured Impasto", "id": "fawkes", "image": "/assets/images/portfolio/physical/Fawkes.jpg", "medium": "Acrylic on Canvas", "starting_bid": 750, "title": "Fawkes: Rebirth in Flames", "year": "2021"}, {"category": "physical", "description": "A radiant portrait of Lord Krishna playing the bansuri flute, adorned with a jeweled turban, peacock feather, and golden pearl ornaments in warm ochre tones.", "dimensions": "Canvas / Traditional Portrait", "id": "krishna", "image": "/assets/images/portfolio/physical/krishna.jpg", "medium": "Acrylic on Stretched Canvas", "starting_bid": 800, "title": "Krishna: The Divine Flutist", "year": "2021"}, {"category": "physical", "description": "A vibrant colored pencil character study of Monsters Inc\u0027s Mike Wazowski, featuring delicate spherical blending and crystalline ocular reflections.", "dimensions": "A4 / Colored Pencil Illustration", "id": "mike-wazowski", "image": "/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg", "medium": "Colored Pencil on Paper", "starting_bid": 400, "title": "Mike Wazowski", "year": "2024"}, {"category": "physical", "description": "McLaren\u0027s MCL60 race car driven by Oscar Piastri speeding through the Las Vegas Strip Circuit, framed beneath the illuminated Vegas Sphere.", "dimensions": "A4 / High-Speed Ink Composition", "id": "op81-vegas", "image": "/assets/images/portfolio/physical/OP81.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 800, "title": "Oscar Piastri #81: Las Vegas GP", "year": "2024"}, {"category": "physical", "description": "A bold architectural perspective piece exploring rhythmic descending structural ribs in volcanic cadmium reds, burnt umber, and charcoal black.", "dimensions": "A4 / Structural Perspective", "id": "highway-to-hell", "image": "/assets/images/portfolio/physical/Highway-to-hell.jpg", "medium": "Acrylic \u0026 Mixed Media on Canvas", "starting_bid": 600, "title": "Highway to Hell", "year": "2024"}, {"category": "physical", "description": "High-contrast ink rendering of a sign of the horns hand sign liquefied into molten chrome and dripping black ink.", "dimensions": "A4 / Ink Rendering", "id": "melt", "image": "/assets/images/portfolio/physical/Melt.jpeg", "medium": "Gloss Ink \u0026 Wash on Paper", "starting_bid": 450, "title": "Melt: Heavy Metal", "year": "2022"}, {"category": "physical", "description": "A faceted anatomical study of a human skeleton rendered in faceted low-polygon mesh tessellation and delicate pointillism inside a tilted diamond frame.", "dimensions": "A4 / Geometric Diamond Study", "id": "skelly", "image": "/assets/images/portfolio/physical/Skelly.jpg", "medium": "Stippling \u0026 Low-Poly Ink on Paper", "starting_bid": 550, "title": "Skelly: Geometric Osteology", "year": "2022"}, {"category": "physical", "description": "A photorealistic study of an unwrapped Mars chocolate bar, capturing the gloss of melting chocolate, gooey golden caramel drizzle, and foil creases.", "dimensions": "A4 / Hyperrealist Study", "id": "mars-bar", "image": "/assets/images/portfolio/physical/mmars.jpg", "medium": "Colored Pencil on Paper", "starting_bid": 500, "title": "Mars: Caramel \u0026 Nougat", "year": "2022"}, {"category": "physical", "description": "A solitary silhouetted figure with an umbrella walking down a rain-soaked urban canyon flanked by towering skyscrapers bathed in misty ambient backlighting.", "dimensions": "A4 / Atmospheric Charcoal Study", "id": "rainy-city", "image": "/assets/images/portfolio/physical/Unknown.jpg", "medium": "Charcoal \u0026 Powder on Paper", "starting_bid": 550, "title": "Rainy City Solitude", "year": "2024"}, {"category": "physical", "description": "A majestic multi-tiered Japanese temple pagoda built into a dramatic mountainside waterfall ravine, drawn with dense architectural line work and mountain shading.", "dimensions": "A4 / Architectural Ink Study", "id": "mountain-pagoda", "image": "/assets/images/portfolio/physical/tera.jpg", "medium": "Pen \u0026 Ink Crosshatching", "starting_bid": 750, "title": "Mountain Pagoda (Tera)", "year": "2024"}, {"category": "digital", "description": "Vibrant neon-lit nocturnal streetscapes of Tokyo, illuminated with glowing kanji billboards, rainy reflections, and cyber aesthetic.", "dimensions": "High-Res Digital Canvas", "id": "neon-japan", "image": "/assets/images/portfolio/digital/Neon-Japan.jpg", "medium": "Digital Painting / Procreate", "starting_bid": 400, "title": "Neon Japan", "year": "2024"}, {"category": "digital", "description": "High-contrast monochrome digital study of Japanese street architecture, emphasizing dramatic shadow play and urban silhouettes.", "dimensions": "High-Res Digital Canvas", "id": "bw-japan", "image": "/assets/images/portfolio/digital/BandW-Japan.jpg", "medium": "Digital Ink \u0026 Tonal Study", "starting_bid": 350, "title": "Shibuya Crossing (Monochrome)", "year": "2024"}, {"category": "digital", "description": "Intricate architectural details and dense tenement housing geometry capturing the vibrant layered pulse of Hong Kong.", "dimensions": "High-Res Digital Canvas", "id": "details-hong-kong", "image": "/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg", "medium": "Digital Illustration", "starting_bid": 450, "title": "Hong Kong: Urban Details", "year": "2024"}, {"category": "digital", "description": "Stylized manga-inspired skyline and alley composition evoking 90s cyberpunk aesthetic and cinematic line weight.", "dimensions": "High-Res Digital Canvas", "id": "manga-hong-kong", "image": "/assets/images/portfolio/digital/Manga-Hong-Kong.jpg", "medium": "Digital Comic \u0026 Manga Art", "starting_bid": 420, "title": "Manga Hong Kong", "year": "2024"}, {"category": "digital", "description": "A warm, glowing oriental lantern suspended in twilight, casting soft golden radiance across floating embers.", "dimensions": "High-Res Digital Canvas", "id": "lantern", "image": "/assets/images/portfolio/digital/Lantern.jpg", "medium": "Digital Concept Art", "starting_bid": 380, "title": "Luminous Festival Lantern", "year": "2024"}, {"category": "digital", "description": "Dreamlike atmospheric scenery with soft chromatic gradients and surreal environmental lighting.", "dimensions": "High-Res Digital Canvas", "id": "ethereal", "image": "/assets/images/portfolio/digital/ethereal.jpg", "medium": "Digital Matte Painting", "starting_bid": 360, "title": "Ethereal Horizon", "year": "2024"}, {"category": "digital", "description": "Subtle rays of ambient light breaking through shadowed storm clouds, evoking quiet optimism.", "dimensions": "High-Res Digital Canvas", "id": "hope", "image": "/assets/images/portfolio/digital/hope.jpg", "medium": "Digital Painting", "starting_bid": 340, "title": "Glimmer of Hope", "year": "2024"}, {"category": "digital", "description": "An enigmatic dusk landscape shrouded in misty tones and deep indigo gradients.", "dimensions": "High-Res Digital Canvas", "id": "unlit", "image": "/assets/images/portfolio/digital/unlit.jpg", "medium": "Digital Mood Study", "starting_bid": 320, "title": "Unlit Twilight", "year": "2024"}, {"category": "digital", "description": "A mysterious wandering figure amidst an abstract painted landscape of fluid organic brushstrokes.", "dimensions": "High-Res Digital Canvas", "id": "idunno", "image": "/assets/images/portfolio/digital/idunno.jpg", "medium": "Digital Character Study", "starting_bid": 350, "title": "Spectral Wanderer", "year": "2024"}, {"category": "digital", "description": "Expressive, moody digital textures capturing quiet midnight contemplation.", "dimensions": "High-Res Digital Canvas", "id": "gaveup", "image": "/assets/images/portfolio/digital/gaveup.jpg", "medium": "Digital Color Study", "starting_bid": 320, "title": "Midnight Haze", "year": "2024"}, {"category": "digital", "description": "A formidable Great White Shark emerging from the sun-dappled pelagic abyss with visceral presence.", "dimensions": "High-Res Digital Canvas", "id": "jaws", "image": "/assets/images/portfolio/digital/JAWS.jpg", "medium": "Digital Marine Illustration", "starting_bid": 450, "title": "Great White: Jaws", "year": "2024"}, {"category": "digital", "description": "Hydrodynamic elegance of a shark gliding gracefully through crystal-clear turquoise waters.", "dimensions": "High-Res Digital Canvas", "id": "shark", "image": "/assets/images/portfolio/digital/SHARK.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Ocean Apex: Shark", "year": "2024"}, {"category": "digital", "description": "The unmistakable silhouette of a hammerhead shark navigating the oceanic deep with distinctive lateral sensors.", "dimensions": "High-Res Digital Canvas", "id": "hammerhead", "image": "/assets/images/portfolio/digital/hammer.jpg", "medium": "Digital Marine Study", "starting_bid": 400, "title": "Hammerhead Patrol", "year": "2024"}, {"category": "digital", "description": "A colossal blue whale cruising majestically through sunbeams penetrating the azure ocean surface.", "dimensions": "High-Res Digital Canvas", "id": "whale", "image": "/assets/images/portfolio/digital/WHALE.jpg", "medium": "Digital Oceanography Art", "starting_bid": 480, "title": "Leviathan: Blue Whale", "year": "2024"}, {"category": "digital", "description": "A monumental whale fluke rising into the twilight sea breeze amidst spray and oceanic ripples.", "dimensions": "High-Res Digital Canvas", "id": "whale-tale", "image": "/assets/images/portfolio/digital/whale-tale.jpg", "medium": "Digital Painting", "starting_bid": 420, "title": "Whale Tail Breach", "year": "2024"}, {"category": "digital", "description": "Playful Bottlenose dolphin leaping into open ocean air with dynamic water droplets.", "dimensions": "High-Res Digital Canvas", "id": "dolphin", "image": "/assets/images/portfolio/digital/dolpin.jpg", "medium": "Digital Marine Art", "starting_bid": 360, "title": "Dolphin Flight", "year": "2024"}, {"category": "digital", "description": "A clownfish nesting within flowing, vibrant sea anemone tentacles.", "dimensions": "High-Res Digital Canvas", "id": "found-nemo", "image": "/assets/images/portfolio/digital/i-found-nemo.jpg", "medium": "Digital Marine Illustration", "starting_bid": 340, "title": "Anemone Haven: Clownfish", "year": "2024"}, {"category": "digital", "description": "A serene sea turtle paddling weightlessly across a coral reef lagoon.", "dimensions": "High-Res Digital Canvas", "id": "turtle", "image": "/assets/images/portfolio/digital/turlte.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Pacific Sea Turtle", "year": "2024"}, {"category": "digital", "description": "Charming tropical reef fish study with luminous scales and expressive eyes.", "dimensions": "High-Res Digital Canvas", "id": "pish", "image": "/assets/images/portfolio/digital/pish.jpg", "medium": "Digital Character Illustration", "starting_bid": 300, "title": "Tropical Reef Pish", "year": "2024"}, {"category": "digital", "description": "Stately profile portrait of an Alaskan grizzly bear in textured digital dry brush.", "dimensions": "High-Res Digital Canvas", "id": "bear-v1", "image": "/assets/images/portfolio/digital/bear-V1.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 400, "title": "Grizzly Monarch I", "year": "2024"}, {"category": "digital", "description": "Frontal gaze of a grizzly bear capturing fur texture, raw power, and wilderness calm.", "dimensions": "High-Res Digital Canvas", "id": "bear-v2", "image": "/assets/images/portfolio/digital/BEAR-V2.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 420, "title": "Grizzly Monarch II", "year": "2024"}, {"category": "digital", "description": "A Keel-billed toucan perched in lush tropical foliage with a rainbow-hued bill.", "dimensions": "High-Res Digital Canvas", "id": "toucan", "image": "/assets/images/portfolio/digital/toucan.jpg", "medium": "Digital Wildlife Art", "starting_bid": 390, "title": "Rainforest Toucan", "year": "2024"}, {"category": "digital", "description": "High-altitude brown-headed gulls soaring over the turquoise alpine waters of Ladakh.", "dimensions": "High-Res Digital Canvas", "id": "seagulls-leh", "image": "/assets/images/portfolio/digital/seagulls-from-leh.jpg", "medium": "Digital Wildlife Study", "starting_bid": 350, "title": "Seagulls Over Pangong Tso", "year": "2024"}, {"category": "blender", "description": "Full 3D sculptural render of The Knight from Hollow Knight, holding the coiled Old Nail with rim lighting and cloak cloth simulation.", "dimensions": "High-Poly 3D Render", "id": "blender-ghost", "image": "/assets/images/portfolio/blender/ghost.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 700, "title": "Ghost: The Little Knight", "year": "2024"}, {"category": "blender", "description": "A dynamic 3D model render of Hornet posed with her threaded needle, modeled, sculpted, and textured in Blender.", "dimensions": "High-Poly 3D Render", "id": "blender-hornet", "image": "/assets/images/portfolio/blender/hornet-3d.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 750, "title": "Hornet: Silksong Protector", "year": "2024"}, {"category": "blender", "description": "Beloved pilgrim Sherma from Hollow Knight: Silksong, modeled with his signature staff and lantern in stylized Blender 3D shaders.", "dimensions": "High-Poly 3D Render", "id": "blender-sherma", "image": "/assets/images/portfolio/blender/sherma.jpg", "medium": "Blender 3D Render / Cycles", "starting_bid": 680, "title": "Sherma the Pilgrim", "year": "2024"}]
@@ -1834,7 +1973,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-B5YbhQLn.js"></script>
+  <script type="module" src="/init/assets/main-CT4AxOqm.js"></script>
 </body>
 
 </html>
