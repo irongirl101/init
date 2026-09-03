@@ -46,9 +46,12 @@ jobs:
           cache: "npm"
 
       - name: Install Node dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build static site with Vite & Python
+        env:
+          PY_EXECUTABLE: python3
+          BASE_URL: "/init"
         run: npm run build
 
       - name: Setup Pages

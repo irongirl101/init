@@ -293,11 +293,16 @@ export function initMuseumMaze() {
     }
 
     const img = new Image();
-    const imgSrc =
-      art.image.startsWith("http") || (baseUrl && art.image.startsWith(baseUrl))
-        ? art.image
-        : baseUrl + art.image;
+    const cleanImg = art.image.startsWith("/") ? art.image.slice(1) : art.image;
+    const isGhPages = window.location.pathname.startsWith("/init");
+    const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
+    const imgSrc = art.image.startsWith("http") ? art.image : `${prefix}${cleanImg}`;
     img.src = imgSrc;
+    img.onerror = () => {
+      if (!img.src.includes("../")) {
+        img.src = `../${cleanImg}`;
+      }
+    };
 
     const wingName =
       cat === "digital"
@@ -534,18 +539,24 @@ export function initMuseumMaze() {
     }
     const k = e.key.toLowerCase();
     const c = e.code.toLowerCase();
+
+    // Arrow keys disabled for character movement
+    if (["arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) {
+      return;
+    }
+
     keys[k] = true;
     keys[c] = true;
 
     // Movement key stand-up check
     if (player.isSitting) {
       let dir: { dc: number; dr: number } | undefined;
-      if (k === "w" || k === "arrowup") dir = { dc: 0, dr: -1 };
-      else if (k === "s" || k === "arrowdown") dir = { dc: 0, dr: 1 };
-      else if (k === "a" || k === "arrowleft") dir = { dc: -1, dr: 0 };
-      else if (k === "d" || k === "arrowright") dir = { dc: 1, dr: 0 };
+      if (k === "w") dir = { dc: 0, dr: -1 };
+      else if (k === "s") dir = { dc: 0, dr: 1 };
+      else if (k === "a") dir = { dc: -1, dr: 0 };
+      else if (k === "d") dir = { dc: 1, dr: 0 };
 
-      if (dir || ["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) {
+      if (dir || ["w", "a", "s", "d"].includes(k)) {
         standUp(dir);
       }
     }
@@ -851,11 +862,13 @@ export function initMuseumMaze() {
     if (titleEl) titleEl.textContent = art.title;
     if (lotBadgeEl) lotBadgeEl.textContent = `LOT #${artworks.indexOf(art) + 1}`;
     if (imageEl) {
-      const imgSrc =
-        art.image.startsWith("http") || (baseUrl && art.image.startsWith(baseUrl))
-          ? art.image
-          : baseUrl + art.image;
-      imageEl.src = imgSrc;
+      const cleanImg = art.image.startsWith("/") ? art.image.slice(1) : art.image;
+      const isGhPages = window.location.pathname.startsWith("/init");
+      const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
+      imageEl.src = `${prefix}${cleanImg}`;
+      imageEl.onerror = () => {
+        imageEl.src = `../${cleanImg}`;
+      };
     }
     if (mediumEl) mediumEl.textContent = art.medium;
     if (yearEl) yearEl.textContent = art.year;
@@ -1018,6 +1031,20 @@ export function initMuseumMaze() {
       catalogViewEl.classList.remove("hidden");
       btnCatalog.className = "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item";
       btnMaze.className = "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item";
+
+      // Ensure all catalog images resolve properly
+      const isGhPages = window.location.pathname.startsWith("/init");
+      const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
+      document.querySelectorAll<HTMLImageElement>(".catalog-card img").forEach((img) => {
+        const artId = img.getAttribute("data-art-id");
+        if (artId) {
+          const art = artworks.find((a) => a.id === artId);
+          if (art && (!img.complete || img.naturalWidth === 0)) {
+            const clean = art.image.startsWith("/") ? art.image.slice(1) : art.image;
+            img.src = `${prefix}${clean}`;
+          }
+        }
+      });
     });
   }
 
@@ -1063,10 +1090,10 @@ export function initMuseumMaze() {
     let targetVx = 0;
     let targetVy = 0;
 
-    const up = keys["w"] || keys["arrowup"] || keys["keyw"];
-    const down = keys["s"] || keys["arrowdown"] || keys["keys"];
-    const left = keys["a"] || keys["arrowleft"] || keys["keya"];
-    const right = keys["d"] || keys["arrowright"] || keys["keyd"];
+    const up = keys["w"] || keys["keyw"];
+    const down = keys["s"] || keys["keys"];
+    const left = keys["a"] || keys["keya"];
+    const right = keys["d"] || keys["keyd"];
 
     let screenX = 0;
     let screenY = 0;
@@ -2246,5 +2273,93 @@ export function initMuseumMaze() {
     requestAnimationFrame(animate);
   }
 
-  requestAnimationFrame(animate);
+  animate();
+
+  // --- Faint Background Underworld Ashes Animation ---
+  function initUnderworldBackgroundAshes() {
+    const bgCanvas = document.getElementById("underworld-bg-ashes") as HTMLCanvasElement | null;
+    if (!bgCanvas) return;
+    const bgCtx = bgCanvas.getContext("2d");
+    if (!bgCtx) return;
+
+    function resizeBg() {
+      if (!bgCanvas) return;
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeBg);
+    resizeBg();
+
+    interface AshMote {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      alpha: number;
+      baseAlpha: number;
+      wobble: number;
+      wobbleSpeed: number;
+      color: string;
+    }
+
+    const motes: AshMote[] = [];
+    const MOTE_COUNT = 75;
+
+    const colors = [
+      "rgba(180, 180, 190,", // faint charcoal cinder ash
+      "rgba(244, 63, 94,",   // faint rose / crimson ember
+      "rgba(239, 68, 68,",   // underworld fire ember
+      "rgba(251, 191, 36,",  // Stygian gold speck
+    ];
+
+    for (let i = 0; i < MOTE_COUNT; i++) {
+      const baseA = 0.10 + Math.random() * 0.20;
+      motes.push({
+        x: Math.random() * (bgCanvas.width || 1200),
+        y: Math.random() * (bgCanvas.height || 800),
+        vx: (Math.random() - 0.48) * 0.30,
+        vy: -(0.20 + Math.random() * 0.50), // slow upward drift
+        size: 0.8 + Math.random() * 1.6,
+        alpha: baseA,
+        baseAlpha: baseA,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.008 + Math.random() * 0.018,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+
+    function renderBgAshes() {
+      if (!bgCanvas || !bgCtx) return;
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+      const w = bgCanvas.width;
+      const h = bgCanvas.height;
+
+      for (const m of motes) {
+        m.wobble += m.wobbleSpeed;
+        m.x += m.vx + Math.sin(m.wobble) * 0.30;
+        m.y += m.vy;
+        m.alpha = m.baseAlpha * (0.65 + 0.35 * Math.sin(m.wobble * 2));
+
+        if (m.y < -10) {
+          m.y = h + 10;
+          m.x = Math.random() * w;
+        }
+        if (m.x < -10) m.x = w + 10;
+        if (m.x > w + 10) m.x = -10;
+
+        bgCtx.fillStyle = `${m.color} ${m.alpha})`;
+        bgCtx.beginPath();
+        bgCtx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+        bgCtx.fill();
+      }
+
+      requestAnimationFrame(renderBgAshes);
+    }
+
+    requestAnimationFrame(renderBgAshes);
+  }
+
+  initUnderworldBackgroundAshes();
 }

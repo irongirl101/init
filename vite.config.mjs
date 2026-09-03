@@ -435,6 +435,9 @@ export default defineConfig(async ({ command }) => {
       // 1. .nojekyll prevents Jekyll processing so nested dirs and raw assets are preserved
       fs.writeFileSync(path.join(__dirname, 'dist', '.nojekyll'), '');
 
+      // 2. Clear .gitignore in dist so gh-pages publishes all images and assets without ignoring them
+      fs.writeFileSync(path.join(__dirname, 'dist', '.gitignore'), '# Deployed GitHub Pages static bundle\n');
+
       // 2. 404.html fallback allows clean routing on GitHub Pages
       const indexSrc = path.join(__dirname, 'dist', 'index.html');
       const notFoundDst = path.join(__dirname, 'dist', '404.html');
