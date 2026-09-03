@@ -1286,74 +1286,81 @@ export function initMuseumMaze() {
       promptEl.classList.remove("opacity-100", "translate-y-0", "scale-100");
     }
 
-    // Helper: Draw themed artwork or reserved exhibition display
+    // Helper: Draw cel-shaded themed artwork or reserved exhibition display
     function drawArtworkCard(piece: MountedPainting, isNear: boolean) {
       const isDigital = piece.category === "digital";
       const isBlender = piece.category === "blender";
 
-      // 1. Overhead Light Wash Cone
-      const lightWash = ctx.createLinearGradient(0, -22, 0, 22);
-      if (isDigital) {
-        lightWash.addColorStop(0, "rgba(224, 242, 254, 0.35)");
-        lightWash.addColorStop(0.4, "rgba(56, 189, 248, 0.15)");
-        lightWash.addColorStop(1, "rgba(56, 189, 248, 0)");
-      } else if (isBlender) {
-        lightWash.addColorStop(0, "rgba(255, 237, 213, 0.35)");
-        lightWash.addColorStop(0.4, "rgba(249, 115, 22, 0.16)");
-        lightWash.addColorStop(1, "rgba(249, 115, 22, 0)");
-      } else {
-        lightWash.addColorStop(0, "rgba(254, 240, 138, 0.28)");
-        lightWash.addColorStop(0.4, "rgba(251, 191, 36, 0.12)");
-        lightWash.addColorStop(1, "rgba(251, 191, 36, 0)");
-      }
-      ctx.fillStyle = lightWash;
+      // 1. Cel-Shaded Faceted Light Cones (Graphic Polygon Beams with Sharp Edges)
+      // Outer subtle beam facet
+      ctx.fillStyle = isDigital
+        ? "rgba(56, 189, 248, 0.16)"
+        : isBlender
+        ? "rgba(249, 115, 22, 0.18)"
+        : "rgba(251, 191, 36, 0.16)";
       ctx.beginPath();
-      ctx.moveTo(-6, -22);
-      ctx.lineTo(6, -22);
-      ctx.lineTo(20, 22);
-      ctx.lineTo(-20, 22);
+      ctx.moveTo(-7, -22);
+      ctx.lineTo(7, -22);
+      ctx.lineTo(24, 26);
+      ctx.lineTo(-24, 26);
       ctx.closePath();
       ctx.fill();
 
-      // 2. Wall Cast Shadow
-      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-      ctx.fillRect(-17, -18, 34, 38);
+      // Inner high-intensity core beam facet (classic toon light shaft)
+      ctx.fillStyle = isDigital
+        ? "rgba(224, 242, 254, 0.28)"
+        : isBlender
+        ? "rgba(255, 237, 213, 0.30)"
+        : "rgba(254, 240, 138, 0.28)";
+      ctx.beginPath();
+      ctx.moveTo(-3.5, -22);
+      ctx.lineTo(3.5, -22);
+      ctx.lineTo(13, 26);
+      ctx.lineTo(-13, 26);
+      ctx.closePath();
+      ctx.fill();
 
-      // 3. Outer Frame & Inset
+      // 2. Hard-Edged Comic Cast Shadow (Zero blur, crisp black offset)
+      ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+      ctx.fillRect(-14, -16, 33, 39);
+
+      // 3. Cel-Shaded Outer Frame & Inset
+      // Master black ink silhouette boundary
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(-17.5, -20.5, 35, 41);
+
       if (isDigital) {
-        // Brushed Aluminum Modern Floating Frame
-        ctx.fillStyle = isNear ? "#38bdf8" : "#334155";
+        // Cybernetic Electric Blue Cel Frame
+        ctx.fillStyle = isNear ? "#38bdf8" : "#0284c7";
         ctx.fillRect(-16, -19, 32, 38);
-        ctx.fillStyle = isNear ? "#0284c7" : "#0f172a";
-        ctx.fillRect(-15, -18, 30, 36);
-        ctx.fillStyle = "#f8fafc";
-        ctx.fillRect(-14, -17, 28, 34);
+        ctx.fillStyle = "#031326";
+        ctx.fillRect(-14.5, -17.5, 29, 35);
       } else if (isBlender) {
-        // Dark Studio Shadowbox Frame with Blender Orange Rim
+        // Volcanic Orange Studio Cel Frame
         ctx.fillStyle = isNear ? "#fb923c" : "#ea580c";
         ctx.fillRect(-16, -19, 32, 38);
-        ctx.fillStyle = "#18181b";
-        ctx.fillRect(-15, -18, 30, 36);
-        ctx.fillStyle = "#27272a";
-        ctx.fillRect(-14, -17, 28, 34);
+        ctx.fillStyle = "#1b0b04";
+        ctx.fillRect(-14.5, -17.5, 29, 35);
       } else {
-        // Gilded Antique Brass Frame (Physical)
-        ctx.fillStyle = isNear ? "#f59e0b" : "#b45309";
+        // Gilded Stygian Gold Cel Frame
+        ctx.fillStyle = isNear ? "#fbbf24" : "#d97706";
         ctx.fillRect(-16, -19, 32, 38);
-        ctx.fillStyle = isNear ? "#fbbf24" : "#78350f";
-        ctx.fillRect(-15, -18, 30, 36);
-        ctx.fillStyle = "#faf8f5";
-        ctx.fillRect(-14, -17, 28, 34);
+        ctx.fillStyle = "#1c1103";
+        ctx.fillRect(-14.5, -17.5, 29, 35);
       }
 
       // 4. Artwork Canvas OR Reserved Exhibition Display
       if (piece.isReservedMount) {
         if (isDigital) {
-          ctx.fillStyle = "#090d16";
+          ctx.fillStyle = "#060911";
           ctx.fillRect(-12, -15, 24, 30);
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(-12, -15, 24, 30);
+
           // Holographic Cybernetic Diamond Icon
           ctx.strokeStyle = "#38bdf8";
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.4;
           ctx.beginPath();
           ctx.moveTo(0, -9);
           ctx.lineTo(8, -1);
@@ -1371,11 +1378,15 @@ export function initMuseumMaze() {
           ctx.fillStyle = "#94a3b8";
           ctx.fillText("STUDIO", 0, 11);
         } else if (isBlender) {
-          ctx.fillStyle = "#121215";
+          ctx.fillStyle = "#0d0906";
           ctx.fillRect(-12, -15, 24, 30);
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(-12, -15, 24, 30);
+
           // Stylized 3D Wireframe Cube
           ctx.strokeStyle = "#f97316";
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.4;
           ctx.strokeRect(-6, -8, 12, 12);
           ctx.beginPath();
           ctx.moveTo(-6, -8);
@@ -1403,32 +1414,40 @@ export function initMuseumMaze() {
           ctx.fillStyle = isDigital ? "#0f172a" : isBlender ? "#18181b" : "#1e293b";
           ctx.fillRect(-12, -15, 24, 30);
         }
+        // Crisp black ink border around the painting canvas
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(-12, -15, 24, 30);
       }
 
-      // 5. Overhead Picture Lamp Fixture
+      // 5. Cel-Shaded Overhead Picture Lamp Fixture
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(-11, -26.5, 22, 5.5);
       if (isDigital) {
         ctx.fillStyle = "#0284c7";
-        ctx.fillRect(-10, -25, 20, 3.5);
-        ctx.fillStyle = isNear ? "#e0f2fe" : "#38bdf8";
-        ctx.fillRect(-7, -24, 14, 1.5);
+        ctx.fillRect(-10, -25.5, 20, 3.5);
+        ctx.fillStyle = isNear ? "#ffffff" : "#38bdf8";
+        ctx.fillRect(-7, -25, 14, 2.0);
       } else if (isBlender) {
         ctx.fillStyle = "#c2410c";
-        ctx.fillRect(-10, -25, 20, 3.5);
-        ctx.fillStyle = isNear ? "#ffedd5" : "#f97316";
-        ctx.fillRect(-7, -24, 14, 1.5);
+        ctx.fillRect(-10, -25.5, 20, 3.5);
+        ctx.fillStyle = isNear ? "#ffffff" : "#fb923c";
+        ctx.fillRect(-7, -25, 14, 2.0);
       } else {
-        ctx.fillStyle = "#d97706";
-        ctx.fillRect(-10, -25, 20, 3.5);
-        ctx.fillStyle = isNear ? "#fef08a" : "#fbbf24";
-        ctx.fillRect(-7, -24, 14, 1.5);
+        ctx.fillStyle = "#b45309";
+        ctx.fillRect(-10, -25.5, 20, 3.5);
+        ctx.fillStyle = isNear ? "#ffffff" : "#fbbf24";
+        ctx.fillRect(-7, -25, 14, 2.0);
       }
 
-      // 6. Identification Placard
+      // 6. Cel-Shaded Identification Placard
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(-12, 19, 24, 7.5);
       if (isDigital) {
-        ctx.fillStyle = "#0f172a";
+        ctx.fillStyle = "#081525";
         ctx.fillRect(-11, 20, 22, 5.5);
-        ctx.strokeStyle = "#0284c7";
-        ctx.lineWidth = 0.6;
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 1.0;
         ctx.strokeRect(-11, 20, 22, 5.5);
         ctx.fillStyle = "#38bdf8";
         ctx.font = "bold 4px sans-serif";
@@ -1436,21 +1455,24 @@ export function initMuseumMaze() {
         ctx.textBaseline = "middle";
         ctx.fillText(piece.isReservedMount ? "DIGITAL WING" : `LOT #${piece.lotNum}`, 0, 22.5);
       } else if (isBlender) {
-        ctx.fillStyle = "#09090b";
+        ctx.fillStyle = "#150904";
         ctx.fillRect(-11, 20, 22, 5.5);
         ctx.strokeStyle = "#ea580c";
-        ctx.lineWidth = 0.6;
+        ctx.lineWidth = 1.0;
         ctx.strokeRect(-11, 20, 22, 5.5);
         ctx.fillStyle = "#fb923c";
         ctx.font = "bold 4px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(piece.isReservedMount ? "3D BLENDER" : `LOT #${piece.lotNum}`, 0, 22.5);
+        ctx.fillText(piece.isReservedMount ? "BLENDER WING" : `LOT #${piece.lotNum}`, 0, 22.5);
       } else {
-        ctx.fillStyle = "#78350f";
+        ctx.fillStyle = "#150e04";
         ctx.fillRect(-11, 20, 22, 5.5);
-        ctx.fillStyle = "#fef3c7";
-        ctx.font = "bold 4.5px sans-serif";
+        ctx.strokeStyle = "#d97706";
+        ctx.lineWidth = 1.0;
+        ctx.strokeRect(-11, 20, 22, 5.5);
+        ctx.fillStyle = "#fbbf24";
+        ctx.font = "bold 4px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(`LOT #${piece.lotNum}`, 0, 22.5);
@@ -1650,6 +1672,11 @@ export function initMuseumMaze() {
 
           // 1. South-East Facing Wall Face (Down-Right face)
           if (hasSEFloor) {
+            // Master Outer Black Ink Contour
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 2.0;
+
+            // Step A: Full Wall Silhouette
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
@@ -1657,85 +1684,97 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
             ctx.closePath();
 
-            if (isGreen) {
-              const greenGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              greenGrad.addColorStop(0, "#092218");
-              greenGrad.addColorStop(1, "#04140e");
-              ctx.fillStyle = greenGrad;
-            } else if (zone === "digital") {
-              // Tartarus: chiseled volcanic obsidian
-              const slateGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              slateGrad.addColorStop(0, "#231f2b");
-              slateGrad.addColorStop(0.75, "#17141e");
-              slateGrad.addColorStop(1, "#0f0d14");
-              ctx.fillStyle = slateGrad;
-            } else if (zone === "blender") {
-              // Asphodel: magma-tempered dark bronze basalt
-              const graphGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              graphGrad.addColorStop(0, "#2a1f18");
-              graphGrad.addColorStop(0.75, "#1c140e");
-              graphGrad.addColorStop(1, "#120c08");
-              ctx.fillStyle = graphGrad;
-            } else if (zone === "nexus") {
-              // House of Hades: imperial black marble with crimson depth
-              const nexusGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              nexusGrad.addColorStop(0, "#1f181c");
-              nexusGrad.addColorStop(0.75, "#140e12");
-              nexusGrad.addColorStop(1, "#0d080b");
-              ctx.fillStyle = nexusGrad;
-            } else {
-              // Elysium: heroic jade-veined dark marble
-              const plasterGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              plasterGrad.addColorStop(0, "#12261d");
-              plasterGrad.addColorStop(0.75, "#0b1c14");
-              plasterGrad.addColorStop(1, "#06120c");
-              ctx.fillStyle = plasterGrad;
-            }
+            // Cel-Shading Band 1: Upper Saturated Midtone
+            ctx.fillStyle = isGreen
+              ? "#0c281e"
+              : zone === "digital"
+              ? "#251e30"
+              : zone === "blender"
+              ? "#2e2118"
+              : zone === "nexus"
+              ? "#281b22"
+              : "#162e24";
+            ctx.fill();
+            ctx.stroke();
+
+            // Cel-Shading Band 2: Lower Stepped Dark Shadow Facet (35% height)
+            const shadowCutH = wallH * 0.35;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
+            ctx.lineTo(pt.x, pt.y + TILE_H - shadowCutH);
+            ctx.closePath();
+            ctx.fillStyle = isGreen
+              ? "#05150e"
+              : zone === "digital"
+              ? "#110b18"
+              : zone === "blender"
+              ? "#140c07"
+              : zone === "nexus"
+              ? "#13090e"
+              : "#081610";
             ctx.fill();
 
-            // Baseboard Trim (7px tall)
+            // Crisp comic ink shadow division line
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.75)";
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H - shadowCutH);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
+            ctx.stroke();
+
+            // Cel-Shaded Baseboard Trim (8px tall) with black ink border
             ctx.fillStyle = isGreen
-              ? "#06100c"
+              ? "#040e0a"
               : zone === "digital"
-              ? "#4c0519"
+              ? "#500720"
               : zone === "blender"
               ? "#451a03"
               : zone === "nexus"
-              ? "#500724"
+              ? "#540625"
               : "#064e3b";
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
-            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 7);
-            ctx.lineTo(pt.x, pt.y + TILE_H - 7);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 8);
+            ctx.lineTo(pt.x, pt.y + TILE_H - 8);
             ctx.closePath();
             ctx.fill();
-
-            // Baseboard Bevel Highlight (Stygian Gold / Realm Accent)
-            ctx.strokeStyle = isGreen
-              ? "rgba(52, 211, 153, 0.35)"
-              : zone === "digital"
-              ? "rgba(244, 63, 94, 0.70)"
-              : zone === "blender"
-              ? "rgba(245, 158, 11, 0.75)"
-              : "rgba(251, 191, 36, 0.75)";
-            ctx.lineWidth = 1.0;
-            ctx.beginPath();
-            ctx.moveTo(pt.x, pt.y + TILE_H - 7);
-            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 7);
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // Crown Stygian Gold Highlight
-            ctx.strokeStyle = "rgba(251, 191, 36, 0.75)";
+            // Baseboard Bevel Cel Highlight
+            ctx.strokeStyle = isGreen
+              ? "#34d399"
+              : zone === "digital"
+              ? "#f43f5e"
+              : zone === "blender"
+              ? "#fb923c"
+              : "#fbbf24";
             ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H - 8);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 8);
+            ctx.stroke();
+
+            // Crown Stygian Gold Cel Pinstripe
+            ctx.strokeStyle = "#fbbf24";
+            ctx.lineWidth = 1.4;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
             ctx.stroke();
           }
 
-          // 2. South-West Facing Wall Face (Down-Left face)
+          // 2. South-West Facing Wall Face (Down-Left face, Shadowed)
           if (hasSWFloor) {
+            // Master Outer Black Ink Contour
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 2.0;
+
+            // Step A: Full Wall Silhouette
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
@@ -1743,41 +1782,49 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
             ctx.closePath();
 
-            if (isGreen) {
-              const greenShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              greenShade.addColorStop(0, "#061811");
-              greenShade.addColorStop(1, "#030d09");
-              ctx.fillStyle = greenShade;
-            } else if (zone === "digital") {
-              const slateShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              slateShade.addColorStop(0, "#1c1722");
-              slateShade.addColorStop(0.75, "#120e18");
-              slateShade.addColorStop(1, "#0a070e");
-              ctx.fillStyle = slateShade;
-            } else if (zone === "blender") {
-              const graphShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              graphShade.addColorStop(0, "#221711");
-              graphShade.addColorStop(0.75, "#160d08");
-              graphShade.addColorStop(1, "#0e0804");
-              ctx.fillStyle = graphShade;
-            } else if (zone === "nexus") {
-              const nexusShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              nexusShade.addColorStop(0, "#191216");
-              nexusShade.addColorStop(0.75, "#0f0a0d");
-              nexusShade.addColorStop(1, "#090507");
-              ctx.fillStyle = nexusShade;
-            } else {
-              const shadeGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              shadeGrad.addColorStop(0, "#0c1f17");
-              shadeGrad.addColorStop(0.75, "#07140e");
-              shadeGrad.addColorStop(1, "#040c08");
-              ctx.fillStyle = shadeGrad;
-            }
+            // Cel-Shading: Deeper Contrast Shadow Face
+            ctx.fillStyle = isGreen
+              ? "#081c14"
+              : zone === "digital"
+              ? "#1a1424"
+              : zone === "blender"
+              ? "#201610"
+              : zone === "nexus"
+              ? "#1a1016"
+              : "#0d2018";
+            ctx.fill();
+            ctx.stroke();
+
+            // Cel-Shading Lower Core Shadow Facet (35% height)
+            const shadowCutH = wallH * 0.35;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
+            ctx.lineTo(pt.x, pt.y + TILE_H - shadowCutH);
+            ctx.closePath();
+            ctx.fillStyle = isGreen
+              ? "#030d08"
+              : zone === "digital"
+              ? "#0c0712"
+              : zone === "blender"
+              ? "#0d0704"
+              : zone === "nexus"
+              ? "#0d0509"
+              : "#050e0a";
             ctx.fill();
 
-            // Baseboard (7px tall)
+            // Crisp comic shadow division line
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.75)";
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H - shadowCutH);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
+            ctx.stroke();
+
+            // Cel-Shaded Baseboard Trim (8px tall)
             ctx.fillStyle = isGreen
-              ? "#040b08"
+              ? "#030a07"
               : zone === "digital"
               ? "#3b0717"
               : zone === "blender"
@@ -1788,35 +1835,38 @@ export function initMuseumMaze() {
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
-            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 7);
-            ctx.lineTo(pt.x, pt.y + TILE_H - 7);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 8);
+            ctx.lineTo(pt.x, pt.y + TILE_H - 8);
             ctx.closePath();
             ctx.fill();
-
-            // Baseboard Bevel
-            ctx.strokeStyle = isGreen
-              ? "rgba(52, 211, 153, 0.28)"
-              : zone === "digital"
-              ? "rgba(244, 63, 94, 0.55)"
-              : zone === "blender"
-              ? "rgba(245, 158, 11, 0.60)"
-              : "rgba(251, 191, 36, 0.60)";
-            ctx.lineWidth = 1.0;
-            ctx.beginPath();
-            ctx.moveTo(pt.x, pt.y + TILE_H - 7);
-            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 7);
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // Crown Stygian Gold highlight
-            ctx.strokeStyle = "rgba(251, 191, 36, 0.65)";
+            // Baseboard Bevel Cel Highlight
+            ctx.strokeStyle = isGreen
+              ? "rgba(52, 211, 153, 0.70)"
+              : zone === "digital"
+              ? "#e11d48"
+              : zone === "blender"
+              ? "#f97316"
+              : "#f59e0b";
             ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H - 8);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 8);
+            ctx.stroke();
+
+            // Crown Stygian Gold Cel Pinstripe
+            ctx.strokeStyle = "#fbbf24";
+            ctx.lineWidth = 1.4;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
             ctx.stroke();
           }
 
-          // 3. Continuous Wall Top Coping (Polished Obsidian & Stygian Gold)
+          // 3. Cel-Shaded Continuous Wall Top Coping (Polished Obsidian & Stygian Gold)
           ctx.beginPath();
           ctx.moveTo(pt.x, pt.y - wallH);
           ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
@@ -1824,33 +1874,38 @@ export function initMuseumMaze() {
           ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           ctx.closePath();
           ctx.fillStyle = isGreen
-            ? "#081b13"
+            ? "#092218"
             : zone === "digital"
-            ? "#1a1622"
+            ? "#201a2c"
             : zone === "blender"
-            ? "#201812"
-            : "#151117";
+            ? "#2a1e16"
+            : "#1e141a";
           ctx.fill();
 
-          // Outer silhouette stroke in Stygian gold
-          ctx.strokeStyle = "rgba(251, 191, 36, 0.55)";
+          // Outer Heavy Comic Ink Stroke
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 2.0;
+          ctx.stroke();
+
+          // Inner Stygian Gold Facet Stroke
+          ctx.strokeStyle = "#fbbf24";
           ctx.lineWidth = 1.0;
           ctx.beginPath();
           if (hasNEFloor) {
-            ctx.moveTo(pt.x, pt.y - wallH);
-            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
+            ctx.moveTo(pt.x, pt.y - wallH + 1);
+            ctx.lineTo(pt.x + TILE_W / 2 - 1, pt.y + TILE_H / 2 - wallH + 0.5);
           }
           if (hasSEFloor) {
-            ctx.moveTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
-            ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
+            ctx.moveTo(pt.x + TILE_W / 2 - 1, pt.y + TILE_H / 2 - wallH + 0.5);
+            ctx.lineTo(pt.x, pt.y + TILE_H - wallH - 1);
           }
           if (hasSWFloor) {
-            ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
-            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
+            ctx.moveTo(pt.x, pt.y + TILE_H - wallH - 1);
+            ctx.lineTo(pt.x - TILE_W / 2 + 1, pt.y + TILE_H / 2 - wallH + 0.5);
           }
           if (hasNWFloor) {
-            ctx.moveTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
-            ctx.lineTo(pt.x, pt.y - wallH);
+            ctx.moveTo(pt.x - TILE_W / 2 + 1, pt.y + TILE_H / 2 - wallH + 0.5);
+            ctx.lineTo(pt.x, pt.y - wallH + 1);
           }
           ctx.stroke();
 
@@ -1878,22 +1933,17 @@ export function initMuseumMaze() {
             ctx.restore();
           }
         } else if (cellType === 3) {
-          // B. House of Hades Imperial Underworld Velvet Divan
-          // Chiseled Obsidian Base + Stygian Gold Greek Key Inlay + Royal Pomegranate Velvet Cushion
+          // B. House of Hades Imperial Underworld Velvet Divan (Cel-Shaded Comic Style)
           const isPlayerSittingHere = player.isSitting && player.seatedBench?.col === c && player.seatedBench?.row === r;
 
-          // 1. Ambient Underworld Ember Shadow
-          const underGlow = ctx.createRadialGradient(pt.x, pt.y + TILE_H / 2 + 3, 2, pt.x, pt.y + TILE_H / 2 + 3, 26);
-          underGlow.addColorStop(0, "rgba(225, 29, 72, 0.35)");
-          underGlow.addColorStop(0.6, "rgba(185, 28, 28, 0.15)");
-          underGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
-          ctx.fillStyle = underGlow;
+          // 1. Hard-Edged Comic Contact Shadow
+          ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
           ctx.beginPath();
-          ctx.ellipse(pt.x, pt.y + TILE_H / 2 + 4, 26, 13, 0, 0, Math.PI * 2);
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 + 5, 24, 11, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // 2. Chiseled Basalt & Obsidian Plinth
-          ctx.fillStyle = "#121114";
+          // 2. Chiseled Basalt & Obsidian Plinth (Solid Inked Facets)
+          ctx.fillStyle = "#0c0a0e";
           ctx.beginPath();
           ctx.moveTo(pt.x, pt.y + TILE_H / 2 - 12);
           ctx.lineTo(pt.x + 21, pt.y + TILE_H / 2 - 2);
@@ -1904,56 +1954,81 @@ export function initMuseumMaze() {
           ctx.closePath();
           ctx.fill();
 
+          // Crisp 2px Master Black Ink Outline
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 2.0;
+          ctx.stroke();
+
           // 3. Stygian Gold Beveled Greek Trim
-          ctx.strokeStyle = "#d97706";
+          ctx.strokeStyle = "#fbbf24";
           ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(pt.x - 20, pt.y + TILE_H / 2 + 1);
+          ctx.lineTo(pt.x, pt.y + TILE_H / 2 + 11);
+          ctx.lineTo(pt.x + 20, pt.y + TILE_H / 2 + 1);
           ctx.stroke();
 
-          // Gilded bronze rivets / lion-paw feet accents
-          ctx.fillStyle = "#fbbf24";
-          ctx.beginPath();
-          ctx.arc(pt.x - 18, pt.y + TILE_H / 2 + 2, 1.8, 0, Math.PI * 2);
-          ctx.arc(pt.x + 18, pt.y + TILE_H / 2 + 2, 1.8, 0, Math.PI * 2);
-          ctx.arc(pt.x, pt.y + TILE_H / 2 + 11, 2.0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // 4. Plush Pomegranate Velvet Cushion (Deep Underworld Crimson)
-          const velvetGrad = ctx.createLinearGradient(
-            pt.x,
-            pt.y + TILE_H / 2 - 20,
-            pt.x,
-            pt.y + TILE_H / 2 - 8
-          );
-          velvetGrad.addColorStop(0, "#be123c"); // Radiant crimson
-          velvetGrad.addColorStop(0.4, "#9f1239");
-          velvetGrad.addColorStop(1, "#4c0519"); // Deep shadowy wine
-          ctx.fillStyle = velvetGrad;
-          ctx.beginPath();
-          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 14, 21, 10.5, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Gold piping border
-          ctx.strokeStyle = "rgba(251, 191, 36, 0.75)";
-          ctx.lineWidth = 1;
-          ctx.stroke();
-
-          // 5. Tufted Golden Buttons & Creases
-          ctx.strokeStyle = "rgba(76, 5, 25, 0.6)";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(pt.x - 12, pt.y + TILE_H / 2 - 14);
-          ctx.lineTo(pt.x + 12, pt.y + TILE_H / 2 - 14);
-          ctx.stroke();
-
-          ctx.fillStyle = "#fef08a";
-          [-8, 0, 8].forEach((btnX) => {
+          // Gilded bronze rivets / lion-paw feet accents with black ink rings
+          [-18, 0, 18].forEach((rx) => {
+            const ry = rx === 0 ? pt.y + TILE_H / 2 + 11 : pt.y + TILE_H / 2 + 2;
+            ctx.fillStyle = "#000000";
             ctx.beginPath();
-            ctx.arc(pt.x + btnX, pt.y + TILE_H / 2 - 14, 1.3, 0, Math.PI * 2);
+            ctx.arc(pt.x + rx, ry, 2.6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#fbbf24";
+            ctx.beginPath();
+            ctx.arc(pt.x + rx, ry, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // 4. Cel-Shaded Pomegranate Velvet Cushion
+          // Lower Shadow Facet (Deep wine #881337)
+          ctx.fillStyle = "#881337";
+          ctx.beginPath();
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 12, 21, 10.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Upper Lit Facet (Radiant Ruby Red #e11d48)
+          ctx.fillStyle = "#e11d48";
+          ctx.beginPath();
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 15, 20.5, 9.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Master Black Ink Border around Cushion
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 13.5, 21, 11, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Gold Piping Rim Highlight
+          ctx.strokeStyle = "#fbbf24";
+          ctx.lineWidth = 1.0;
+          ctx.beginPath();
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 15, 19, 8.5, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // 5. Tufted Black Creases & Gold Buttons
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(pt.x - 12, pt.y + TILE_H / 2 - 15);
+          ctx.lineTo(pt.x + 12, pt.y + TILE_H / 2 - 15);
+          ctx.stroke();
+
+          [-8, 0, 8].forEach((btnX) => {
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(pt.x + btnX, pt.y + TILE_H / 2 - 15, 2.0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#fde047";
+            ctx.beginPath();
+            ctx.arc(pt.x + btnX, pt.y + TILE_H / 2 - 15, 1.2, 0, Math.PI * 2);
             ctx.fill();
           });
         }
 
-        // C. Render Visitor Avatar (Zagreus, Prince of the Underworld)
+        // C. Render Visitor Avatar (Zagreus, Prince of the Underworld - Cel-Shaded)
         const playerDepth = Math.floor(player.col + player.row);
         if (diag === playerDepth && Math.floor(player.col) === c) {
           const pIso = toIso(player.col, player.row);
@@ -1962,31 +2037,51 @@ export function initMuseumMaze() {
             // Seated Posture (Zagreus relaxing in royal repose atop the velvet divan)
             const sitY = pIso.y + TILE_H / 2 - 14;
 
-            // Soft Underworld Shadow
-            ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+            // Hard-edged Comic Drop Shadow
+            ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
             ctx.beginPath();
-            ctx.ellipse(pIso.x, sitY + 2, 11, 5, 0, 0, Math.PI * 2);
+            ctx.ellipse(pIso.x, sitY + 2, 11, 4.5, 0, 0, Math.PI * 2);
             ctx.fill();
 
-            // Legs draped down the front
+            // Legs draped down front with black ink outline
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 5.5, sitY + 1.5, 4.5, 8.5);
+            ctx.fillRect(pIso.x + 0.5, sitY + 1.5, 4.5, 8.5);
             ctx.fillStyle = "#18181b";
-            ctx.fillRect(pIso.x - 5, sitY + 2, 4, 8);
-            ctx.fillRect(pIso.x + 1, sitY + 2, 4, 8);
+            ctx.fillRect(pIso.x - 5, sitY + 2, 3.5, 7.5);
+            ctx.fillRect(pIso.x + 1, sitY + 2, 3.5, 7.5);
 
-            // Fiery Underworld Boots
+            // Fiery Underworld Boots (Cel flame bands)
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 6.5, sitY + 7.5, 5.5, 4.5);
+            ctx.fillRect(pIso.x + 0.5, sitY + 7.5, 5.5, 4.5);
             ctx.fillStyle = "#dc2626";
-            ctx.fillRect(pIso.x - 6, sitY + 8, 5, 4);
-            ctx.fillRect(pIso.x + 1, sitY + 8, 5, 4);
-            ctx.fillStyle = "#fbbf24";
+            ctx.fillRect(pIso.x - 6, sitY + 8, 4.5, 3.5);
+            ctx.fillRect(pIso.x + 1, sitY + 8, 4.5, 3.5);
+            ctx.fillStyle = "#f97316";
             ctx.fillRect(pIso.x - 5, sitY + 9, 3, 2);
             ctx.fillRect(pIso.x + 2, sitY + 9, 3, 2);
+            ctx.fillStyle = "#fde047";
+            ctx.fillRect(pIso.x - 4, sitY + 9.5, 1.5, 1.2);
+            ctx.fillRect(pIso.x + 3, sitY + 9.5, 1.5, 1.2);
 
-            // Torso (Dark Underworld Chiton)
-            ctx.fillStyle = "#1e1e24";
+            // Torso (Dark Underworld Chiton with black ink contour)
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 7, sitY - 17, 14, 18);
+            ctx.fillStyle = "#18181b";
             ctx.fillRect(pIso.x - 6, sitY - 16, 12, 16);
 
-            // Crimson Royal Underworld Sash
-            ctx.fillStyle = "#b91c1c";
+            // Crimson Royal Underworld Sash (Two-Tone Cel Facet)
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.moveTo(pIso.x - 7, sitY - 17);
+            ctx.lineTo(pIso.x + 7, sitY - 15);
+            ctx.lineTo(pIso.x + 3, sitY + 2);
+            ctx.lineTo(pIso.x - 6, sitY - 1);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = "#dc2626";
             ctx.beginPath();
             ctx.moveTo(pIso.x - 6, sitY - 16);
             ctx.lineTo(pIso.x + 6, sitY - 14);
@@ -1995,31 +2090,71 @@ export function initMuseumMaze() {
             ctx.closePath();
             ctx.fill();
 
-            // Golden Skull Brooch
-            ctx.fillStyle = "#fbbf24";
+            // Sash shadow fold facet
+            ctx.fillStyle = "#881337";
             ctx.beginPath();
-            ctx.arc(pIso.x - 4, sitY - 13, 2.2, 0, Math.PI * 2);
+            ctx.moveTo(pIso.x - 1, sitY - 15);
+            ctx.lineTo(pIso.x + 6, sitY - 14);
+            ctx.lineTo(pIso.x + 2, sitY + 1);
+            ctx.closePath();
             ctx.fill();
 
-            // Head & Face
+            // Golden Skull Brooch
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 4, sitY - 13, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#fde047";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 4, sitY - 13, 2.0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Head & Face with Inking & Two-Tone Skin
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(pIso.x, sitY - 21, 6.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Base skin
             ctx.fillStyle = "#fde68a";
             ctx.beginPath();
-            ctx.arc(pIso.x, sitY - 21, 5.5, 0, Math.PI * 2);
+            ctx.arc(pIso.x, sitY - 21, 5.2, 0, Math.PI * 2);
             ctx.fill();
 
-            // Fiery Underworld Laurel Wreath (Zagreus glowing laurels)
-            const laurelPulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
-            ctx.fillStyle = `rgba(239, 68, 68, ${laurelPulse})`;
+            // Jaw/neck cel shadow
+            ctx.fillStyle = "#f59e0b";
+            ctx.beginPath();
+            ctx.arc(pIso.x, sitY - 21, 5.2, 0.2 * Math.PI, 0.8 * Math.PI);
+            ctx.closePath();
+            ctx.fill();
+
+            // Fiery Underworld Laurel Wreath (Sharp Cel Leaves)
+            ctx.fillStyle = "#ef4444";
             ctx.beginPath();
             ctx.arc(pIso.x - 5, sitY - 23, 2.5, 0, Math.PI * 2);
             ctx.arc(pIso.x + 5, sitY - 23, 2.5, 0, Math.PI * 2);
             ctx.arc(pIso.x, sitY - 25, 2.8, 0, Math.PI * 2);
             ctx.fill();
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 1.0;
+            ctx.stroke();
 
-            // Spiky Raven Black Hair
-            ctx.fillStyle = "#09090b";
+            // Spiky Raven Black Hair with Specular Cel Highlight
+            ctx.fillStyle = "#050507";
             ctx.beginPath();
-            ctx.arc(pIso.x, sitY - 22, 5.6, Math.PI, Math.PI * 2);
+            ctx.arc(pIso.x, sitY - 22, 5.8, Math.PI, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#000000";
+            // Manga hair spikes
+            ctx.beginPath();
+            ctx.moveTo(pIso.x - 4, sitY - 24);
+            ctx.lineTo(pIso.x - 6, sitY - 28);
+            ctx.lineTo(pIso.x - 2, sitY - 25);
+            ctx.lineTo(pIso.x + 1, sitY - 29);
+            ctx.lineTo(pIso.x + 3, sitY - 25);
+            ctx.lineTo(pIso.x + 6, sitY - 27);
+            ctx.lineTo(pIso.x + 4, sitY - 23);
+            ctx.closePath();
             ctx.fill();
 
             // Floating Underworld Rest Indicator
@@ -2029,61 +2164,71 @@ export function initMuseumMaze() {
             const floatOffset = Math.sin(Date.now() * 0.004) * 3;
             ctx.fillText("Resting", pIso.x, sitY - 32 + floatOffset);
           } else {
-            // Standing / Walking Zagreus Avatar
+            // Standing / Walking Zagreus Avatar (Full Cel-Shaded)
+            const bob = Math.sin(player.walkCycle) * 2.2;
 
-            // 1. THE GLOWING CIRCULAR UNDERWORLD AURA RING (Golden with Crimson flame edge)
-            const aura = ctx.createRadialGradient(
-              pIso.x,
-              pIso.y + TILE_H / 2,
-              4,
-              pIso.x,
-              pIso.y + TILE_H / 2,
-              38
-            );
-            aura.addColorStop(0, "rgba(239, 68, 68, 0.65)");
-            aura.addColorStop(0.4, "rgba(245, 158, 11, 0.35)");
-            aura.addColorStop(1, "rgba(245, 158, 11, 0)");
-
-            ctx.fillStyle = aura;
+            // 1. Hard-Edged Comic Drop Shadow
+            ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
             ctx.beginPath();
-            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 36, 18, 0, 0, Math.PI * 2);
+            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2 + 1, 10, 4.5, 0, 0, Math.PI * 2);
             ctx.fill();
 
-            // Stygian gold boundary aura ring
-            ctx.strokeStyle = "rgba(251, 191, 36, 0.95)";
+            // 2. THE GLOWING CIRCULAR UNDERWORLD AURA RING (Cel faceted)
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 3.2;
+            ctx.beginPath();
+            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 26, 13, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#fbbf24";
             ctx.lineWidth = 1.8;
             ctx.beginPath();
             ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 26, 13, 0, 0, Math.PI * 2);
             ctx.stroke();
 
-            // 2. Avatar Character
-            const bob = Math.sin(player.walkCycle) * 2.2;
-
-            // Shadow
-            ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-            ctx.beginPath();
-            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 9, 5, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Trousers
+            // 3. Legs & Trousers with Black Comic Inking
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 4.8, pIso.y + TILE_H / 2 - 10.5 + bob, 4.2, 10.5);
+            ctx.fillRect(pIso.x + 0.5, pIso.y + TILE_H / 2 - 10.5 - bob, 4.2, 10.5);
             ctx.fillStyle = "#18181b";
-            ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 10 + bob, 3, 10);
-            ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 10 - bob, 3, 10);
+            ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 10 + bob, 3, 9.5);
+            ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 10 - bob, 3, 9.5);
 
-            // Fiery Burning Boots (Zagreus iconic flaming feet)
+            // 4. Fiery Burning Boots (Cel flame bands)
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 5.8, pIso.y + TILE_H / 2 - 3.8 + bob, 5.2, 4.5);
+            ctx.fillRect(pIso.x + 0.5, pIso.y + TILE_H / 2 - 3.8 - bob, 5.2, 4.5);
             ctx.fillStyle = "#dc2626";
             ctx.fillRect(pIso.x - 5, pIso.y + TILE_H / 2 - 3 + bob, 4, 3.5);
             ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 3 - bob, 4, 3.5);
-            ctx.fillStyle = "#fbbf24";
+            ctx.fillStyle = "#f97316";
             ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 2 + bob, 2.5, 2);
             ctx.fillRect(pIso.x + 2, pIso.y + TILE_H / 2 - 2 - bob, 2.5, 2);
+            ctx.fillStyle = "#fde047";
+            ctx.fillRect(pIso.x - 3.5, pIso.y + TILE_H / 2 - 1.5 + bob, 1.5, 1);
+            ctx.fillRect(pIso.x + 2.5, pIso.y + TILE_H / 2 - 1.5 - bob, 1.5, 1);
 
-            // Charcoal Chiton/Tunic
-            ctx.fillStyle = "#1e1e24";
+            // 5. Charcoal Chiton/Tunic with Master Black Outline
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 7, pIso.y + TILE_H / 2 - 29 + bob, 15, 20);
+            ctx.fillStyle = "#18181b";
             ctx.fillRect(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob, 13, 18);
 
-            // Crimson Royal Underworld Sash
-            ctx.fillStyle = "#b91c1c";
+            // Shoulder highlight facet
+            ctx.fillStyle = "#27272a";
+            ctx.fillRect(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob, 5, 6);
+
+            // 6. Crimson Royal Underworld Sash (Two-Tone Cel Facet)
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.moveTo(pIso.x - 7, pIso.y + TILE_H / 2 - 29 + bob);
+            ctx.lineTo(pIso.x + 8, pIso.y + TILE_H / 2 - 26 + bob);
+            ctx.lineTo(pIso.x + 5, pIso.y + TILE_H / 2 - 9 + bob);
+            ctx.lineTo(pIso.x - 6, pIso.y + TILE_H / 2 - 11 + bob);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = "#dc2626";
             ctx.beginPath();
             ctx.moveTo(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob);
             ctx.lineTo(pIso.x + 7, pIso.y + TILE_H / 2 - 25 + bob);
@@ -2092,31 +2237,79 @@ export function initMuseumMaze() {
             ctx.closePath();
             ctx.fill();
 
-            // Golden Skull Brooch Clasp
-            ctx.fillStyle = "#fbbf24";
+            // Sash shadow facet
+            ctx.fillStyle = "#881337";
             ctx.beginPath();
-            ctx.arc(pIso.x - 4, pIso.y + TILE_H / 2 - 24 + bob, 2.4, 0, Math.PI * 2);
+            ctx.moveTo(pIso.x, pIso.y + TILE_H / 2 - 26 + bob);
+            ctx.lineTo(pIso.x + 7, pIso.y + TILE_H / 2 - 25 + bob);
+            ctx.lineTo(pIso.x + 4, pIso.y + TILE_H / 2 - 10 + bob);
+            ctx.closePath();
             ctx.fill();
 
-            // Head & Face
+            // Golden Skull Brooch Clasp with Black Rim
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 4, pIso.y + TILE_H / 2 - 24 + bob, 3.0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#fde047";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 4, pIso.y + TILE_H / 2 - 24 + bob, 2.0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 7. Head & Face with Comic Inking & Two-Tone Shadow
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 6.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Base skin tone
             ctx.fillStyle = "#fde68a";
             ctx.beginPath();
-            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 6.0, 0, Math.PI * 2);
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 5.8, 0, Math.PI * 2);
             ctx.fill();
 
-            // Fiery Red Laurel Wreath
-            const laurelPulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
-            ctx.fillStyle = `rgba(239, 68, 68, ${laurelPulse})`;
+            // Jaw cel shadow
+            ctx.fillStyle = "#f59e0b";
             ctx.beginPath();
-            ctx.arc(pIso.x - 5, pIso.y + TILE_H / 2 - 35 + bob, 2.6, 0, Math.PI * 2);
-            ctx.arc(pIso.x + 5, pIso.y + TILE_H / 2 - 35 + bob, 2.6, 0, Math.PI * 2);
-            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 37 + bob, 2.8, 0, Math.PI * 2);
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 5.8, 0.2 * Math.PI, 0.8 * Math.PI);
+            ctx.closePath();
             ctx.fill();
 
-            // Spiky Raven Black Hair
-            ctx.fillStyle = "#09090b";
+            // Stylized eyes (sharp manga ink slits)
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pIso.x - 3.5, pIso.y + TILE_H / 2 - 34 + bob, 2.2, 1.2);
+            ctx.fillRect(pIso.x + 1.2, pIso.y + TILE_H / 2 - 34 + bob, 2.2, 1.2);
+            // Red Zagreus iris glint
+            ctx.fillStyle = "#ef4444";
+            ctx.fillRect(pIso.x - 2.8, pIso.y + TILE_H / 2 - 34 + bob, 1.0, 1.0);
+            ctx.fillRect(pIso.x + 1.8, pIso.y + TILE_H / 2 - 34 + bob, 1.0, 1.0);
+
+            // 8. Fiery Red Laurel Wreath
+            ctx.fillStyle = "#ef4444";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 5, pIso.y + TILE_H / 2 - 35 + bob, 2.8, 0, Math.PI * 2);
+            ctx.arc(pIso.x + 5, pIso.y + TILE_H / 2 - 35 + bob, 2.8, 0, Math.PI * 2);
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 37 + bob, 3.0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 1.0;
+            ctx.stroke();
+
+            // 9. Spiky Raven Black Manga Hair
+            ctx.fillStyle = "#050507";
             ctx.beginPath();
             ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 35 + bob, 6.2, Math.PI, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.moveTo(pIso.x - 5, pIso.y + TILE_H / 2 - 36 + bob);
+            ctx.lineTo(pIso.x - 7, pIso.y + TILE_H / 2 - 41 + bob);
+            ctx.lineTo(pIso.x - 2, pIso.y + TILE_H / 2 - 38 + bob);
+            ctx.lineTo(pIso.x + 1, pIso.y + TILE_H / 2 - 43 + bob);
+            ctx.lineTo(pIso.x + 4, pIso.y + TILE_H / 2 - 38 + bob);
+            ctx.lineTo(pIso.x + 7, pIso.y + TILE_H / 2 - 40 + bob);
+            ctx.lineTo(pIso.x + 5, pIso.y + TILE_H / 2 - 35 + bob);
+            ctx.closePath();
             ctx.fill();
           }
         }
