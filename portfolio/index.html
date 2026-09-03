@@ -1,0 +1,1840 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Museum Gallery | init</title>
+  <link rel="stylesheet" href="/init/assets/main-PE4J8cMw.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<style>
+  body {
+    background-color: #000000 !important;
+  }
+  #res-canvas {
+    display: none !important;
+  }
+</style>
+<canvas id="underworld-bg-ashes" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.65;"></canvas>
+
+<div id="portfolio-root" class="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 space-y-6" style="padding-top: 6.5rem; padding-bottom: 2rem;">
+
+  <!-- Gallery Exhibition Header -->
+  <div class="flex flex-wrap items-end justify-between gap-4 border-b border-base-content/10 pb-5">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+        <span class="text-xs uppercase tracking-[0.25em] text-rose-400 font-mono font-semibold">House of Hades • Underworld Exhibition</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-base-content">
+        The Underworld Pavilion
+      </h1>
+      <p class="text-xs sm:text-sm opacity-70 mt-1 max-w-xl font-light">
+        Original works exhibition & silent bidding ledger by aditi. Explore the halls of Elysium, Tartarus, and Asphodel, rest upon imperial velvet divans, and submit private bids.
+      </p>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3">
+      <!-- View Mode Switcher -->
+      <div class="join border border-base-content/15 rounded-xl p-0.5 bg-base-200/50 backdrop-blur">
+        <button id="view-mode-maze" class="btn btn-xs sm:btn-sm btn-primary rounded-lg join-item">
+          Walk Gallery
+        </button>
+        <button id="view-mode-catalog" class="btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item">
+          Catalog Index
+        </button>
+      </div>
+
+      <!-- SFX Toggle -->
+      <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-base-content/10 font-mono text-[11px] px-3" title="Audio Ambience">
+        Audio On
+      </button>
+    </div>
+  </div>
+
+  <!-- VIEW 1: Museum Interactive Canvas -->
+  <div id="museum-view" class="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] bg-black">
+    
+    <!-- Top-Left In-Game HUD: Token Balance & Radar (1:1 with Concept Image) -->
+    <div class="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-auto select-none">
+      <div class="bg-[#12161a]/90 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-3 min-w-[190px]">
+        <!-- Token Balance Header -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-black font-mono font-extrabold text-xs shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+            TKN
+          </div>
+          <div>
+            <div class="font-mono font-bold text-base text-white tracking-wide leading-none">
+              <span id="patron-display-balance">1,240</span> <span class="text-amber-400 text-xs font-semibold">TKN</span>
+            </div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
+              Token Balance
+            </div>
+          </div>
+        </div>
+
+        <!-- Radar Blueprint Canvas -->
+        <div class="relative rounded-xl overflow-hidden border border-white/10 bg-[#060a0e] shadow-inner p-1">
+          <canvas id="minimap-canvas" width="160" height="160" class="block w-full h-auto rounded-lg"></canvas>
+          <div class="absolute bottom-1.5 right-2 text-[9px] font-mono uppercase text-amber-400/80 font-bold tracking-widest">
+            UNDERWORLD
+          </div>
+        </div>
+
+        <!-- Current Exhibition Wing Indicator -->
+        <div id="current-wing-pill" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-medium tracking-wide">
+          <span id="current-wing-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="current-wing-name" class="text-white/90 truncate">Elysium Salon</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Helper Legend (Desktop) -->
+    <div class="absolute bottom-4 left-4 z-20 pointer-events-none hidden md:flex items-center gap-2 text-xs bg-black/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 text-white/80 shadow-lg">
+      <span class="badge badge-xs badge-primary font-mono">NAV</span>
+      <span>Use <kbd class="kbd kbd-xs">W</kbd><kbd class="kbd kbd-xs">A</kbd><kbd class="kbd kbd-xs">S</kbd><kbd class="kbd kbd-xs">D</kbd> to walk • Click floor to pathfind • Walk to art or divans and press <kbd class="kbd kbd-xs">E</kbd> to inspect or sit</span>
+    </div>
+
+    <!-- Main Architectural Museum Canvas -->
+    <canvas id="museum-canvas" class="w-full block cursor-crosshair"></canvas>
+
+    <!-- Floating Proximity Prompt (Triggered when standing near a wall painting or divan) -->
+    <div id="proximity-prompt" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300 opacity-0 translate-y-4 scale-95 flex items-center gap-3 bg-black/90 backdrop-blur-xl px-5 py-3 rounded-2xl border border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.35)]">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+      <div class="text-left">
+        <p class="text-[10px] text-primary uppercase font-bold tracking-wider" id="prompt-subtitle">Artwork In Viewing Range</p>
+        <h4 class="text-sm font-bold text-white font-serif" id="prompt-title">Artwork Title</h4>
+      </div>
+      <button id="prompt-action-btn" class="btn btn-sm btn-primary ml-2 shadow-lg hover:scale-105 transition-transform font-mono">
+        Inspect & Bid [E]
+      </button>
+      <span id="prompt-reserved-badge" class="hidden text-xs font-mono px-3 py-1.5 rounded-xl bg-white/10 text-white/70 border border-white/20">
+        Exhibition Space Only • No Bidding
+      </span>
+    </div>
+
+    <!-- Mobile Virtual Buttons -->
+    <div class="sm:hidden absolute bottom-4 right-4 z-20 grid grid-cols-3 gap-1 bg-black/70 backdrop-blur-md p-2 rounded-2xl border border-white/10 font-mono font-bold text-xs">
+      <div></div>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="up">W</button>
+      <div></div>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="left">A</button>
+      <button class="btn btn-xs btn-primary virtual-btn" data-dir="interact">E</button>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="right">D</button>
+      <div></div>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="down">S</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: Traditional Catalog Grid (Accessible Alternative) -->
+  <div id="catalog-view" class="hidden space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-bold font-serif">Exhibition Catalog (45 Works)</h2>
+        <p class="text-sm opacity-70">Browse works across the Physical Art, Digital Art, and 3D Blender wings.</p>
+      </div>
+      <!-- Wing Filter Pills -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button class="catalog-filter-btn btn btn-xs btn-primary" data-category="all">
+          All (45)
+        </button>
+        <button class="catalog-filter-btn btn btn-xs btn-outline border-amber-500/40 text-amber-300" data-category="physical">
+          Physical
+        </button>
+        <button class="catalog-filter-btn btn btn-xs btn-outline border-sky-500/40 text-sky-300" data-category="digital">
+          Digital
+        </button>
+        <button class="catalog-filter-btn btn btn-xs btn-outline border-orange-500/40 text-orange-300" data-category="blender">
+          3D Blender
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="catalog-cards-container">
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('torii')">
+          <img src="../assets/images/portfolio/physical/torii.jpg" data-art-id="torii" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/torii.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/torii.jpg';}" alt="Torii Gate at Twilight" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #1</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Torii Gate at Twilight</h3>
+          <p class="text-xs text-primary font-medium">Micron Pen & Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">An atmospheric study of water turbulence, pine forest silhouettes, and shifting twilight reflections framing a floating Japanese shrine torii gate.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="torii">500 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('torii')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('walle-ink')">
+          <img src="../assets/images/portfolio/physical/Wall-E-V2.jpg" data-art-id="walle-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Wall-E-V2.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Wall-E-V2.jpg';}" alt="WALL-E: Urban Solitude" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #2</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">WALL-E: Urban Solitude</h3>
+          <p class="text-xs text-primary font-medium">Fine-Line Ink & Hatching on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">An expressive, high-contrast ink drawing depicting WALL-E amidst the towering brick walls, decaying street lamp, and scattered debris of a forgotten city.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="walle-ink">600 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('walle-ink')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('walle-color')">
+          <img src="../assets/images/portfolio/physical/Wall-E-v1.jpeg" data-art-id="walle-color" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Wall-E-v1.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Wall-E-v1.jpeg';}" alt="WALL-E: Solar Awakening" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #3</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">WALL-E: Solar Awakening</h3>
+          <p class="text-xs text-primary font-medium">Colored Pencil & Mixed Media</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A warm, textured portrait of WALL-E with evocative ocular lenses, oxidized metallic textures, and solar panel chest detailing.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="walle-color">450 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('walle-color')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('hornet-ink')">
+          <img src="../assets/images/portfolio/physical/hornet.jpg" data-art-id="hornet-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/hornet.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/hornet.jpg';}" alt="Hornet: Needle & Thread" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #4</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Hornet: Needle & Thread</h3>
+          <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Dynamic depiction of Hornet from Hollow Knight with her needle and thread caught in mid-motion, accented by energetic ink splatters.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="hornet-ink">450 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('hornet-ink')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('grimm-ink')">
+          <img src="../assets/images/portfolio/physical/grimm.jpg" data-art-id="grimm-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/grimm.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/grimm.jpg';}" alt="Troupe Master Grimm" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #5</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Troupe Master Grimm</h3>
+          <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Troupe Master Grimm perched atop an ornate gothic lantern holding a flickering scarlet flame, rendered with rich feather and cloth textures.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="grimm-ink">650 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('grimm-ink')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('pure-vessel-ink')">
+          <img src="../assets/images/portfolio/physical/purevessel.jpg" data-art-id="pure-vessel-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/purevessel.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/purevessel.jpg';}" alt="Pure Vessel" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #6</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Pure Vessel</h3>
+          <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">The imposing silhouette of the Pure Vessel standing in ceremonial armor, draped in flowing dark robes with exquisite etched detailing.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="pure-vessel-ink">550 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('pure-vessel-ink')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('master-chief')">
+          <img src="../assets/images/portfolio/physical/masterchief.jpg" data-art-id="master-chief" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/masterchief.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/masterchief.jpg';}" alt="Master Chief: Spartan-117" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #7</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Master Chief: Spartan-117</h3>
+          <p class="text-xs text-primary font-medium">High-Density Crosshatch Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A chiaroscuro ink illustration of John-117 in Mjolnir Powered Assault Armor, featuring meticulous directional crosshatching on armor plates and visor reflections.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="master-chief">850 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('master-chief')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('love-you-3000')">
+          <img src="../assets/images/portfolio/physical/love-you-3000.jpg" data-art-id="love-you-3000" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/love-you-3000.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/love-you-3000.jpg';}" alt="I Love You 3000" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2020</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #8</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">I Love You 3000</h3>
+          <p class="text-xs text-primary font-medium">Graphite & Charcoal on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A dual split-portrait contrasting the human vulnerability of Tony Stark on the left with the stoic mechanical precision of the Iron Man helmet on the right.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="love-you-3000">700 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('love-you-3000')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('anubis')">
+          <img src="../assets/images/portfolio/physical/Anubis.jpeg" data-art-id="anubis" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Anubis.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Anubis.jpeg';}" alt="Anubis: Jackal Deity" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #9</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Anubis: Jackal Deity</h3>
+          <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A geometric ink study of Egyptian deity Anubis wearing an Ankh headpiece and golden nemes headdress, suspended above the all-seeing Eye of Horus.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="anubis">550 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('anubis')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('fawkes')">
+          <img src="../assets/images/portfolio/physical/Fawkes.jpg" data-art-id="fawkes" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Fawkes.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Fawkes.jpg';}" alt="Fawkes: Rebirth in Flames" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2021</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #10</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Fawkes: Rebirth in Flames</h3>
+          <p class="text-xs text-primary font-medium">Acrylic on Canvas</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A fiery acrylic painting of Fawkes the Phoenix rising with incandescent crimson and golden plumes against a dark canvas.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="fawkes">750 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('fawkes')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('krishna')">
+          <img src="../assets/images/portfolio/physical/krishna.jpg" data-art-id="krishna" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/krishna.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/krishna.jpg';}" alt="Krishna: The Divine Flutist" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2021</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #11</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Krishna: The Divine Flutist</h3>
+          <p class="text-xs text-primary font-medium">Acrylic on Stretched Canvas</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A radiant portrait of Lord Krishna playing the bansuri flute, adorned with a jeweled turban, peacock feather, and golden pearl ornaments in warm ochre tones.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="krishna">800 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('krishna')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('mike-wazowski')">
+          <img src="../assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg" data-art-id="mike-wazowski" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg';}" alt="Mike Wazowski" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #12</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Mike Wazowski</h3>
+          <p class="text-xs text-primary font-medium">Colored Pencil on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A vibrant colored pencil character study of Monsters Inc's Mike Wazowski, featuring delicate spherical blending and crystalline ocular reflections.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="mike-wazowski">400 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('mike-wazowski')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('op81-vegas')">
+          <img src="../assets/images/portfolio/physical/OP81.jpg" data-art-id="op81-vegas" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/OP81.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/OP81.jpg';}" alt="Oscar Piastri #81: Las Vegas GP" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #13</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Oscar Piastri #81: Las Vegas GP</h3>
+          <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">McLaren's MCL60 race car driven by Oscar Piastri speeding through the Las Vegas Strip Circuit, framed beneath the illuminated Vegas Sphere.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="op81-vegas">800 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('op81-vegas')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('highway-to-hell')">
+          <img src="../assets/images/portfolio/physical/Highway-to-hell.jpg" data-art-id="highway-to-hell" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Highway-to-hell.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Highway-to-hell.jpg';}" alt="Highway to Hell" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #14</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Highway to Hell</h3>
+          <p class="text-xs text-primary font-medium">Acrylic & Mixed Media on Canvas</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A bold architectural perspective piece exploring rhythmic descending structural ribs in volcanic cadmium reds, burnt umber, and charcoal black.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="highway-to-hell">600 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('highway-to-hell')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('melt')">
+          <img src="../assets/images/portfolio/physical/Melt.jpeg" data-art-id="melt" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Melt.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Melt.jpeg';}" alt="Melt: Heavy Metal" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2022</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #15</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Melt: Heavy Metal</h3>
+          <p class="text-xs text-primary font-medium">Gloss Ink & Wash on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">High-contrast ink rendering of a sign of the horns hand sign liquefied into molten chrome and dripping black ink.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="melt">450 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('melt')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('skelly')">
+          <img src="../assets/images/portfolio/physical/Skelly.jpg" data-art-id="skelly" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Skelly.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Skelly.jpg';}" alt="Skelly: Geometric Osteology" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2022</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #16</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Skelly: Geometric Osteology</h3>
+          <p class="text-xs text-primary font-medium">Stippling & Low-Poly Ink on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A faceted anatomical study of a human skeleton rendered in faceted low-polygon mesh tessellation and delicate pointillism inside a tilted diamond frame.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="skelly">550 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('skelly')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('mars-bar')">
+          <img src="../assets/images/portfolio/physical/mmars.jpg" data-art-id="mars-bar" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/mmars.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/mmars.jpg';}" alt="Mars: Caramel & Nougat" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2022</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #17</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Mars: Caramel & Nougat</h3>
+          <p class="text-xs text-primary font-medium">Colored Pencil on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A photorealistic study of an unwrapped Mars chocolate bar, capturing the gloss of melting chocolate, gooey golden caramel drizzle, and foil creases.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="mars-bar">500 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('mars-bar')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('rainy-city')">
+          <img src="../assets/images/portfolio/physical/Unknown.jpg" data-art-id="rainy-city" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/Unknown.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Unknown.jpg';}" alt="Rainy City Solitude" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #18</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Rainy City Solitude</h3>
+          <p class="text-xs text-primary font-medium">Charcoal & Powder on Paper</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A solitary silhouetted figure with an umbrella walking down a rain-soaked urban canyon flanked by towering skyscrapers bathed in misty ambient backlighting.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="rainy-city">550 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('rainy-city')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('mountain-pagoda')">
+          <img src="../assets/images/portfolio/physical/tera.jpg" data-art-id="mountain-pagoda" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/physical/tera.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/tera.jpg';}" alt="Mountain Pagoda (Tera)" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-warning">Physical</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #19</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Mountain Pagoda (Tera)</h3>
+          <p class="text-xs text-primary font-medium">Pen & Ink Crosshatching</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A majestic multi-tiered Japanese temple pagoda built into a dramatic mountainside waterfall ravine, drawn with dense architectural line work and mountain shading.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="mountain-pagoda">750 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('mountain-pagoda')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('neon-japan')">
+          <img src="../assets/images/portfolio/digital/Neon-Japan.jpg" data-art-id="neon-japan" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/Neon-Japan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/Neon-Japan.jpg';}" alt="Neon Japan" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #20</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Neon Japan</h3>
+          <p class="text-xs text-primary font-medium">Digital Painting / Procreate</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Vibrant neon-lit nocturnal streetscapes of Tokyo, illuminated with glowing kanji billboards, rainy reflections, and cyber aesthetic.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="neon-japan">400 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('neon-japan')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('bw-japan')">
+          <img src="../assets/images/portfolio/digital/BandW-Japan.jpg" data-art-id="bw-japan" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/BandW-Japan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/BandW-Japan.jpg';}" alt="Shibuya Crossing (Monochrome)" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #21</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Shibuya Crossing (Monochrome)</h3>
+          <p class="text-xs text-primary font-medium">Digital Ink & Tonal Study</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">High-contrast monochrome digital study of Japanese street architecture, emphasizing dramatic shadow play and urban silhouettes.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="bw-japan">350 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('bw-japan')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('details-hong-kong')">
+          <img src="../assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg" data-art-id="details-hong-kong" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg';}" alt="Hong Kong: Urban Details" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #22</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Hong Kong: Urban Details</h3>
+          <p class="text-xs text-primary font-medium">Digital Illustration</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Intricate architectural details and dense tenement housing geometry capturing the vibrant layered pulse of Hong Kong.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="details-hong-kong">450 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('details-hong-kong')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('manga-hong-kong')">
+          <img src="../assets/images/portfolio/digital/Manga-Hong-Kong.jpg" data-art-id="manga-hong-kong" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/Manga-Hong-Kong.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/Manga-Hong-Kong.jpg';}" alt="Manga Hong Kong" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #23</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Manga Hong Kong</h3>
+          <p class="text-xs text-primary font-medium">Digital Comic & Manga Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Stylized manga-inspired skyline and alley composition evoking 90s cyberpunk aesthetic and cinematic line weight.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="manga-hong-kong">420 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('manga-hong-kong')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('lantern')">
+          <img src="../assets/images/portfolio/digital/Lantern.jpg" data-art-id="lantern" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/Lantern.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/Lantern.jpg';}" alt="Luminous Festival Lantern" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #24</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Luminous Festival Lantern</h3>
+          <p class="text-xs text-primary font-medium">Digital Concept Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A warm, glowing oriental lantern suspended in twilight, casting soft golden radiance across floating embers.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="lantern">380 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('lantern')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('ethereal')">
+          <img src="../assets/images/portfolio/digital/ethereal.jpg" data-art-id="ethereal" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/ethereal.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/ethereal.jpg';}" alt="Ethereal Horizon" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #25</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Ethereal Horizon</h3>
+          <p class="text-xs text-primary font-medium">Digital Matte Painting</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Dreamlike atmospheric scenery with soft chromatic gradients and surreal environmental lighting.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="ethereal">360 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('ethereal')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('hope')">
+          <img src="../assets/images/portfolio/digital/hope.jpg" data-art-id="hope" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/hope.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/hope.jpg';}" alt="Glimmer of Hope" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #26</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Glimmer of Hope</h3>
+          <p class="text-xs text-primary font-medium">Digital Painting</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Subtle rays of ambient light breaking through shadowed storm clouds, evoking quiet optimism.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="hope">340 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('hope')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('unlit')">
+          <img src="../assets/images/portfolio/digital/unlit.jpg" data-art-id="unlit" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/unlit.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/unlit.jpg';}" alt="Unlit Twilight" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #27</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Unlit Twilight</h3>
+          <p class="text-xs text-primary font-medium">Digital Mood Study</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">An enigmatic dusk landscape shrouded in misty tones and deep indigo gradients.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="unlit">320 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('unlit')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('idunno')">
+          <img src="../assets/images/portfolio/digital/idunno.jpg" data-art-id="idunno" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/idunno.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/idunno.jpg';}" alt="Spectral Wanderer" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #28</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Spectral Wanderer</h3>
+          <p class="text-xs text-primary font-medium">Digital Character Study</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A mysterious wandering figure amidst an abstract painted landscape of fluid organic brushstrokes.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="idunno">350 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('idunno')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('gaveup')">
+          <img src="../assets/images/portfolio/digital/gaveup.jpg" data-art-id="gaveup" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/gaveup.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/gaveup.jpg';}" alt="Midnight Haze" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #29</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Midnight Haze</h3>
+          <p class="text-xs text-primary font-medium">Digital Color Study</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Expressive, moody digital textures capturing quiet midnight contemplation.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="gaveup">320 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('gaveup')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('jaws')">
+          <img src="../assets/images/portfolio/digital/JAWS.jpg" data-art-id="jaws" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/JAWS.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/JAWS.jpg';}" alt="Great White: Jaws" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #30</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Great White: Jaws</h3>
+          <p class="text-xs text-primary font-medium">Digital Marine Illustration</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A formidable Great White Shark emerging from the sun-dappled pelagic abyss with visceral presence.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="jaws">450 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('jaws')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('shark')">
+          <img src="../assets/images/portfolio/digital/SHARK.jpg" data-art-id="shark" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/SHARK.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/SHARK.jpg';}" alt="Ocean Apex: Shark" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #31</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Ocean Apex: Shark</h3>
+          <p class="text-xs text-primary font-medium">Digital Wildlife Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Hydrodynamic elegance of a shark gliding gracefully through crystal-clear turquoise waters.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="shark">380 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('shark')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('hammerhead')">
+          <img src="../assets/images/portfolio/digital/hammer.jpg" data-art-id="hammerhead" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/hammer.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/hammer.jpg';}" alt="Hammerhead Patrol" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #32</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Hammerhead Patrol</h3>
+          <p class="text-xs text-primary font-medium">Digital Marine Study</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">The unmistakable silhouette of a hammerhead shark navigating the oceanic deep with distinctive lateral sensors.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="hammerhead">400 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('hammerhead')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('whale')">
+          <img src="../assets/images/portfolio/digital/WHALE.jpg" data-art-id="whale" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/WHALE.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/WHALE.jpg';}" alt="Leviathan: Blue Whale" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #33</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Leviathan: Blue Whale</h3>
+          <p class="text-xs text-primary font-medium">Digital Oceanography Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A colossal blue whale cruising majestically through sunbeams penetrating the azure ocean surface.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="whale">480 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('whale')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('whale-tale')">
+          <img src="../assets/images/portfolio/digital/whale-tale.jpg" data-art-id="whale-tale" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/whale-tale.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/whale-tale.jpg';}" alt="Whale Tail Breach" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #34</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Whale Tail Breach</h3>
+          <p class="text-xs text-primary font-medium">Digital Painting</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A monumental whale fluke rising into the twilight sea breeze amidst spray and oceanic ripples.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="whale-tale">420 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('whale-tale')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('dolphin')">
+          <img src="../assets/images/portfolio/digital/dolpin.jpg" data-art-id="dolphin" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/dolpin.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/dolpin.jpg';}" alt="Dolphin Flight" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #35</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Dolphin Flight</h3>
+          <p class="text-xs text-primary font-medium">Digital Marine Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Playful Bottlenose dolphin leaping into open ocean air with dynamic water droplets.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="dolphin">360 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('dolphin')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('found-nemo')">
+          <img src="../assets/images/portfolio/digital/i-found-nemo.jpg" data-art-id="found-nemo" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/i-found-nemo.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/i-found-nemo.jpg';}" alt="Anemone Haven: Clownfish" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #36</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Anemone Haven: Clownfish</h3>
+          <p class="text-xs text-primary font-medium">Digital Marine Illustration</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A clownfish nesting within flowing, vibrant sea anemone tentacles.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="found-nemo">340 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('found-nemo')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('turtle')">
+          <img src="../assets/images/portfolio/digital/turlte.jpg" data-art-id="turtle" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/turlte.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/turlte.jpg';}" alt="Pacific Sea Turtle" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #37</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Pacific Sea Turtle</h3>
+          <p class="text-xs text-primary font-medium">Digital Wildlife Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A serene sea turtle paddling weightlessly across a coral reef lagoon.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="turtle">380 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('turtle')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('pish')">
+          <img src="../assets/images/portfolio/digital/pish.jpg" data-art-id="pish" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/pish.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/pish.jpg';}" alt="Tropical Reef Pish" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #38</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Tropical Reef Pish</h3>
+          <p class="text-xs text-primary font-medium">Digital Character Illustration</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Charming tropical reef fish study with luminous scales and expressive eyes.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="pish">300 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('pish')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('bear-v1')">
+          <img src="../assets/images/portfolio/digital/bear-V1.jpg" data-art-id="bear-v1" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/bear-V1.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/bear-V1.jpg';}" alt="Grizzly Monarch I" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #39</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Grizzly Monarch I</h3>
+          <p class="text-xs text-primary font-medium">Digital Wildlife Portrait</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Stately profile portrait of an Alaskan grizzly bear in textured digital dry brush.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="bear-v1">400 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('bear-v1')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('bear-v2')">
+          <img src="../assets/images/portfolio/digital/BEAR-V2.jpg" data-art-id="bear-v2" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/BEAR-V2.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/BEAR-V2.jpg';}" alt="Grizzly Monarch II" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #40</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Grizzly Monarch II</h3>
+          <p class="text-xs text-primary font-medium">Digital Wildlife Portrait</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Frontal gaze of a grizzly bear capturing fur texture, raw power, and wilderness calm.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="bear-v2">420 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('bear-v2')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('toucan')">
+          <img src="../assets/images/portfolio/digital/toucan.jpg" data-art-id="toucan" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/toucan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/toucan.jpg';}" alt="Rainforest Toucan" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #41</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Rainforest Toucan</h3>
+          <p class="text-xs text-primary font-medium">Digital Wildlife Art</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A Keel-billed toucan perched in lush tropical foliage with a rainbow-hued bill.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="toucan">390 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('toucan')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('seagulls-leh')">
+          <img src="../assets/images/portfolio/digital/seagulls-from-leh.jpg" data-art-id="seagulls-leh" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/digital/seagulls-from-leh.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/seagulls-from-leh.jpg';}" alt="Seagulls Over Pangong Tso" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-info">Digital</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #42</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Seagulls Over Pangong Tso</h3>
+          <p class="text-xs text-primary font-medium">Digital Wildlife Study</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">High-altitude brown-headed gulls soaring over the turquoise alpine waters of Ladakh.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="seagulls-leh">350 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('seagulls-leh')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="blender">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('blender-ghost')">
+          <img src="../assets/images/portfolio/blender/ghost.png" data-art-id="blender-ghost" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/blender/ghost.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/blender/ghost.png';}" alt="Ghost: The Little Knight" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-secondary">3D Blender</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #43</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Ghost: The Little Knight</h3>
+          <p class="text-xs text-primary font-medium">Blender 3D Render / Cycles</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Full 3D sculptural render of The Knight from Hollow Knight, holding the coiled Old Nail with rim lighting and cloak cloth simulation.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="blender-ghost">700 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('blender-ghost')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="blender">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('blender-hornet')">
+          <img src="../assets/images/portfolio/blender/hornet-3d.png" data-art-id="blender-hornet" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/blender/hornet-3d.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/blender/hornet-3d.png';}" alt="Hornet: Silksong Protector" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-secondary">3D Blender</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #44</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Hornet: Silksong Protector</h3>
+          <p class="text-xs text-primary font-medium">Blender 3D Render / Cycles</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">A dynamic 3D model render of Hornet posed with her threaded needle, modeled, sculpted, and textured in Blender.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="blender-hornet">750 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('blender-hornet')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="blender">
+        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('blender-sherma')">
+          <img src="../assets/images/portfolio/blender/sherma.jpg" data-art-id="blender-sherma" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='/init/assets/images/portfolio/blender/sherma.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/blender/sherma.jpg';}" alt="Sherma the Pilgrim" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
+            <div class="flex items-center gap-1.5">
+              
+                <span class="badge badge-sm badge-secondary">3D Blender</span>
+              
+              <span class="badge badge-sm badge-primary">Lot #45</span>
+            </div>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">Sherma the Pilgrim</h3>
+          <p class="text-xs text-primary font-medium">Blender 3D Render / Cycles</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">Beloved pilgrim Sherma from Hollow Knight: Silksong, modeled with his signature staff and lantern in stylized Blender 3D shaders.</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="blender-sherma">680 TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('blender-sherma')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+</div>
+
+<!-- Inspection & Silent Bidding Modal -->
+<dialog id="artwork-inspection-modal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box max-w-5xl bg-[#0a1411] border border-primary/30 p-0 overflow-hidden shadow-2xl">
+    
+    <!-- Modal Header bar -->
+    <div class="p-4 border-b border-white/10 flex items-center justify-between bg-black/40">
+      <div class="flex items-center gap-2">
+        <span class="badge badge-primary font-mono text-xs" id="modal-lot-badge">LOT #1</span>
+        <h3 class="font-bold text-lg text-white font-serif" id="modal-title">Artwork Title</h3>
+      </div>
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost text-white/70 hover:text-white" aria-label="Close">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Modal Grid: Image View & Bidding Book -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+      
+      <!-- Left Column: Artwork Exhibition Preview (7 cols) -->
+      <div class="lg:col-span-7 p-6 bg-black/60 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-white/10 relative group">
+        <div class="relative max-h-[480px] w-full flex items-center justify-center p-2 rounded-xl bg-black/40 shadow-inner">
+          <img id="modal-image" src="" alt="Artwork View" class="max-h-[460px] max-w-full object-contain rounded shadow-2xl border border-white/10" />
+        </div>
+        <div class="w-full mt-4 flex flex-wrap items-center justify-between text-xs opacity-75 font-mono">
+          <span id="modal-medium">Medium</span>
+          <span id="modal-dimensions">Dimensions</span>
+          <span id="modal-year">2024</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Curator Note & Silent Bidding Book (5 cols) -->
+      <div class="lg:col-span-5 p-6 flex flex-col justify-between space-y-4 bg-gradient-to-b from-[#0a1411] to-[#040a08]">
+        
+        <!-- Curator Note -->
+        <div>
+          <h4 class="text-xs uppercase tracking-wider text-primary font-bold mb-1">Curator's Note</h4>
+          <p id="modal-description" class="text-xs sm:text-sm opacity-80 leading-relaxed font-light">
+            Description of the artwork piece.
+          </p>
+        </div>
+
+        <!-- Silent Bidding Ledger Status -->
+        <div class="rounded-xl bg-black/40 border border-white/10 p-4 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="opacity-60">Reserve Price:</span>
+            <span id="modal-starting-bid" class="font-mono font-bold text-slate-300">500 TKN</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="font-bold text-primary">Top Patron Offer:</span>
+            <div class="text-right">
+              <span id="modal-highest-bid" class="font-mono font-extrabold text-lg text-amber-400">850 TKN</span>
+              <span id="modal-leading-patron" class="block text-[11px] opacity-60">@Miles_M</span>
+            </div>
+          </div>
+
+          <!-- Mini Bid History Log -->
+          <div class="divider my-1 text-[10px] opacity-40 uppercase">Offer Ledger</div>
+          <div id="modal-bid-history" class="max-h-24 overflow-y-auto text-xs space-y-1 pr-1 font-mono">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Bidding Input & Controls -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-white/90">Submit Private Offer:</span>
+            <span class="text-[11px] opacity-60">Permanent exhibition piece</span>
+          </div>
+
+          <!-- Patron Identity & Amount Inputs -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Patron Alias</span></label>
+              <input id="bid-patron-name" type="text" placeholder="Your Name / Handle" class="input input-sm input-bordered bg-black/40 text-xs" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Offer Amount (TKN)</span></label>
+              <input id="bid-amount-input" type="number" step="50" class="input input-sm input-bordered bg-black/40 text-xs font-mono font-bold text-amber-400" />
+            </div>
+          </div>
+
+          <!-- Quick Increment Buttons -->
+          <div class="flex gap-1.5">
+            <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="50">+50</button>
+            <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="100">+100</button>
+            <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="250">+250</button>
+          </div>
+
+          <!-- Action Button -->
+          <button id="submit-bid-btn" class="btn btn-primary btn-sm w-full font-bold shadow-lg shadow-primary/20">
+            Submit Private Offer (50 TKN Fee)
+          </button>
+
+          <!-- Feedback message -->
+          <div id="bid-message" class="hidden text-xs text-center py-2 rounded-lg font-medium"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<!-- Artwork data injected safely for the JS engine -->
+<script type="application/json" id="museum-artworks-data" data-base-url="/init">
+  [{"category": "physical", "description": "An atmospheric study of water turbulence, pine forest silhouettes, and shifting twilight reflections framing a floating Japanese shrine torii gate.", "dimensions": "A4 / Crosshatch \u0026 Stipple Study", "id": "torii", "image": "/assets/images/portfolio/physical/torii.jpg", "medium": "Micron Pen \u0026 Ink on Paper", "starting_bid": 500, "title": "Torii Gate at Twilight", "year": "2024"}, {"category": "physical", "description": "An expressive, high-contrast ink drawing depicting WALL-E amidst the towering brick walls, decaying street lamp, and scattered debris of a forgotten city.", "dimensions": "A4 / Detailed Alleyway Study", "id": "walle-ink", "image": "/assets/images/portfolio/physical/Wall-E-V2.jpg", "medium": "Fine-Line Ink \u0026 Hatching on Paper", "starting_bid": 600, "title": "WALL-E: Urban Solitude", "year": "2024"}, {"category": "physical", "description": "A warm, textured portrait of WALL-E with evocative ocular lenses, oxidized metallic textures, and solar panel chest detailing.", "dimensions": "A4 / Color Study", "id": "walle-color", "image": "/assets/images/portfolio/physical/Wall-E-v1.jpeg", "medium": "Colored Pencil \u0026 Mixed Media", "starting_bid": 450, "title": "WALL-E: Solar Awakening", "year": "2024"}, {"category": "physical", "description": "Dynamic depiction of Hornet from Hollow Knight with her needle and thread caught in mid-motion, accented by energetic ink splatters.", "dimensions": "A4 / Line Art \u0026 Splatter", "id": "hornet-ink", "image": "/assets/images/portfolio/physical/hornet.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 450, "title": "Hornet: Needle \u0026 Thread", "year": "2024"}, {"category": "physical", "description": "Troupe Master Grimm perched atop an ornate gothic lantern holding a flickering scarlet flame, rendered with rich feather and cloth textures.", "dimensions": "A4 / Crosshatch Study", "id": "grimm-ink", "image": "/assets/images/portfolio/physical/grimm.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 650, "title": "Troupe Master Grimm", "year": "2024"}, {"category": "physical", "description": "The imposing silhouette of the Pure Vessel standing in ceremonial armor, draped in flowing dark robes with exquisite etched detailing.", "dimensions": "A4 / Ink Illustration", "id": "pure-vessel-ink", "image": "/assets/images/portfolio/physical/purevessel.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Pure Vessel", "year": "2024"}, {"category": "physical", "description": "A chiaroscuro ink illustration of John-117 in Mjolnir Powered Assault Armor, featuring meticulous directional crosshatching on armor plates and visor reflections.", "dimensions": "A4 / Chiaroscuro Study", "id": "master-chief", "image": "/assets/images/portfolio/physical/masterchief.jpg", "medium": "High-Density Crosshatch Ink on Paper", "starting_bid": 850, "title": "Master Chief: Spartan-117", "year": "2024"}, {"category": "physical", "description": "A dual split-portrait contrasting the human vulnerability of Tony Stark on the left with the stoic mechanical precision of the Iron Man helmet on the right.", "dimensions": "A4 / Split-Portrait Study", "id": "love-you-3000", "image": "/assets/images/portfolio/physical/love-you-3000.jpg", "medium": "Graphite \u0026 Charcoal on Paper", "starting_bid": 700, "title": "I Love You 3000", "year": "2020"}, {"category": "physical", "description": "A geometric ink study of Egyptian deity Anubis wearing an Ankh headpiece and golden nemes headdress, suspended above the all-seeing Eye of Horus.", "dimensions": "A4 / Symbolic Ink Drawing", "id": "anubis", "image": "/assets/images/portfolio/physical/Anubis.jpeg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Anubis: Jackal Deity", "year": "2024"}, {"category": "physical", "description": "A fiery acrylic painting of Fawkes the Phoenix rising with incandescent crimson and golden plumes against a dark canvas.", "dimensions": "A4 / Textured Impasto", "id": "fawkes", "image": "/assets/images/portfolio/physical/Fawkes.jpg", "medium": "Acrylic on Canvas", "starting_bid": 750, "title": "Fawkes: Rebirth in Flames", "year": "2021"}, {"category": "physical", "description": "A radiant portrait of Lord Krishna playing the bansuri flute, adorned with a jeweled turban, peacock feather, and golden pearl ornaments in warm ochre tones.", "dimensions": "Canvas / Traditional Portrait", "id": "krishna", "image": "/assets/images/portfolio/physical/krishna.jpg", "medium": "Acrylic on Stretched Canvas", "starting_bid": 800, "title": "Krishna: The Divine Flutist", "year": "2021"}, {"category": "physical", "description": "A vibrant colored pencil character study of Monsters Inc\u0027s Mike Wazowski, featuring delicate spherical blending and crystalline ocular reflections.", "dimensions": "A4 / Colored Pencil Illustration", "id": "mike-wazowski", "image": "/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg", "medium": "Colored Pencil on Paper", "starting_bid": 400, "title": "Mike Wazowski", "year": "2024"}, {"category": "physical", "description": "McLaren\u0027s MCL60 race car driven by Oscar Piastri speeding through the Las Vegas Strip Circuit, framed beneath the illuminated Vegas Sphere.", "dimensions": "A4 / High-Speed Ink Composition", "id": "op81-vegas", "image": "/assets/images/portfolio/physical/OP81.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 800, "title": "Oscar Piastri #81: Las Vegas GP", "year": "2024"}, {"category": "physical", "description": "A bold architectural perspective piece exploring rhythmic descending structural ribs in volcanic cadmium reds, burnt umber, and charcoal black.", "dimensions": "A4 / Structural Perspective", "id": "highway-to-hell", "image": "/assets/images/portfolio/physical/Highway-to-hell.jpg", "medium": "Acrylic \u0026 Mixed Media on Canvas", "starting_bid": 600, "title": "Highway to Hell", "year": "2024"}, {"category": "physical", "description": "High-contrast ink rendering of a sign of the horns hand sign liquefied into molten chrome and dripping black ink.", "dimensions": "A4 / Ink Rendering", "id": "melt", "image": "/assets/images/portfolio/physical/Melt.jpeg", "medium": "Gloss Ink \u0026 Wash on Paper", "starting_bid": 450, "title": "Melt: Heavy Metal", "year": "2022"}, {"category": "physical", "description": "A faceted anatomical study of a human skeleton rendered in faceted low-polygon mesh tessellation and delicate pointillism inside a tilted diamond frame.", "dimensions": "A4 / Geometric Diamond Study", "id": "skelly", "image": "/assets/images/portfolio/physical/Skelly.jpg", "medium": "Stippling \u0026 Low-Poly Ink on Paper", "starting_bid": 550, "title": "Skelly: Geometric Osteology", "year": "2022"}, {"category": "physical", "description": "A photorealistic study of an unwrapped Mars chocolate bar, capturing the gloss of melting chocolate, gooey golden caramel drizzle, and foil creases.", "dimensions": "A4 / Hyperrealist Study", "id": "mars-bar", "image": "/assets/images/portfolio/physical/mmars.jpg", "medium": "Colored Pencil on Paper", "starting_bid": 500, "title": "Mars: Caramel \u0026 Nougat", "year": "2022"}, {"category": "physical", "description": "A solitary silhouetted figure with an umbrella walking down a rain-soaked urban canyon flanked by towering skyscrapers bathed in misty ambient backlighting.", "dimensions": "A4 / Atmospheric Charcoal Study", "id": "rainy-city", "image": "/assets/images/portfolio/physical/Unknown.jpg", "medium": "Charcoal \u0026 Powder on Paper", "starting_bid": 550, "title": "Rainy City Solitude", "year": "2024"}, {"category": "physical", "description": "A majestic multi-tiered Japanese temple pagoda built into a dramatic mountainside waterfall ravine, drawn with dense architectural line work and mountain shading.", "dimensions": "A4 / Architectural Ink Study", "id": "mountain-pagoda", "image": "/assets/images/portfolio/physical/tera.jpg", "medium": "Pen \u0026 Ink Crosshatching", "starting_bid": 750, "title": "Mountain Pagoda (Tera)", "year": "2024"}, {"category": "digital", "description": "Vibrant neon-lit nocturnal streetscapes of Tokyo, illuminated with glowing kanji billboards, rainy reflections, and cyber aesthetic.", "dimensions": "High-Res Digital Canvas", "id": "neon-japan", "image": "/assets/images/portfolio/digital/Neon-Japan.jpg", "medium": "Digital Painting / Procreate", "starting_bid": 400, "title": "Neon Japan", "year": "2024"}, {"category": "digital", "description": "High-contrast monochrome digital study of Japanese street architecture, emphasizing dramatic shadow play and urban silhouettes.", "dimensions": "High-Res Digital Canvas", "id": "bw-japan", "image": "/assets/images/portfolio/digital/BandW-Japan.jpg", "medium": "Digital Ink \u0026 Tonal Study", "starting_bid": 350, "title": "Shibuya Crossing (Monochrome)", "year": "2024"}, {"category": "digital", "description": "Intricate architectural details and dense tenement housing geometry capturing the vibrant layered pulse of Hong Kong.", "dimensions": "High-Res Digital Canvas", "id": "details-hong-kong", "image": "/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg", "medium": "Digital Illustration", "starting_bid": 450, "title": "Hong Kong: Urban Details", "year": "2024"}, {"category": "digital", "description": "Stylized manga-inspired skyline and alley composition evoking 90s cyberpunk aesthetic and cinematic line weight.", "dimensions": "High-Res Digital Canvas", "id": "manga-hong-kong", "image": "/assets/images/portfolio/digital/Manga-Hong-Kong.jpg", "medium": "Digital Comic \u0026 Manga Art", "starting_bid": 420, "title": "Manga Hong Kong", "year": "2024"}, {"category": "digital", "description": "A warm, glowing oriental lantern suspended in twilight, casting soft golden radiance across floating embers.", "dimensions": "High-Res Digital Canvas", "id": "lantern", "image": "/assets/images/portfolio/digital/Lantern.jpg", "medium": "Digital Concept Art", "starting_bid": 380, "title": "Luminous Festival Lantern", "year": "2024"}, {"category": "digital", "description": "Dreamlike atmospheric scenery with soft chromatic gradients and surreal environmental lighting.", "dimensions": "High-Res Digital Canvas", "id": "ethereal", "image": "/assets/images/portfolio/digital/ethereal.jpg", "medium": "Digital Matte Painting", "starting_bid": 360, "title": "Ethereal Horizon", "year": "2024"}, {"category": "digital", "description": "Subtle rays of ambient light breaking through shadowed storm clouds, evoking quiet optimism.", "dimensions": "High-Res Digital Canvas", "id": "hope", "image": "/assets/images/portfolio/digital/hope.jpg", "medium": "Digital Painting", "starting_bid": 340, "title": "Glimmer of Hope", "year": "2024"}, {"category": "digital", "description": "An enigmatic dusk landscape shrouded in misty tones and deep indigo gradients.", "dimensions": "High-Res Digital Canvas", "id": "unlit", "image": "/assets/images/portfolio/digital/unlit.jpg", "medium": "Digital Mood Study", "starting_bid": 320, "title": "Unlit Twilight", "year": "2024"}, {"category": "digital", "description": "A mysterious wandering figure amidst an abstract painted landscape of fluid organic brushstrokes.", "dimensions": "High-Res Digital Canvas", "id": "idunno", "image": "/assets/images/portfolio/digital/idunno.jpg", "medium": "Digital Character Study", "starting_bid": 350, "title": "Spectral Wanderer", "year": "2024"}, {"category": "digital", "description": "Expressive, moody digital textures capturing quiet midnight contemplation.", "dimensions": "High-Res Digital Canvas", "id": "gaveup", "image": "/assets/images/portfolio/digital/gaveup.jpg", "medium": "Digital Color Study", "starting_bid": 320, "title": "Midnight Haze", "year": "2024"}, {"category": "digital", "description": "A formidable Great White Shark emerging from the sun-dappled pelagic abyss with visceral presence.", "dimensions": "High-Res Digital Canvas", "id": "jaws", "image": "/assets/images/portfolio/digital/JAWS.jpg", "medium": "Digital Marine Illustration", "starting_bid": 450, "title": "Great White: Jaws", "year": "2024"}, {"category": "digital", "description": "Hydrodynamic elegance of a shark gliding gracefully through crystal-clear turquoise waters.", "dimensions": "High-Res Digital Canvas", "id": "shark", "image": "/assets/images/portfolio/digital/SHARK.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Ocean Apex: Shark", "year": "2024"}, {"category": "digital", "description": "The unmistakable silhouette of a hammerhead shark navigating the oceanic deep with distinctive lateral sensors.", "dimensions": "High-Res Digital Canvas", "id": "hammerhead", "image": "/assets/images/portfolio/digital/hammer.jpg", "medium": "Digital Marine Study", "starting_bid": 400, "title": "Hammerhead Patrol", "year": "2024"}, {"category": "digital", "description": "A colossal blue whale cruising majestically through sunbeams penetrating the azure ocean surface.", "dimensions": "High-Res Digital Canvas", "id": "whale", "image": "/assets/images/portfolio/digital/WHALE.jpg", "medium": "Digital Oceanography Art", "starting_bid": 480, "title": "Leviathan: Blue Whale", "year": "2024"}, {"category": "digital", "description": "A monumental whale fluke rising into the twilight sea breeze amidst spray and oceanic ripples.", "dimensions": "High-Res Digital Canvas", "id": "whale-tale", "image": "/assets/images/portfolio/digital/whale-tale.jpg", "medium": "Digital Painting", "starting_bid": 420, "title": "Whale Tail Breach", "year": "2024"}, {"category": "digital", "description": "Playful Bottlenose dolphin leaping into open ocean air with dynamic water droplets.", "dimensions": "High-Res Digital Canvas", "id": "dolphin", "image": "/assets/images/portfolio/digital/dolpin.jpg", "medium": "Digital Marine Art", "starting_bid": 360, "title": "Dolphin Flight", "year": "2024"}, {"category": "digital", "description": "A clownfish nesting within flowing, vibrant sea anemone tentacles.", "dimensions": "High-Res Digital Canvas", "id": "found-nemo", "image": "/assets/images/portfolio/digital/i-found-nemo.jpg", "medium": "Digital Marine Illustration", "starting_bid": 340, "title": "Anemone Haven: Clownfish", "year": "2024"}, {"category": "digital", "description": "A serene sea turtle paddling weightlessly across a coral reef lagoon.", "dimensions": "High-Res Digital Canvas", "id": "turtle", "image": "/assets/images/portfolio/digital/turlte.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Pacific Sea Turtle", "year": "2024"}, {"category": "digital", "description": "Charming tropical reef fish study with luminous scales and expressive eyes.", "dimensions": "High-Res Digital Canvas", "id": "pish", "image": "/assets/images/portfolio/digital/pish.jpg", "medium": "Digital Character Illustration", "starting_bid": 300, "title": "Tropical Reef Pish", "year": "2024"}, {"category": "digital", "description": "Stately profile portrait of an Alaskan grizzly bear in textured digital dry brush.", "dimensions": "High-Res Digital Canvas", "id": "bear-v1", "image": "/assets/images/portfolio/digital/bear-V1.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 400, "title": "Grizzly Monarch I", "year": "2024"}, {"category": "digital", "description": "Frontal gaze of a grizzly bear capturing fur texture, raw power, and wilderness calm.", "dimensions": "High-Res Digital Canvas", "id": "bear-v2", "image": "/assets/images/portfolio/digital/BEAR-V2.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 420, "title": "Grizzly Monarch II", "year": "2024"}, {"category": "digital", "description": "A Keel-billed toucan perched in lush tropical foliage with a rainbow-hued bill.", "dimensions": "High-Res Digital Canvas", "id": "toucan", "image": "/assets/images/portfolio/digital/toucan.jpg", "medium": "Digital Wildlife Art", "starting_bid": 390, "title": "Rainforest Toucan", "year": "2024"}, {"category": "digital", "description": "High-altitude brown-headed gulls soaring over the turquoise alpine waters of Ladakh.", "dimensions": "High-Res Digital Canvas", "id": "seagulls-leh", "image": "/assets/images/portfolio/digital/seagulls-from-leh.jpg", "medium": "Digital Wildlife Study", "starting_bid": 350, "title": "Seagulls Over Pangong Tso", "year": "2024"}, {"category": "blender", "description": "Full 3D sculptural render of The Knight from Hollow Knight, holding the coiled Old Nail with rim lighting and cloak cloth simulation.", "dimensions": "High-Poly 3D Render", "id": "blender-ghost", "image": "/assets/images/portfolio/blender/ghost.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 700, "title": "Ghost: The Little Knight", "year": "2024"}, {"category": "blender", "description": "A dynamic 3D model render of Hornet posed with her threaded needle, modeled, sculpted, and textured in Blender.", "dimensions": "High-Poly 3D Render", "id": "blender-hornet", "image": "/assets/images/portfolio/blender/hornet-3d.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 750, "title": "Hornet: Silksong Protector", "year": "2024"}, {"category": "blender", "description": "Beloved pilgrim Sherma from Hollow Knight: Silksong, modeled with his signature staff and lantern in stylized Blender 3D shaders.", "dimensions": "High-Poly 3D Render", "id": "blender-sherma", "image": "/assets/images/portfolio/blender/sherma.jpg", "medium": "Blender 3D Render / Cycles", "starting_bid": 680, "title": "Sherma the Pilgrim", "year": "2024"}]
+</script>
+
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-CKVN9NSP.js"></script>
+</body>
+
+</html>

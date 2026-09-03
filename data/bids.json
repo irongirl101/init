@@ -1,0 +1,32 @@
+{
+  "torii": {
+    "title": "Torii Gate at Twilight",
+    "starting_bid": 500,
+    "highest_bid": 850,
+    "leading_patron": "Miles_M",
+    "bids": [
+      { "patron": "ArtLover99", "amount": 550, "timestamp": "2026-08-28" },
+      { "patron": "SothebyBot", "amount": 700, "timestamp": "2026-08-30" },
+      { "patron": "Miles_M", "amount": 850, "timestamp": "2026-09-01" }
+    ]
+  },
+  "walle-ink": {
+    "title": "WALL-E: Urban Solitude",
+    "starting_bid": 600,
+    "highest_bid": 900,
+    "leading_patron": "CyberCurator",
+    "bids": [
+      { "patron": "PixelWhale", "amount": 650, "timestamp": "2026-08-29" },
+      { "patron": "CyberCurator", "amount": 900, "timestamp": "2026-09-02" }
+    ]
+  },
+  "walle-color": {
+    "title": "WALL-E: Solar Awakening",
+    "starting_bid": 450,
+    "highest_bid": 750,
+    "leading_patron": "EvaCollector",
+    "bids": [
+      { "patron": "EvaCollector", "amount": 750, "timestamp": "2026-09-01" }
+    ]
+  }
+}
