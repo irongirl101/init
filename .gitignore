@@ -2,6 +2,9 @@ package-lock.json
 /node_modules
 /node_modules/*
 /assets/images/*
+!/assets/images/portfolio/
+!/assets/images/portfolio/**
+!/assets/images/spidey*
 
 .env
 

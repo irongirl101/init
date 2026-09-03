@@ -67,6 +67,7 @@ def clean_output(directory):
         "src",
         "templates",
         "scripts",
+        "data",
         "config.yaml",
         "package.json",
         "package-lock.json",
@@ -655,6 +656,7 @@ def tag_pages(tag_template, site_config, tags=None, image_manifest=None):
         )
         tag_page_html = replace_images_with_processed(tag_page_html, image_manifest)
         output_path = os.path.join(tags_dir, f"{tag_name}.html")
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(tag_page_html)

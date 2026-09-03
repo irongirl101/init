@@ -1,6 +1,7 @@
 import * as ChriscoursesPerlinNoise from "@chriscourses/perlin-noise";
 import "../assets/css/main.css";
 import "../assets/css/syntax.css";
+import { initMuseumMaze } from "./museum-maze";
 
 const canvas = document.getElementById("res-canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -444,3 +445,12 @@ function animate(): void {
 }
 
 animate();
+
+// Initialize Museum Maze if on portfolio page
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    initMuseumMaze();
+  });
+} else {
+  initMuseumMaze();
+}

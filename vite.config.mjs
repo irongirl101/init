@@ -174,7 +174,7 @@ const py_build_plugin = (baseUrl = '') => {
         // For production builds, move generated files to dist before cleanup
         console.log('Moving generated files to dist...');
         try {
-          const generatedDirs = ['blog', 'posts', 'tags'];
+          const generatedDirs = ['blog', 'posts', 'tags', 'portfolio'];
           const generatedFiles = ['index.html', 'sitemap.xml'];
 
           // Move directories from root to dist
@@ -214,38 +214,25 @@ const py_build_plugin = (baseUrl = '') => {
             }
           }
 
-          // Copy images from assets/images to dist/assets/images
+          // Copy images from assets/images to dist/assets/images recursively
           const imgSrcDir = path.join(__dirname, 'assets', 'images');
           const imgDstDir = path.join(__dirname, 'dist', 'assets', 'images');
           if (fs.existsSync(imgSrcDir)) {
-            if (!fs.existsSync(imgDstDir)) {
-              fs.mkdirSync(imgDstDir, { recursive: true });
-            }
-            const imgFiles = fs.readdirSync(imgSrcDir);
-            for (const imgFile of imgFiles) {
-              const src = path.join(imgSrcDir, imgFile);
-              const dst = path.join(imgDstDir, imgFile);
-              if (fs.statSync(src).isFile()) {
-                fs.copyFileSync(src, dst);
-              }
-            }
+            fs.cpSync(imgSrcDir, imgDstDir, { recursive: true });
           }
 
-          // Copy processed images from assets/images-processed to dist/assets/images-processed
+          // Copy processed images from assets/images-processed to dist/assets/images-processed recursively
           const procSrcDir = path.join(__dirname, 'assets', 'images-processed');
           const procDstDir = path.join(__dirname, 'dist', 'assets', 'images-processed');
           if (fs.existsSync(procSrcDir)) {
-            if (!fs.existsSync(procDstDir)) {
-              fs.mkdirSync(procDstDir, { recursive: true });
-            }
-            const procFiles = fs.readdirSync(procSrcDir);
-            for (const procFile of procFiles) {
-              const src = path.join(procSrcDir, procFile);
-              const dst = path.join(procDstDir, procFile);
-              if (fs.statSync(src).isFile()) {
-                fs.copyFileSync(src, dst);
-              }
-            }
+            fs.cpSync(procSrcDir, procDstDir, { recursive: true });
+          }
+
+          // Copy data directory to dist/data
+          const dataSrcDir = path.join(__dirname, 'data');
+          const dataDstDir = path.join(__dirname, 'dist', 'data');
+          if (fs.existsSync(dataSrcDir)) {
+            fs.cpSync(dataSrcDir, dataDstDir, { recursive: true });
           }
 
           // Post-process HTML files to point script/style to built assets
@@ -307,6 +294,27 @@ const py_build_plugin = (baseUrl = '') => {
       }
     },
     configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        let url = (req.url || '').split('?')[0];
+        if (baseUrl && url.startsWith(baseUrl)) {
+          url = url.slice(baseUrl.length);
+        }
+        if (!url || url === '/') {
+          return next();
+        }
+
+        const cleanPath = url.replace(/^\/+|\/+$/g, '');
+        const directHtml = path.join(__dirname, cleanPath + '.html');
+        const folderHtml = path.join(__dirname, cleanPath, 'index.html');
+
+        if (fs.existsSync(folderHtml)) {
+          req.url = (baseUrl || '') + '/' + cleanPath + '/index.html';
+        } else if (fs.existsSync(directHtml)) {
+          req.url = (baseUrl || '') + '/' + cleanPath + '.html';
+        }
+        next();
+      });
+
       const regenerateGeneratedCss = () => {
         runGenerateStyles();
       };
@@ -389,7 +397,7 @@ export default defineConfig(async ({ command }) => {
       console.log(output.toString().trim());
 
       // Move generated HTML files from docs to dist
-      const generatedDirs = ['blog', 'posts', 'tags'];
+      const generatedDirs = ['blog', 'posts', 'tags', 'portfolio'];
       const generatedFiles = ['index.html', 'sitemap.xml'];
 
       // Ensure dist exists

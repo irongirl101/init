@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="portfolio-root" class="max-w-7xl mx-auto px-2 sm:px-6 py-4 space-y-6">
+
+  <!-- Gallery Exhibition Header -->
+  <div class="flex flex-wrap items-end justify-between gap-4 border-b border-base-content/10 pb-5">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="text-xs uppercase tracking-[0.25em] text-primary font-mono font-semibold">Exhibition Pavilion</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-base-content">
+        The Pavilion Gallery
+      </h1>
+      <p class="text-xs sm:text-sm opacity-70 mt-1 max-w-xl font-light">
+        Original works exhibition & silent bidding ledger by {{ site.author }}. Explore the halls, discover the 3 featured lots, and submit private bids.
+      </p>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3">
+      <!-- View Mode Switcher -->
+      <div class="join border border-base-content/15 rounded-xl p-0.5 bg-base-200/50 backdrop-blur">
+        <button id="view-mode-maze" class="btn btn-xs sm:btn-sm btn-primary rounded-lg join-item">
+          🏛️ Walk Gallery
+        </button>
+        <button id="view-mode-catalog" class="btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item">
+          🖼️ Catalog Index
+        </button>
+      </div>
+
+      <!-- SFX Toggle -->
+      <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost btn-circle border border-base-content/10" title="Audio Ambience">
+        🔊
+      </button>
+    </div>
+  </div>
+
+  <!-- VIEW 1: Museum Interactive Canvas -->
+  <div id="museum-view" class="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] bg-black">
+    
+    <!-- Top-Left In-Game HUD: Token Balance & Radar (1:1 with Concept Image) -->
+    <div class="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-auto select-none">
+      <div class="bg-[#12161a]/90 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-3 min-w-[190px]">
+        <!-- Token Balance Header -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-black font-extrabold text-sm shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+            💰
+          </div>
+          <div>
+            <div class="font-mono font-bold text-base text-white tracking-wide leading-none">
+              <span id="patron-display-balance">1,240</span> <span class="text-amber-400 text-xs font-semibold">TKN</span>
+            </div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
+              Token Balance
+            </div>
+          </div>
+        </div>
+
+        <!-- Radar Blueprint Canvas -->
+        <div class="relative rounded-xl overflow-hidden border border-white/10 bg-[#060a0e] shadow-inner p-1">
+          <canvas id="minimap-canvas" width="160" height="160" class="block w-full h-auto rounded-lg"></canvas>
+          <div class="absolute bottom-1.5 right-2 text-[9px] font-mono uppercase text-primary/80 font-bold tracking-widest">
+            3 LOTS
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Helper Legend (Desktop) -->
+    <div class="absolute bottom-4 left-4 z-20 pointer-events-none hidden md:flex items-center gap-2 text-xs bg-black/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 text-white/80 shadow-lg">
+      <span class="badge badge-xs badge-primary font-mono">NAV</span>
+      <span>Use <kbd class="kbd kbd-xs">W</kbd><kbd class="kbd kbd-xs">A</kbd><kbd class="kbd kbd-xs">S</kbd><kbd class="kbd kbd-xs">D</kbd> / <kbd class="kbd kbd-xs">Arrows</kbd> to walk • Click floor to pathfind • Walk to artworks or press <kbd class="kbd kbd-xs">E</kbd> to inspect</span>
+    </div>
+
+    <!-- Main Architectural Museum Canvas -->
+    <canvas id="museum-canvas" class="w-full block cursor-crosshair"></canvas>
+
+    <!-- Floating Proximity Prompt (Triggered when standing near a wall painting) -->
+    <div id="proximity-prompt" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300 opacity-0 translate-y-4 scale-95 flex items-center gap-3 bg-black/90 backdrop-blur-xl px-5 py-3 rounded-2xl border border-primary/50 shadow-[0_0_35px_rgba(32,140,115,0.45)]">
+      <span class="animate-pulse text-xl text-amber-400">✦</span>
+      <div class="text-left">
+        <p class="text-[10px] text-primary uppercase font-bold tracking-wider" id="prompt-subtitle">Artwork In Viewing Range</p>
+        <h4 class="text-sm font-bold text-white font-serif" id="prompt-title">Artwork Title</h4>
+      </div>
+      <button id="prompt-action-btn" class="btn btn-sm btn-primary ml-2 shadow-lg hover:scale-105 transition-transform font-mono">
+        Inspect & Bid [E]
+      </button>
+    </div>
+
+    <!-- Mobile Virtual Buttons -->
+    <div class="sm:hidden absolute bottom-4 right-4 z-20 grid grid-cols-3 gap-1 bg-black/70 backdrop-blur-md p-2 rounded-2xl border border-white/10">
+      <div></div>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="up">▲</button>
+      <div></div>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="left">◀</button>
+      <button class="btn btn-xs btn-primary virtual-btn" data-dir="interact">E</button>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="right">▶</button>
+      <div></div>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="down">▼</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: Traditional Catalog Grid (Accessible Alternative) -->
+  <div id="catalog-view" class="hidden space-y-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold font-serif">Exhibition Catalog ({{ page.artworks | length }} Works)</h2>
+      <p class="text-sm opacity-70">Click any piece to inspect details or submit an offer.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for art in page.artworks %}
+      <div class="card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group">
+        <figure class="relative overflow-hidden bg-black/40 aspect-[4/5] cursor-pointer" onclick="window.openInspectionModal('{{ art.id }}')">
+          <img src="{{ site.base_url }}{{ art.image }}" alt="{{ art.title }}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
+            <span class="badge badge-sm badge-neutral border border-white/20">{{ art.year }}</span>
+            <span class="badge badge-sm badge-primary">Lot #{{ loop.index }}</span>
+          </div>
+        </figure>
+        <div class="card-body p-5">
+          <h3 class="card-title text-lg font-bold font-serif">{{ art.title }}</h3>
+          <p class="text-xs text-primary font-medium">{{ art.medium }}</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">{{ art.description }}</p>
+          
+          <div class="divider my-2"></div>
+          
+          <div class="flex items-center justify-between text-xs">
+            <div>
+              <span class="opacity-60 block">Leading Offer:</span>
+              <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="{{ art.id }}">{{ art.starting_bid }} TKN</span>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('{{ art.id }}')">
+              Inspect & Bid
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- Inspection & Silent Bidding Modal -->
+<dialog id="artwork-inspection-modal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box max-w-5xl bg-[#0a1411] border border-primary/30 p-0 overflow-hidden shadow-2xl">
+    
+    <!-- Modal Header bar -->
+    <div class="p-4 border-b border-white/10 flex items-center justify-between bg-black/40">
+      <div class="flex items-center gap-2">
+        <span class="badge badge-primary font-mono text-xs" id="modal-lot-badge">LOT #1</span>
+        <h3 class="font-bold text-lg text-white font-serif" id="modal-title">Artwork Title</h3>
+      </div>
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost text-white/70 hover:text-white">✕</button>
+      </form>
+    </div>
+
+    <!-- Modal Grid: Image View & Bidding Book -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+      
+      <!-- Left Column: Artwork Exhibition Preview (7 cols) -->
+      <div class="lg:col-span-7 p-6 bg-black/60 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-white/10 relative group">
+        <div class="relative max-h-[480px] w-full flex items-center justify-center p-2 rounded-xl bg-black/40 shadow-inner">
+          <img id="modal-image" src="" alt="Artwork View" class="max-h-[460px] max-w-full object-contain rounded shadow-2xl border border-white/10" />
+        </div>
+        <div class="w-full mt-4 flex flex-wrap items-center justify-between text-xs opacity-75 font-mono">
+          <span id="modal-medium">Medium</span>
+          <span id="modal-dimensions">Dimensions</span>
+          <span id="modal-year">2024</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Curator Note & Silent Bidding Book (5 cols) -->
+      <div class="lg:col-span-5 p-6 flex flex-col justify-between space-y-4 bg-gradient-to-b from-[#0a1411] to-[#040a08]">
+        
+        <!-- Curator Note -->
+        <div>
+          <h4 class="text-xs uppercase tracking-wider text-primary font-bold mb-1">Curator's Note</h4>
+          <p id="modal-description" class="text-xs sm:text-sm opacity-80 leading-relaxed font-light">
+            Description of the artwork piece.
+          </p>
+        </div>
+
+        <!-- Silent Bidding Ledger Status -->
+        <div class="rounded-xl bg-black/40 border border-white/10 p-4 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="opacity-60">Reserve Price:</span>
+            <span id="modal-starting-bid" class="font-mono font-bold text-slate-300">500 TKN</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="font-bold text-primary">Top Patron Offer:</span>
+            <div class="text-right">
+              <span id="modal-highest-bid" class="font-mono font-extrabold text-lg text-amber-400">850 TKN</span>
+              <span id="modal-leading-patron" class="block text-[11px] opacity-60">@Miles_M</span>
+            </div>
+          </div>
+
+          <!-- Mini Bid History Log -->
+          <div class="divider my-1 text-[10px] opacity-40 uppercase">Offer Ledger</div>
+          <div id="modal-bid-history" class="max-h-24 overflow-y-auto text-xs space-y-1 pr-1 font-mono">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Bidding Input & Controls -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-white/90">Submit Private Offer:</span>
+            <span class="text-[11px] opacity-60">Permanent exhibition piece</span>
+          </div>
+
+          <!-- Patron Identity & Amount Inputs -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Patron Alias</span></label>
+              <input id="bid-patron-name" type="text" placeholder="Your Name / Handle" class="input input-sm input-bordered bg-black/40 text-xs" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Offer Amount (TKN)</span></label>
+              <input id="bid-amount-input" type="number" step="50" class="input input-sm input-bordered bg-black/40 text-xs font-mono font-bold text-amber-400" />
+            </div>
+          </div>
+
+          <!-- Quick Increment Buttons -->
+          <div class="flex gap-1.5">
+            <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="50">+50</button>
+            <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="100">+100</button>
+            <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="250">+250</button>
+          </div>
+
+          <!-- Action Button -->
+          <button id="submit-bid-btn" class="btn btn-primary btn-sm w-full font-bold shadow-lg shadow-primary/20">
+            Submit Private Offer (50 TKN Fee)
+          </button>
+
+          <!-- Feedback message -->
+          <div id="bid-message" class="hidden text-xs text-center py-2 rounded-lg font-medium"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+<!-- Artwork data injected safely for the JS engine -->
+<script type="application/json" id="museum-artworks-data" data-base-url="{{ site.base_url }}">
+  {{ page.artworks | tojson }}
+</script>
+
+{% endblock %}
