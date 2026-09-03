@@ -22,7 +22,11 @@ const requirementsPath = path.join(__dirname, 'requirements.txt');
 const loadSiteConfig = () => {
   try {
     const raw = fs.readFileSync(siteConfigPath, 'utf8');
-    return YAML.parse(raw) || {};
+    const cfg = YAML.parse(raw) || {};
+    if (process.env.BASE_URL !== undefined) {
+      cfg.base_url = process.env.BASE_URL;
+    }
+    return cfg;
   } catch (err) {
     console.error('[config] Unable to read config.yaml', err);
     return {};
@@ -425,6 +429,24 @@ export default defineConfig(async ({ command }) => {
           fs.copyFileSync(src, dst);
           fs.unlinkSync(src);
         }
+      }
+
+      // GitHub Pages deployment prerequisites:
+      // 1. .nojekyll prevents Jekyll processing so nested dirs and raw assets are preserved
+      fs.writeFileSync(path.join(__dirname, 'dist', '.nojekyll'), '');
+
+      // 2. 404.html fallback allows clean routing on GitHub Pages
+      const indexSrc = path.join(__dirname, 'dist', 'index.html');
+      const notFoundDst = path.join(__dirname, 'dist', '404.html');
+      if (fs.existsSync(indexSrc) && !fs.existsSync(notFoundDst)) {
+        fs.copyFileSync(indexSrc, notFoundDst);
+      }
+
+      // 3. Ensure runtime data directory is copied to dist
+      const dataSrc = path.join(__dirname, 'data');
+      const dataDst = path.join(__dirname, 'dist', 'data');
+      if (fs.existsSync(dataSrc)) {
+        fs.cpSync(dataSrc, dataDst, { recursive: true });
       }
     } catch (e) {
       console.error('Failed to generate static files:', e);

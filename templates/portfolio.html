@@ -15,14 +15,14 @@
   <div class="flex flex-wrap items-end justify-between gap-4 border-b border-base-content/10 pb-5">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-        <span class="text-xs uppercase tracking-[0.25em] text-primary font-mono font-semibold">Exhibition Pavilion</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+        <span class="text-xs uppercase tracking-[0.25em] text-rose-400 font-mono font-semibold">House of Hades • Underworld Exhibition</span>
       </div>
       <h1 class="text-3xl sm:text-4xl font-serif font-bold tracking-tight text-base-content">
-        The Pavilion Gallery
+        The Underworld Pavilion
       </h1>
       <p class="text-xs sm:text-sm opacity-70 mt-1 max-w-xl font-light">
-        Original works exhibition & silent bidding ledger by {{ site.author }}. Explore the labyrinthian halls, discover the featured lots, and submit private bids.
+        Original works exhibition & silent bidding ledger by {{ site.author }}. Explore the halls of Elysium, Tartarus, and Asphodel, rest upon imperial velvet divans, and submit private bids.
       </p>
     </div>
 
@@ -31,16 +31,16 @@
       <!-- View Mode Switcher -->
       <div class="join border border-base-content/15 rounded-xl p-0.5 bg-base-200/50 backdrop-blur">
         <button id="view-mode-maze" class="btn btn-xs sm:btn-sm btn-primary rounded-lg join-item">
-          🏛️ Walk Gallery
+          Walk Gallery
         </button>
         <button id="view-mode-catalog" class="btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item">
-          🖼️ Catalog Index
+          Catalog Index
         </button>
       </div>
 
       <!-- SFX Toggle -->
-      <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost btn-circle border border-base-content/10" title="Audio Ambience">
-        🔊
+      <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-base-content/10 font-mono text-[11px] px-3" title="Audio Ambience">
+        Audio On
       </button>
     </div>
   </div>
@@ -53,8 +53,8 @@
       <div class="bg-[#12161a]/90 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-3 min-w-[190px]">
         <!-- Token Balance Header -->
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-black font-extrabold text-sm shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-            💰
+          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-black font-mono font-extrabold text-xs shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+            TKN
           </div>
           <div>
             <div class="font-mono font-bold text-base text-white tracking-wide leading-none">
@@ -69,15 +69,15 @@
         <!-- Radar Blueprint Canvas -->
         <div class="relative rounded-xl overflow-hidden border border-white/10 bg-[#060a0e] shadow-inner p-1">
           <canvas id="minimap-canvas" width="160" height="160" class="block w-full h-auto rounded-lg"></canvas>
-          <div class="absolute bottom-1.5 right-2 text-[9px] font-mono uppercase text-primary/80 font-bold tracking-widest">
-            EXHIBITION
+          <div class="absolute bottom-1.5 right-2 text-[9px] font-mono uppercase text-amber-400/80 font-bold tracking-widest">
+            UNDERWORLD
           </div>
         </div>
 
         <!-- Current Exhibition Wing Indicator -->
         <div id="current-wing-pill" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-medium tracking-wide">
-          <span id="current-wing-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-          <span id="current-wing-name" class="text-white/90 truncate">🏛️ Physical Art Wing</span>
+          <span id="current-wing-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="current-wing-name" class="text-white/90 truncate">Elysium Salon</span>
         </div>
       </div>
     </div>
@@ -85,15 +85,15 @@
     <!-- Navigation Helper Legend (Desktop) -->
     <div class="absolute bottom-4 left-4 z-20 pointer-events-none hidden md:flex items-center gap-2 text-xs bg-black/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 text-white/80 shadow-lg">
       <span class="badge badge-xs badge-primary font-mono">NAV</span>
-      <span>Use <kbd class="kbd kbd-xs">W</kbd><kbd class="kbd kbd-xs">A</kbd><kbd class="kbd kbd-xs">S</kbd><kbd class="kbd kbd-xs">D</kbd> / <kbd class="kbd kbd-xs">Arrows</kbd> to walk • Click floor to pathfind • Walk to artworks or press <kbd class="kbd kbd-xs">E</kbd> to inspect</span>
+      <span>Use <kbd class="kbd kbd-xs">W</kbd><kbd class="kbd kbd-xs">A</kbd><kbd class="kbd kbd-xs">S</kbd><kbd class="kbd kbd-xs">D</kbd> / <kbd class="kbd kbd-xs">Arrows</kbd> to walk • Click floor to pathfind • Walk to art or divans and press <kbd class="kbd kbd-xs">E</kbd> to inspect or sit</span>
     </div>
 
     <!-- Main Architectural Museum Canvas -->
     <canvas id="museum-canvas" class="w-full block cursor-crosshair"></canvas>
 
-    <!-- Floating Proximity Prompt (Triggered when standing near a wall painting) -->
-    <div id="proximity-prompt" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300 opacity-0 translate-y-4 scale-95 flex items-center gap-3 bg-black/90 backdrop-blur-xl px-5 py-3 rounded-2xl border border-primary/50 shadow-[0_0_35px_rgba(32,140,115,0.45)]">
-      <span class="animate-pulse text-xl text-amber-400">✦</span>
+    <!-- Floating Proximity Prompt (Triggered when standing near a wall painting or divan) -->
+    <div id="proximity-prompt" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300 opacity-0 translate-y-4 scale-95 flex items-center gap-3 bg-black/90 backdrop-blur-xl px-5 py-3 rounded-2xl border border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.35)]">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
       <div class="text-left">
         <p class="text-[10px] text-primary uppercase font-bold tracking-wider" id="prompt-subtitle">Artwork In Viewing Range</p>
         <h4 class="text-sm font-bold text-white font-serif" id="prompt-title">Artwork Title</h4>
@@ -102,20 +102,20 @@
         Inspect & Bid [E]
       </button>
       <span id="prompt-reserved-badge" class="hidden text-xs font-mono px-3 py-1.5 rounded-xl bg-white/10 text-white/70 border border-white/20">
-        🔒 Exhibition Space Only • No Bidding
+        Exhibition Space Only • No Bidding
       </span>
     </div>
 
     <!-- Mobile Virtual Buttons -->
-    <div class="sm:hidden absolute bottom-4 right-4 z-20 grid grid-cols-3 gap-1 bg-black/70 backdrop-blur-md p-2 rounded-2xl border border-white/10">
+    <div class="sm:hidden absolute bottom-4 right-4 z-20 grid grid-cols-3 gap-1 bg-black/70 backdrop-blur-md p-2 rounded-2xl border border-white/10 font-mono font-bold text-xs">
       <div></div>
-      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="up">▲</button>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="up">W</button>
       <div></div>
-      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="left">◀</button>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="left">A</button>
       <button class="btn btn-xs btn-primary virtual-btn" data-dir="interact">E</button>
-      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="right">▶</button>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="right">D</button>
       <div></div>
-      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="down">▼</button>
+      <button class="btn btn-xs btn-neutral virtual-btn" data-dir="down">S</button>
       <div></div>
     </div>
   </div>
@@ -133,13 +133,13 @@
           All ({{ page.artworks | length }})
         </button>
         <button class="catalog-filter-btn btn btn-xs btn-outline border-amber-500/40 text-amber-300" data-category="physical">
-          🏛️ Physical
+          Physical
         </button>
         <button class="catalog-filter-btn btn btn-xs btn-outline border-sky-500/40 text-sky-300" data-category="digital">
-          💻 Digital
+          Digital
         </button>
         <button class="catalog-filter-btn btn btn-xs btn-outline border-orange-500/40 text-orange-300" data-category="blender">
-          🧊 3D Blender
+          3D Blender
         </button>
       </div>
     </div>
@@ -154,11 +154,11 @@
             <span class="badge badge-sm badge-neutral border border-white/20">{{ art.year }}</span>
             <div class="flex items-center gap-1.5">
               {% if art.category == 'digital' %}
-                <span class="badge badge-sm badge-info">💻 Digital</span>
+                <span class="badge badge-sm badge-info">Digital</span>
               {% elif art.category == 'blender' %}
-                <span class="badge badge-sm badge-secondary">🧊 3D Blender</span>
+                <span class="badge badge-sm badge-secondary">3D Blender</span>
               {% else %}
-                <span class="badge badge-sm badge-warning">🏛️ Physical</span>
+                <span class="badge badge-sm badge-warning">Physical</span>
               {% endif %}
               <span class="badge badge-sm badge-primary">Lot #{{ loop.index }}</span>
             </div>
@@ -199,7 +199,9 @@
         <h3 class="font-bold text-lg text-white font-serif" id="modal-title">Artwork Title</h3>
       </div>
       <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost text-white/70 hover:text-white">✕</button>
+        <button class="btn btn-sm btn-circle btn-ghost text-white/70 hover:text-white" aria-label="Close">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </form>
     </div>
 

@@ -120,7 +120,7 @@ export function initMuseumMaze() {
   if (sfxBtn) {
     sfxBtn.addEventListener("click", () => {
       sfxEnabled = !sfxEnabled;
-      sfxBtn.textContent = sfxEnabled ? "🔊" : "🔇";
+      sfxBtn.textContent = sfxEnabled ? "Audio On" : "Muted";
       sfxBtn.classList.toggle("opacity-50", !sfxEnabled);
     });
   }
@@ -131,10 +131,6 @@ export function initMuseumMaze() {
   const TILE_W = 68; // Isometric tile width
   const TILE_H = 34; // Isometric tile height
 
-  // Wall Heights calibrated to true 2.5D isometric architectural ratio:
-  // Floor diamond edge = 38px (sqrt(34^2 + 17^2)).
-  // Gallery walls stand at 48px (1.26x edge ratio), matching classic 2.5D perspective.
-  // Perimeter walls stand at 58px.
   const GALLERY_WALL_H = 48;
   const PERIMETER_WALL_H = 58;
 
@@ -164,9 +160,7 @@ export function initMuseumMaze() {
   resize();
 
   // --- Architectural Museum Floor Plan (22x22 Curated Estate) ---
-  // Compact, intimate gallery spaces with zero isolated 1x1 blocks and zero empty voids.
-  // Wide 2-tile corridors, authentic tufted leather benches in every salon, and continuous connected exhibition walls.
-  // Paintings are mounted across BOTH South-West (SW) and South-East (SE) wall facades.
+  // Base architectural walls and corridors; chairs (value 3) are placed dynamically by randomizeChairs()
   const MAP: number[][] = [
     // 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
     [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // 0: North Perimeter Wall
@@ -174,18 +168,18 @@ export function initMuseumMaze() {
     [2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2], // 2: Grand Masterpiece North Wall Run
     [2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2], // 3: Salon Viewing Aisle & Division Spines
     [2, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 2], // 4: Drawing Salon, Masterpiece Island & Color Salon
-    [2, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0, 3, 0, 0, 2], // 5: Salon Viewing Benches
+    [2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2], // 5: Salon Floor
     [2, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 6: South Salon Archways
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 7: Mid Concourse Walkway
     [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 8: Wing Portal Colonnades
     [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 9: Cyber & 3D Entry Corridors
     [2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 10: Gallery Headers
     [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 11: Display Alcove Corridors
-    [2, 0, 0, 0, 1, 3, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3, 1, 0, 0, 0, 2], // 12: Digital & 3D Lounge Benches
-    [2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 1, 0, 1, 0, 2], // 13: Central Rotunda Upper Leather Benches
-    [2, 0, 1, 1, 1, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 1, 1, 1, 0, 2], // 14: Central Rotunda Lower Leather Benches
+    [2, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 2], // 12: Digital & 3D Floor
+    [2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 2], // 13: Central Rotunda Upper Floor
+    [2, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 2], // 14: Central Rotunda Lower Floor
     [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 15: Cross Promenade Portals
-    [2, 0, 0, 0, 1, 3, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3, 1, 0, 0, 0, 2], // 16: South Wing Benches
+    [2, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 2], // 16: South Wing Floor
     [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 17: Lower Cyber & 3D Corridors
     [2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 18: Pavilion End Portals
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 19: Grand Foyer Promenade
@@ -345,7 +339,126 @@ export function initMuseumMaze() {
     });
   });
 
-  // --- Visitor State & Smooth Velocity ---
+  // --- Dynamic Chair/Divan Randomization Across Underworld Salons ---
+  // Constraints:
+  // 1. More random: dynamically scans all eligible floor tiles across all wings and shuffles on each visit.
+  // 2. Distance: strictly AT LEAST 2 squares away from ANY art piece mount and its viewing tile.
+  // 3. Hallways: requires floorNeighbors >= 2 so divans never block corridors.
+  // 4. Spread: maintains >= 2.8 units distance between chairs to distribute them across the whole estate.
+  function randomizeChairs(grid: number[][], paintings: MountedPainting[]) {
+    // Clear any pre-existing chairs
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (grid[r][c] === 3) grid[r][c] = 0;
+      }
+    }
+
+    const eligibleTiles: [number, number][] = [];
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (grid[r][c] !== 0) continue;
+        // Avoid entrance foyer & spawn area
+        if (r >= 19 && c >= 8 && c <= 13) continue;
+
+        // Constraint 2: AT LEAST 2 squares away from ANY art piece and its viewing square
+        let tooCloseToArt = false;
+        for (const p of paintings) {
+          const dx = Math.abs(c - p.col);
+          const dy = Math.abs(r - p.row);
+          if (Math.max(dx, dy) < 2 || Math.hypot(dx, dy) < 2.0) {
+            tooCloseToArt = true;
+            break;
+          }
+          const vc = p.face === "SE" ? p.col + 1 : p.col;
+          const vr = p.face === "SW" ? p.row + 1 : p.row;
+          if (Math.max(Math.abs(c - vc), Math.abs(r - vr)) < 2) {
+            tooCloseToArt = true;
+            break;
+          }
+        }
+        if (tooCloseToArt) continue;
+
+        // Ensure at least 2 walkable floor neighbors so walkways are never bottlenecked
+        let floorNeighbors = 0;
+        const dirs = [
+          [0, 1],
+          [0, -1],
+          [1, 0],
+          [-1, 0],
+        ];
+        for (const [dc, dr] of dirs) {
+          const nc = c + dc;
+          const nr = r + dr;
+          if (nc >= 0 && nc < COLS && nr >= 0 && nr < ROWS && grid[nr][nc] === 0) {
+            floorNeighbors++;
+          }
+        }
+        if (floorNeighbors < 2) continue;
+
+        eligibleTiles.push([c, r]);
+      }
+    }
+
+    // Constraint 1: True randomness via Fisher-Yates shuffle
+    for (let i = eligibleTiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [eligibleTiles[i], eligibleTiles[j]] = [eligibleTiles[j], eligibleTiles[i]];
+    }
+
+    // Place 9 well-spaced divans across the museum
+    const placedChairs: [number, number][] = [];
+    for (const [c, r] of eligibleTiles) {
+      if (placedChairs.length >= 9) break;
+      const tooClose = placedChairs.some(
+        ([sc, sr]) => Math.hypot(sc - c, sr - r) < 2.8
+      );
+      if (!tooClose) {
+        placedChairs.push([c, r]);
+        grid[r][c] = 3;
+      }
+    }
+  }
+
+  randomizeChairs(MAP, mountedPaintings);
+
+  // --- Underworld Atmosphere & Particles (Hades Theme) ---
+  interface UnderworldParticle {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    alpha: number;
+    type: "ember" | "shade" | "gold";
+    wobble: number;
+  }
+
+  interface FootstepEmber {
+    isoX: number;
+    isoY: number;
+    life: number;
+    maxLife: number;
+    size: number;
+  }
+
+  const underworldMotes: UnderworldParticle[] = [];
+  for (let i = 0; i < 48; i++) {
+    underworldMotes.push({
+      x: (Math.random() - 0.5) * 1600,
+      y: (Math.random() - 0.5) * 1200,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: -0.35 - Math.random() * 0.45,
+      size: 1.2 + Math.random() * 2.2,
+      alpha: 0.2 + Math.random() * 0.6,
+      type: Math.random() < 0.5 ? "ember" : Math.random() < 0.8 ? "gold" : "shade",
+      wobble: Math.random() * Math.PI * 2,
+    });
+  }
+
+  const footstepEmbers: FootstepEmber[] = [];
+
+  // --- Visitor State & Smooth Velocity (Zagreus, Prince of the Underworld) ---
   const player = {
     col: 10.5,
     row: 20.5, // Spawns safely in the open Grand Entrance Foyer
@@ -359,7 +472,58 @@ export function initMuseumMaze() {
     friction: 0.78,
     walkCycle: 0,
     distMoved: 0,
+    isSitting: false,
+    seatedBench: null as { col: number; row: number } | null,
   };
+
+  function getNearbyBench(pc: number, pr: number, maxDist = 1.4): { col: number; row: number } | null {
+    let nearest: { col: number; row: number } | null = null;
+    let minDist = maxDist;
+
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (MAP[r][c] === 3) {
+          const d = Math.hypot(pc - (c + 0.5), pr - (r + 0.5));
+          if (d < minDist) {
+            minDist = d;
+            nearest = { col: c, row: r };
+          }
+        }
+      }
+    }
+    return nearest;
+  }
+
+  function standUp(moveDirection?: { dc: number; dr: number }) {
+    if (!player.isSitting) return;
+    const b = player.seatedBench;
+    player.isSitting = false;
+    player.seatedBench = null;
+
+    if (b) {
+      // Find nearest adjacent walkable floor tile to step onto cleanly
+      const offsets = [
+        moveDirection || { dc: 0, dr: 1 },
+        { dc: 0, dr: 1 },
+        { dc: 0, dr: -1 },
+        { dc: 1, dr: 0 },
+        { dc: -1, dr: 0 },
+      ];
+      for (const off of offsets) {
+        const nc = b.col + off.dc;
+        const nr = b.row + off.dr;
+        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && MAP[nr][nc] === 0) {
+          player.col = nc + 0.5;
+          player.row = nr + 0.5;
+          player.vx = 0;
+          player.vy = 0;
+          player.targetCol = null;
+          player.targetRow = null;
+          return;
+        }
+      }
+    }
+  }
 
   // Keyboard state
   const keys: Record<string, boolean> = {};
@@ -373,12 +537,48 @@ export function initMuseumMaze() {
     keys[k] = true;
     keys[c] = true;
 
+    // Movement key stand-up check
+    if (player.isSitting) {
+      let dir: { dc: number; dr: number } | undefined;
+      if (k === "w" || k === "arrowup") dir = { dc: 0, dr: -1 };
+      else if (k === "s" || k === "arrowdown") dir = { dc: 0, dr: 1 };
+      else if (k === "a" || k === "arrowleft") dir = { dc: -1, dr: 0 };
+      else if (k === "d" || k === "arrowright") dir = { dc: 1, dr: 0 };
+
+      if (dir || ["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) {
+        standUp(dir);
+      }
+    }
+
     if (k === "e" || c === "keye" || c === "space") {
-      const near = getNearbyPainting(player.col, player.row, 2.4);
-      if (near) {
+      // If currently sitting, stand up smoothly
+      if (player.isSitting) {
+        standUp();
+        e.preventDefault();
+        return;
+      }
+
+      const nearBench = getNearbyBench(player.col, player.row, 1.4);
+      const nearArt = getNearbyPainting(player.col, player.row, 2.4);
+
+      // If near a bench and not in front of an active painting, sit down!
+      if (nearBench && (!nearArt || Math.hypot(player.col - (nearBench.col + 0.5), player.row - (nearBench.row + 0.5)) < 1.1)) {
+        player.col = nearBench.col + 0.5;
+        player.row = nearBench.row + 0.5;
+        player.isSitting = true;
+        player.seatedBench = nearBench;
+        player.vx = 0;
+        player.vy = 0;
+        player.targetCol = null;
+        player.targetRow = null;
+        e.preventDefault();
+        return;
+      }
+
+      if (nearArt) {
         // Bidding on exhibition space is strictly disabled
-        if (!near.isReservedMount) {
-          openInspectionModal(near.artId);
+        if (!nearArt.isReservedMount) {
+          openInspectionModal(nearArt.artId);
         }
         e.preventDefault();
       }
@@ -404,10 +604,20 @@ export function initMuseumMaze() {
     const minR = Math.floor(r - radius);
     const maxR = Math.floor(r + radius);
 
+    // Current cell of the player
+    const curPlayerC = Math.floor(player.col);
+    const curPlayerR = Math.floor(player.row);
+    const isPlayerInsideBench =
+      curPlayerR >= 0 && curPlayerR < ROWS && curPlayerC >= 0 && curPlayerC < COLS && MAP[curPlayerR][curPlayerC] === 3;
+
     for (let row = minR; row <= maxR; row++) {
       for (let col = minC; col <= maxC; col++) {
         if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
         if (MAP[row][col] === 1 || MAP[row][col] === 2 || MAP[row][col] === 3) {
+          // If the player is standing inside a bench tile, do not let that bench tile block them from walking out!
+          if (isPlayerInsideBench && MAP[row][col] === 3 && row === curPlayerR && col === curPlayerC) {
+            continue;
+          }
           const closestC = Math.max(col, Math.min(c, col + 1));
           const closestR = Math.max(row, Math.min(r, row + 1));
           const dc = c - closestC;
@@ -438,7 +648,7 @@ export function initMuseumMaze() {
     return nearest;
   }
 
-  // Click to Walk on Isometric Plane
+  // Click to Walk or Sit on Isometric Plane
   canvas.addEventListener("click", (e) => {
     initAudio();
     const rect = canvas.getBoundingClientRect();
@@ -447,10 +657,39 @@ export function initMuseumMaze() {
 
     const gridPos = fromIso(clickX, clickY);
 
+    // If currently sitting, stand up on click
+    if (player.isSitting) {
+      standUp();
+    }
+
     // Direct click on painting?
     for (const piece of mountedPaintings) {
       if (Math.hypot(gridPos.col - piece.col, gridPos.row - piece.row) < 1.8) {
         openInspectionModal(piece.artId);
+        return;
+      }
+    }
+
+    // Direct click on Underworld velvet divan / bench?
+    const clickC = Math.floor(gridPos.col);
+    const clickR = Math.floor(gridPos.row);
+    if (clickR >= 0 && clickR < ROWS && clickC >= 0 && clickC < COLS && MAP[clickR][clickC] === 3) {
+      const distToBench = Math.hypot(player.col - (clickC + 0.5), player.row - (clickR + 0.5));
+      if (distToBench < 1.8) {
+        // Sit down directly!
+        player.col = clickC + 0.5;
+        player.row = clickR + 0.5;
+        player.isSitting = true;
+        player.seatedBench = { col: clickC, row: clickR };
+        player.targetCol = null;
+        player.targetRow = null;
+        player.vx = 0;
+        player.vy = 0;
+        return;
+      } else {
+        // Walk toward the bench
+        player.targetCol = clickC + 0.5;
+        player.targetRow = clickR + 1.0;
         return;
       }
     }
@@ -469,9 +708,22 @@ export function initMuseumMaze() {
     btn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       initAudio();
+      if (player.isSitting) {
+        standUp();
+      }
       if (dir === "interact") {
         const near = getNearbyPainting(player.col, player.row, 2.4);
-        if (near) openInspectionModal(near.artId);
+        if (near) {
+          openInspectionModal(near.artId);
+        } else {
+          const bench = getNearbyBench(player.col, player.row, 1.4);
+          if (bench) {
+            player.col = bench.col + 0.5;
+            player.row = bench.row + 0.5;
+            player.isSitting = true;
+            player.seatedBench = bench;
+          }
+        }
       } else {
         if (dir === "up") keys["w"] = true;
         if (dir === "down") keys["s"] = true;
@@ -651,9 +903,25 @@ export function initMuseumMaze() {
   const promptBtn = document.getElementById("prompt-action-btn");
   if (promptBtn) {
     promptBtn.addEventListener("click", () => {
+      if (player.isSitting) {
+        standUp();
+        return;
+      }
       const p = getNearbyPainting(player.col, player.row, 2.4);
       if (p && !p.isReservedMount) {
         openInspectionModal(p.artId);
+        return;
+      }
+      const bench = getNearbyBench(player.col, player.row, 1.4);
+      if (bench) {
+        player.col = bench.col + 0.5;
+        player.row = bench.row + 0.5;
+        player.isSitting = true;
+        player.seatedBench = bench;
+        player.vx = 0;
+        player.vy = 0;
+        player.targetCol = null;
+        player.targetRow = null;
       }
     });
   }
@@ -723,7 +991,7 @@ export function initMuseumMaze() {
 
       messageEl.className =
         "text-xs text-center py-2 rounded-lg bg-success/20 text-success border border-success/30 font-semibold";
-      messageEl.textContent = `✦ Offer registered! You are now the premier patron for this piece!`;
+      messageEl.textContent = "Offer registered! You are now the premier patron for this piece!";
       messageEl.classList.remove("hidden");
 
       updateCatalogBids();
@@ -841,11 +1109,22 @@ export function initMuseumMaze() {
     }
 
     // Smooth acceleration & friction easing
-    player.vx += (targetVx - player.vx) * 0.28;
-    player.vy += (targetVy - player.vy) * 0.28;
+    if (player.isSitting) {
+      targetVx = 0;
+      targetVy = 0;
+      player.vx = 0;
+      player.vy = 0;
+      if (player.seatedBench) {
+        player.col = player.seatedBench.col + 0.5;
+        player.row = player.seatedBench.row + 0.5;
+      }
+    } else {
+      player.vx += (targetVx - player.vx) * 0.28;
+      player.vy += (targetVy - player.vy) * 0.28;
+    }
 
     // Apply movement with wall collision & smooth sliding
-    if (Math.abs(player.vx) > 0.001 || Math.abs(player.vy) > 0.001) {
+    if (!player.isSitting && (Math.abs(player.vx) > 0.001 || Math.abs(player.vy) > 0.001)) {
       player.walkCycle += 0.22;
 
       // Strict axis-separated collision resolution:
@@ -864,6 +1143,18 @@ export function initMuseumMaze() {
         player.vy = 0;
       }
 
+      // Zagreus Burning Footstep Embers emission
+      if (Math.random() < 0.45) {
+        const pIso = toIso(player.col, player.row);
+        footstepEmbers.push({
+          isoX: pIso.x + (Math.random() - 0.5) * 8,
+          isoY: pIso.y + TILE_H / 2 + (Math.random() - 0.5) * 4,
+          life: 1.0,
+          maxLife: 26,
+          size: 1.8 + Math.random() * 2.2,
+        });
+      }
+
       player.distMoved += Math.hypot(player.vx, player.vy);
       if (player.distMoved > 0.5) {
         player.distMoved = 0;
@@ -871,40 +1162,67 @@ export function initMuseumMaze() {
       }
     }
 
+    // Restorative soul particles when sitting on divan
+    if (player.isSitting && Math.random() < 0.12) {
+      const pIso = toIso(player.col, player.row);
+      footstepEmbers.push({
+        isoX: pIso.x + (Math.random() - 0.5) * 16,
+        isoY: pIso.y + TILE_H / 2 - 18 - Math.random() * 12,
+        life: 1.0,
+        maxLife: 36,
+        size: 1.6,
+      });
+    }
+
     // 2. Camera smoothly centers on player
     const playerIso = toIso(player.col, player.row);
     camera.x += (playerIso.x - camera.x) * 0.08;
     camera.y += (playerIso.y - camera.y) * 0.08;
 
-    // 3. Artwork Proximity Check & HUD Wing Indicator Update
+    // 3. Artwork & Bench Proximity Check & HUD Wing Indicator Update (House of Hades)
     const currentZone = getTileZone(Math.floor(player.col), Math.floor(player.row));
     const wingNameEl = document.getElementById("current-wing-name");
     const wingDotEl = document.getElementById("current-wing-dot");
     if (wingNameEl && wingDotEl) {
       if (currentZone === "physical") {
-        wingNameEl.textContent = "🏛️ Physical Fine Art Wing";
-        wingDotEl.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
-      } else if (currentZone === "digital") {
-        wingNameEl.textContent = "💻 Digital Art Studio";
-        wingDotEl.className = "w-2 h-2 rounded-full bg-sky-400 animate-pulse";
-      } else if (currentZone === "blender") {
-        wingNameEl.textContent = "🧊 3D Blender Pavilion";
-        wingDotEl.className = "w-2 h-2 rounded-full bg-orange-400 animate-pulse";
-      } else {
-        wingNameEl.textContent = "☕ Grand Central Nexus";
+        wingNameEl.textContent = "Elysium Salon (Physical Fine Art)";
         wingDotEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+      } else if (currentZone === "digital") {
+        wingNameEl.textContent = "Tartarus Studio (Digital Art)";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-rose-500 animate-pulse";
+      } else if (currentZone === "blender") {
+        wingNameEl.textContent = "Asphodel Pavilion (3D Art)";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-amber-500 animate-pulse";
+      } else {
+        wingNameEl.textContent = "House of Hades (Grand Nexus)";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
       }
     }
 
     const near = getNearbyPainting(player.col, player.row, 2.4);
+    const nearBench = getNearbyBench(player.col, player.row, 1.4);
     const promptSubtitleEl = document.getElementById("prompt-subtitle");
     const promptActionBtn = document.getElementById("prompt-action-btn");
     const promptReservedBadge = document.getElementById("prompt-reserved-badge");
-    if (near && promptEl && promptTitleEl) {
+
+    if (player.isSitting && promptEl && promptTitleEl) {
+      promptTitleEl.textContent = "Underworld Divan • House of Hades";
+      if (promptSubtitleEl) {
+        promptSubtitleEl.textContent = "Resting in Royal Repose • Press [E], [WASD] or Click to Stand";
+        promptSubtitleEl.className = "text-[10px] text-amber-400 uppercase font-bold tracking-wider";
+      }
+      if (promptActionBtn) {
+        promptActionBtn.textContent = "Stand Up";
+        promptActionBtn.classList.remove("hidden");
+      }
+      if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
+      promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
+      promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
+    } else if (near && promptEl && promptTitleEl) {
       if (near.isReservedMount) {
         promptTitleEl.textContent = `${near.title} (Exhibition Space)`;
         if (promptSubtitleEl) {
-          promptSubtitleEl.textContent = "Reserved Exhibition Space • Bidding Unavailable";
+          promptSubtitleEl.textContent = "Reserved Underworld Plinth • Bidding Unavailable";
           promptSubtitleEl.className = "text-[10px] text-slate-400 uppercase font-bold tracking-wider";
         }
         if (promptActionBtn) promptActionBtn.classList.add("hidden");
@@ -912,12 +1230,28 @@ export function initMuseumMaze() {
       } else {
         promptTitleEl.textContent = `${near.title} (Lot #${near.lotNum})`;
         if (promptSubtitleEl) {
-          promptSubtitleEl.textContent = `${near.wingName || "Museum Gallery"} • Inspect & Place Offer`;
-          promptSubtitleEl.className = "text-[10px] text-primary uppercase font-bold tracking-wider";
+          promptSubtitleEl.textContent = `${near.wingName || "Underworld Gallery"} • Inspect & Submit Offer`;
+          promptSubtitleEl.className = "text-[10px] text-amber-400 uppercase font-bold tracking-wider";
         }
-        if (promptActionBtn) promptActionBtn.classList.remove("hidden");
+        if (promptActionBtn) {
+          promptActionBtn.textContent = "Inspect";
+          promptActionBtn.classList.remove("hidden");
+        }
         if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
       }
+      promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
+      promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
+    } else if (nearBench && promptEl && promptTitleEl) {
+      promptTitleEl.textContent = "Imperial Velvet Divan";
+      if (promptSubtitleEl) {
+        promptSubtitleEl.textContent = "House of Hades Lounge • Press [E] or Click to Sit & Contemplate";
+        promptSubtitleEl.className = "text-[10px] text-amber-300 uppercase font-bold tracking-wider";
+      }
+      if (promptActionBtn) {
+        promptActionBtn.textContent = "Sit Down";
+        promptActionBtn.classList.remove("hidden");
+      }
+      if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
       promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
       promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
     } else if (promptEl) {
@@ -1122,25 +1456,41 @@ export function initMuseumMaze() {
 
           const isAlt = (r + c) % 2 === 0;
 
-          // Distinct floor color scheme per wing
+          // Distinct floor color scheme per Underworld realm
           if (zone === "digital") {
-            ctx.fillStyle = isAlt ? "#15202d" : "#0e1620"; // Cool obsidian slate
+            // Tartarus: dark obsidian slate with raw charcoal texture
+            ctx.fillStyle = isAlt ? "#120f14" : "#0a070c";
           } else if (zone === "blender") {
-            ctx.fillStyle = isAlt ? "#1a1a1e" : "#121215"; // Studio graphite ebony
+            // Asphodel: volcanic dark basalt with warm magma understone
+            ctx.fillStyle = isAlt ? "#17100b" : "#0d0805";
           } else if (zone === "nexus") {
-            ctx.fillStyle = isAlt ? "#27170e" : "#1e1008"; // Transitional walnut
+            // House of Hades: imperial polished black marble
+            ctx.fillStyle = isAlt ? "#14080b" : "#090406";
           } else {
-            ctx.fillStyle = isAlt ? "#2c190f" : "#22130b"; // Rich warm walnut (Physical)
+            // Elysium: celestial verdant jade-veined dark stone
+            ctx.fillStyle = isAlt ? "#091711" : "#050e0a";
           }
           ctx.fill();
 
-          // Delicate outer plank grout seam
-          ctx.strokeStyle = "rgba(0, 0, 0, 0.45)";
+          // Underworld realm tile grout & inlay lines
+          if (zone === "digital") {
+            // Tartarus: glowing infernal crimson ember seams
+            ctx.strokeStyle = "rgba(225, 29, 72, 0.28)";
+          } else if (zone === "blender") {
+            // Asphodel: molten gold & amber seams
+            ctx.strokeStyle = "rgba(245, 158, 11, 0.25)";
+          } else if (zone === "nexus") {
+            // House of Hades: Stygian gold geometric inlays
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.24)";
+          } else {
+            // Elysium: celestial emerald & pale gold seams
+            ctx.strokeStyle = "rgba(52, 211, 153, 0.22)";
+          }
           ctx.lineWidth = 0.8;
           ctx.stroke();
 
-          // French Herringbone interior plank grooves
-          ctx.strokeStyle = "rgba(10, 5, 2, 0.35)";
+          // Underworld Greek geometric interior engraving
+          ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
           ctx.lineWidth = 0.6;
           ctx.beginPath();
           ctx.moveTo(pt.x - TILE_W / 4, pt.y + TILE_H / 4);
@@ -1151,13 +1501,15 @@ export function initMuseumMaze() {
           ctx.lineTo(pt.x, pt.y + TILE_H / 2);
           ctx.stroke();
 
-          // Wing-specific gloss reflection
+          // Realm ambient gloss sheen
           if (zone === "digital") {
-            ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+            ctx.strokeStyle = "rgba(244, 63, 94, 0.10)";
           } else if (zone === "blender") {
-            ctx.strokeStyle = "rgba(249, 115, 22, 0.08)";
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.10)";
+          } else if (zone === "nexus") {
+            ctx.strokeStyle = "rgba(244, 63, 94, 0.12)";
           } else {
-            ctx.strokeStyle = "rgba(255, 230, 195, 0.05)";
+            ctx.strokeStyle = "rgba(52, 211, 153, 0.10)";
           }
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -1166,6 +1518,26 @@ export function initMuseumMaze() {
           ctx.stroke();
         }
       }
+    }
+
+    // --- Pass 1.5: Zagreus Burning Footstep Embers ---
+    for (let i = footstepEmbers.length - 1; i >= 0; i--) {
+      const e = footstepEmbers[i];
+      e.life -= 1 / e.maxLife;
+      if (e.life <= 0) {
+        footstepEmbers.splice(i, 1);
+        continue;
+      }
+      const alpha = e.life;
+      const grad = ctx.createRadialGradient(e.isoX, e.isoY, 0, e.isoX, e.isoY, e.size * 2);
+      grad.addColorStop(0, `rgba(254, 240, 138, ${alpha * 0.95})`);
+      grad.addColorStop(0.35, `rgba(249, 115, 22, ${alpha * 0.75})`);
+      grad.addColorStop(0.75, `rgba(225, 29, 72, ${alpha * 0.45})`);
+      grad.addColorStop(1, "rgba(225, 29, 72, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.ellipse(e.isoX, e.isoY, e.size * 2, e.size, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     // --- Pass 2: Directional Art Spotlights on Floor (Colored by Wing) ---
@@ -1260,38 +1632,50 @@ export function initMuseumMaze() {
 
             if (isGreen) {
               const greenGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              greenGrad.addColorStop(0, "#0a261d");
-              greenGrad.addColorStop(1, "#051711");
+              greenGrad.addColorStop(0, "#092218");
+              greenGrad.addColorStop(1, "#04140e");
               ctx.fillStyle = greenGrad;
             } else if (zone === "digital") {
+              // Tartarus: chiseled volcanic obsidian
               const slateGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              slateGrad.addColorStop(0, "#f8fafc");
-              slateGrad.addColorStop(0.75, "#e2e8f0");
-              slateGrad.addColorStop(1, "#cbd5e1");
+              slateGrad.addColorStop(0, "#231f2b");
+              slateGrad.addColorStop(0.75, "#17141e");
+              slateGrad.addColorStop(1, "#0f0d14");
               ctx.fillStyle = slateGrad;
             } else if (zone === "blender") {
+              // Asphodel: magma-tempered dark bronze basalt
               const graphGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              graphGrad.addColorStop(0, "#2d2d33");
-              graphGrad.addColorStop(0.75, "#202025");
-              graphGrad.addColorStop(1, "#161619");
+              graphGrad.addColorStop(0, "#2a1f18");
+              graphGrad.addColorStop(0.75, "#1c140e");
+              graphGrad.addColorStop(1, "#120c08");
               ctx.fillStyle = graphGrad;
+            } else if (zone === "nexus") {
+              // House of Hades: imperial black marble with crimson depth
+              const nexusGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              nexusGrad.addColorStop(0, "#1f181c");
+              nexusGrad.addColorStop(0.75, "#140e12");
+              nexusGrad.addColorStop(1, "#0d080b");
+              ctx.fillStyle = nexusGrad;
             } else {
+              // Elysium: heroic jade-veined dark marble
               const plasterGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              plasterGrad.addColorStop(0, "#fcfaf5");
-              plasterGrad.addColorStop(0.75, "#f1e9dc");
-              plasterGrad.addColorStop(1, "#e5dbc9");
+              plasterGrad.addColorStop(0, "#12261d");
+              plasterGrad.addColorStop(0.75, "#0b1c14");
+              plasterGrad.addColorStop(1, "#06120c");
               ctx.fillStyle = plasterGrad;
             }
             ctx.fill();
 
             // Baseboard Trim (7px tall)
             ctx.fillStyle = isGreen
-              ? "#1b1008"
+              ? "#06100c"
               : zone === "digital"
-              ? "#0f172a"
+              ? "#4c0519"
               : zone === "blender"
-              ? "#09090b"
-              : "#2e180d";
+              ? "#451a03"
+              : zone === "nexus"
+              ? "#500724"
+              : "#064e3b";
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
@@ -1300,29 +1684,23 @@ export function initMuseumMaze() {
             ctx.closePath();
             ctx.fill();
 
-            // Baseboard Bevel Highlight
+            // Baseboard Bevel Highlight (Stygian Gold / Realm Accent)
             ctx.strokeStyle = isGreen
-              ? "rgba(251, 191, 36, 0.18)"
+              ? "rgba(52, 211, 153, 0.35)"
               : zone === "digital"
-              ? "rgba(56, 189, 248, 0.60)"
+              ? "rgba(244, 63, 94, 0.70)"
               : zone === "blender"
-              ? "rgba(249, 115, 22, 0.70)"
-              : "rgba(251, 191, 36, 0.35)";
-            ctx.lineWidth = 0.9;
+              ? "rgba(245, 158, 11, 0.75)"
+              : "rgba(251, 191, 36, 0.75)";
+            ctx.lineWidth = 1.0;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - 7);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 7);
             ctx.stroke();
 
-            // Crown Highlight
-            ctx.strokeStyle = isGreen
-              ? "rgba(255,255,255,0.12)"
-              : zone === "digital"
-              ? "rgba(186, 230, 253, 0.85)"
-              : zone === "blender"
-              ? "rgba(249, 115, 22, 0.50)"
-              : "rgba(255, 255, 255, 0.70)";
-            ctx.lineWidth = 1;
+            // Crown Stygian Gold Highlight
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.75)";
+            ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
@@ -1340,38 +1718,46 @@ export function initMuseumMaze() {
 
             if (isGreen) {
               const greenShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              greenShade.addColorStop(0, "#081f18");
-              greenShade.addColorStop(1, "#04130e");
+              greenShade.addColorStop(0, "#061811");
+              greenShade.addColorStop(1, "#030d09");
               ctx.fillStyle = greenShade;
             } else if (zone === "digital") {
               const slateShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              slateShade.addColorStop(0, "#e2e8f0");
-              slateShade.addColorStop(0.75, "#cbd5e1");
-              slateShade.addColorStop(1, "#94a3b8");
+              slateShade.addColorStop(0, "#1c1722");
+              slateShade.addColorStop(0.75, "#120e18");
+              slateShade.addColorStop(1, "#0a070e");
               ctx.fillStyle = slateShade;
             } else if (zone === "blender") {
               const graphShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              graphShade.addColorStop(0, "#222227");
-              graphShade.addColorStop(0.75, "#1a1a1e");
-              graphShade.addColorStop(1, "#111114");
+              graphShade.addColorStop(0, "#221711");
+              graphShade.addColorStop(0.75, "#160d08");
+              graphShade.addColorStop(1, "#0e0804");
               ctx.fillStyle = graphShade;
+            } else if (zone === "nexus") {
+              const nexusShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              nexusShade.addColorStop(0, "#191216");
+              nexusShade.addColorStop(0.75, "#0f0a0d");
+              nexusShade.addColorStop(1, "#090507");
+              ctx.fillStyle = nexusShade;
             } else {
               const shadeGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
-              shadeGrad.addColorStop(0, "#efe7d9");
-              shadeGrad.addColorStop(0.75, "#e2d7c5");
-              shadeGrad.addColorStop(1, "#d6c9b3");
+              shadeGrad.addColorStop(0, "#0c1f17");
+              shadeGrad.addColorStop(0.75, "#07140e");
+              shadeGrad.addColorStop(1, "#040c08");
               ctx.fillStyle = shadeGrad;
             }
             ctx.fill();
 
             // Baseboard (7px tall)
             ctx.fillStyle = isGreen
-              ? "#160c06"
+              ? "#040b08"
               : zone === "digital"
-              ? "#0c1322"
+              ? "#3b0717"
               : zone === "blender"
-              ? "#060608"
-              : "#28140a";
+              ? "#351403"
+              : zone === "nexus"
+              ? "#3d061c"
+              : "#04372a";
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
@@ -1382,34 +1768,28 @@ export function initMuseumMaze() {
 
             // Baseboard Bevel
             ctx.strokeStyle = isGreen
-              ? "rgba(251, 191, 36, 0.15)"
+              ? "rgba(52, 211, 153, 0.28)"
               : zone === "digital"
-              ? "rgba(56, 189, 248, 0.45)"
+              ? "rgba(244, 63, 94, 0.55)"
               : zone === "blender"
-              ? "rgba(249, 115, 22, 0.55)"
-              : "rgba(251, 191, 36, 0.30)";
-            ctx.lineWidth = 0.9;
+              ? "rgba(245, 158, 11, 0.60)"
+              : "rgba(251, 191, 36, 0.60)";
+            ctx.lineWidth = 1.0;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - 7);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 7);
             ctx.stroke();
 
-            // Crown highlight
-            ctx.strokeStyle = isGreen
-              ? "rgba(255,255,255,0.10)"
-              : zone === "digital"
-              ? "rgba(186, 230, 253, 0.60)"
-              : zone === "blender"
-              ? "rgba(249, 115, 22, 0.35)"
-              : "rgba(255, 255, 255, 0.45)";
-            ctx.lineWidth = 1;
+            // Crown Stygian Gold highlight
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.65)";
+            ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
             ctx.stroke();
           }
 
-          // 3. Continuous Wall Top Coping
+          // 3. Continuous Wall Top Coping (Polished Obsidian & Stygian Gold)
           ctx.beginPath();
           ctx.moveTo(pt.x, pt.y - wallH);
           ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
@@ -1417,23 +1797,17 @@ export function initMuseumMaze() {
           ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           ctx.closePath();
           ctx.fillStyle = isGreen
-            ? "#162820"
+            ? "#081b13"
             : zone === "digital"
-            ? "#f1f5f9"
+            ? "#1a1622"
             : zone === "blender"
-            ? "#222226"
-            : "#faf7f0";
+            ? "#201812"
+            : "#151117";
           ctx.fill();
 
-          // Outer silhouette stroke
-          ctx.strokeStyle = isGreen
-            ? "rgba(0,0,0,0.35)"
-            : zone === "digital"
-            ? "rgba(56, 189, 248, 0.25)"
-            : zone === "blender"
-            ? "rgba(249, 115, 22, 0.35)"
-            : "rgba(100, 80, 60, 0.15)";
-          ctx.lineWidth = 0.8;
+          // Outer silhouette stroke in Stygian gold
+          ctx.strokeStyle = "rgba(251, 191, 36, 0.55)";
+          ctx.lineWidth = 1.0;
           ctx.beginPath();
           if (hasNEFloor) {
             ctx.moveTo(pt.x, pt.y - wallH);
@@ -1477,106 +1851,247 @@ export function initMuseumMaze() {
             ctx.restore();
           }
         } else if (cellType === 3) {
-          // B. Tufted Cognac Leather Gallery Bench
-          ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+          // B. House of Hades Imperial Underworld Velvet Divan
+          // Chiseled Obsidian Base + Stygian Gold Greek Key Inlay + Royal Pomegranate Velvet Cushion
+          const isPlayerSittingHere = player.isSitting && player.seatedBench?.col === c && player.seatedBench?.row === r;
+
+          // 1. Ambient Underworld Ember Shadow
+          const underGlow = ctx.createRadialGradient(pt.x, pt.y + TILE_H / 2 + 3, 2, pt.x, pt.y + TILE_H / 2 + 3, 26);
+          underGlow.addColorStop(0, "rgba(225, 29, 72, 0.35)");
+          underGlow.addColorStop(0.6, "rgba(185, 28, 28, 0.15)");
+          underGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+          ctx.fillStyle = underGlow;
           ctx.beginPath();
-          ctx.ellipse(pt.x, pt.y + TILE_H / 2 + 5, 22, 11, 0, 0, Math.PI * 2);
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 + 4, 26, 13, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Dark Walnut Bench Frame
-          ctx.fillStyle = "#261309";
-          ctx.fillRect(pt.x - 17, pt.y + TILE_H / 2 - 13, 34, 13);
+          // 2. Chiseled Basalt & Obsidian Plinth
+          ctx.fillStyle = "#121114";
+          ctx.beginPath();
+          ctx.moveTo(pt.x, pt.y + TILE_H / 2 - 12);
+          ctx.lineTo(pt.x + 21, pt.y + TILE_H / 2 - 2);
+          ctx.lineTo(pt.x + 21, pt.y + TILE_H / 2 + 3);
+          ctx.lineTo(pt.x, pt.y + TILE_H / 2 + 13);
+          ctx.lineTo(pt.x - 21, pt.y + TILE_H / 2 + 3);
+          ctx.lineTo(pt.x - 21, pt.y + TILE_H / 2 - 2);
+          ctx.closePath();
+          ctx.fill();
 
-          // Tufted Cognac Leather Cushion
-          const cushionGrad = ctx.createLinearGradient(
+          // 3. Stygian Gold Beveled Greek Trim
+          ctx.strokeStyle = "#d97706";
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          // Gilded bronze rivets / lion-paw feet accents
+          ctx.fillStyle = "#fbbf24";
+          ctx.beginPath();
+          ctx.arc(pt.x - 18, pt.y + TILE_H / 2 + 2, 1.8, 0, Math.PI * 2);
+          ctx.arc(pt.x + 18, pt.y + TILE_H / 2 + 2, 1.8, 0, Math.PI * 2);
+          ctx.arc(pt.x, pt.y + TILE_H / 2 + 11, 2.0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 4. Plush Pomegranate Velvet Cushion (Deep Underworld Crimson)
+          const velvetGrad = ctx.createLinearGradient(
             pt.x,
-            pt.y + TILE_H / 2 - 18,
+            pt.y + TILE_H / 2 - 20,
             pt.x,
-            pt.y + TILE_H / 2 - 10
+            pt.y + TILE_H / 2 - 8
           );
-          cushionGrad.addColorStop(0, "#8c4a22");
-          cushionGrad.addColorStop(0.5, "#6e3515");
-          cushionGrad.addColorStop(1, "#54260d");
-          ctx.fillStyle = cushionGrad;
+          velvetGrad.addColorStop(0, "#be123c"); // Radiant crimson
+          velvetGrad.addColorStop(0.4, "#9f1239");
+          velvetGrad.addColorStop(1, "#4c0519"); // Deep shadowy wine
+          ctx.fillStyle = velvetGrad;
           ctx.beginPath();
-          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 14, 20, 9.5, 0, 0, Math.PI * 2);
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 14, 21, 10.5, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Tufting Buttons & Creases
-          ctx.strokeStyle = "rgba(40, 20, 8, 0.5)";
+          // Gold piping border
+          ctx.strokeStyle = "rgba(251, 191, 36, 0.75)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // 5. Tufted Golden Buttons & Creases
+          ctx.strokeStyle = "rgba(76, 5, 25, 0.6)";
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.moveTo(pt.x - 10, pt.y + TILE_H / 2 - 14);
-          ctx.lineTo(pt.x + 10, pt.y + TILE_H / 2 - 14);
+          ctx.moveTo(pt.x - 12, pt.y + TILE_H / 2 - 14);
+          ctx.lineTo(pt.x + 12, pt.y + TILE_H / 2 - 14);
           ctx.stroke();
+
+          ctx.fillStyle = "#fef08a";
+          [-8, 0, 8].forEach((btnX) => {
+            ctx.beginPath();
+            ctx.arc(pt.x + btnX, pt.y + TILE_H / 2 - 14, 1.3, 0, Math.PI * 2);
+            ctx.fill();
+          });
         }
 
-        // C. Render Visitor Avatar with Glowing Golden Aura Ring
+        // C. Render Visitor Avatar (Zagreus, Prince of the Underworld)
         const playerDepth = Math.floor(player.col + player.row);
         if (diag === playerDepth && Math.floor(player.col) === c) {
           const pIso = toIso(player.col, player.row);
 
-          // 1. THE GLOWING CIRCULAR GOLDEN AURA RING
-          const aura = ctx.createRadialGradient(
-            pIso.x,
-            pIso.y + TILE_H / 2,
-            4,
-            pIso.x,
-            pIso.y + TILE_H / 2,
-            38
-          );
-          aura.addColorStop(0, "rgba(251, 191, 36, 0.65)");
-          aura.addColorStop(0.5, "rgba(245, 158, 11, 0.28)");
-          aura.addColorStop(1, "rgba(245, 158, 11, 0)");
+          if (player.isSitting) {
+            // Seated Posture (Zagreus relaxing in royal repose atop the velvet divan)
+            const sitY = pIso.y + TILE_H / 2 - 14;
 
-          ctx.fillStyle = aura;
-          ctx.beginPath();
-          ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 38, 19, 0, 0, Math.PI * 2);
-          ctx.fill();
+            // Soft Underworld Shadow
+            ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+            ctx.beginPath();
+            ctx.ellipse(pIso.x, sitY + 2, 11, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
 
-          // Golden boundary aura ring
-          ctx.strokeStyle = "rgba(251, 191, 36, 0.95)";
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 28, 14, 0, 0, Math.PI * 2);
-          ctx.stroke();
+            // Legs draped down the front
+            ctx.fillStyle = "#18181b";
+            ctx.fillRect(pIso.x - 5, sitY + 2, 4, 8);
+            ctx.fillRect(pIso.x + 1, sitY + 2, 4, 8);
 
-          // 2. Avatar Character
-          const bob = Math.sin(player.walkCycle) * 2.2;
+            // Fiery Underworld Boots
+            ctx.fillStyle = "#dc2626";
+            ctx.fillRect(pIso.x - 6, sitY + 8, 5, 4);
+            ctx.fillRect(pIso.x + 1, sitY + 8, 5, 4);
+            ctx.fillStyle = "#fbbf24";
+            ctx.fillRect(pIso.x - 5, sitY + 9, 3, 2);
+            ctx.fillRect(pIso.x + 2, sitY + 9, 3, 2);
 
-          // Shadow
-          ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-          ctx.beginPath();
-          ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 9, 5, 0, 0, Math.PI * 2);
-          ctx.fill();
+            // Torso (Dark Underworld Chiton)
+            ctx.fillStyle = "#1e1e24";
+            ctx.fillRect(pIso.x - 6, sitY - 16, 12, 16);
 
-          // Trousers & Shoes
-          ctx.fillStyle = "#1e293b";
-          ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 10 + bob, 3, 10);
-          ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 10 - bob, 3, 10);
+            // Crimson Royal Underworld Sash
+            ctx.fillStyle = "#b91c1c";
+            ctx.beginPath();
+            ctx.moveTo(pIso.x - 6, sitY - 16);
+            ctx.lineTo(pIso.x + 6, sitY - 14);
+            ctx.lineTo(pIso.x + 2, sitY + 1);
+            ctx.lineTo(pIso.x - 5, sitY - 2);
+            ctx.closePath();
+            ctx.fill();
 
-          // Charcoal Jacket
-          ctx.fillStyle = "#1e1e24";
-          ctx.fillRect(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob, 13, 18);
+            // Golden Skull Brooch
+            ctx.fillStyle = "#fbbf24";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 4, sitY - 13, 2.2, 0, Math.PI * 2);
+            ctx.fill();
 
-          // Satchel Strap
-          ctx.strokeStyle = "#b45309";
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.moveTo(pIso.x - 5, pIso.y + TILE_H / 2 - 27 + bob);
-          ctx.lineTo(pIso.x + 5, pIso.y + TILE_H / 2 - 16 + bob);
-          ctx.stroke();
+            // Head & Face
+            ctx.fillStyle = "#fde68a";
+            ctx.beginPath();
+            ctx.arc(pIso.x, sitY - 21, 5.5, 0, Math.PI * 2);
+            ctx.fill();
 
-          // Head & Hair
-          ctx.fillStyle = "#fde68a";
-          ctx.beginPath();
-          ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 6.0, 0, Math.PI * 2);
-          ctx.fill();
+            // Fiery Underworld Laurel Wreath (Zagreus glowing laurels)
+            const laurelPulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
+            ctx.fillStyle = `rgba(239, 68, 68, ${laurelPulse})`;
+            ctx.beginPath();
+            ctx.arc(pIso.x - 5, sitY - 23, 2.5, 0, Math.PI * 2);
+            ctx.arc(pIso.x + 5, sitY - 23, 2.5, 0, Math.PI * 2);
+            ctx.arc(pIso.x, sitY - 25, 2.8, 0, Math.PI * 2);
+            ctx.fill();
 
-          ctx.fillStyle = "#18181b";
-          ctx.beginPath();
-          ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 35 + bob, 6.2, Math.PI, Math.PI * 2);
-          ctx.fill();
+            // Spiky Raven Black Hair
+            ctx.fillStyle = "#09090b";
+            ctx.beginPath();
+            ctx.arc(pIso.x, sitY - 22, 5.6, Math.PI, Math.PI * 2);
+            ctx.fill();
+
+            // Floating Underworld Rest Indicator
+            ctx.fillStyle = "rgba(251, 191, 36, 0.95)";
+            ctx.font = "bold 9px serif";
+            ctx.textAlign = "center";
+            const floatOffset = Math.sin(Date.now() * 0.004) * 3;
+            ctx.fillText("Resting", pIso.x, sitY - 32 + floatOffset);
+          } else {
+            // Standing / Walking Zagreus Avatar
+
+            // 1. THE GLOWING CIRCULAR UNDERWORLD AURA RING (Golden with Crimson flame edge)
+            const aura = ctx.createRadialGradient(
+              pIso.x,
+              pIso.y + TILE_H / 2,
+              4,
+              pIso.x,
+              pIso.y + TILE_H / 2,
+              38
+            );
+            aura.addColorStop(0, "rgba(239, 68, 68, 0.65)");
+            aura.addColorStop(0.4, "rgba(245, 158, 11, 0.35)");
+            aura.addColorStop(1, "rgba(245, 158, 11, 0)");
+
+            ctx.fillStyle = aura;
+            ctx.beginPath();
+            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 36, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Stygian gold boundary aura ring
+            ctx.strokeStyle = "rgba(251, 191, 36, 0.95)";
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 26, 13, 0, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 2. Avatar Character
+            const bob = Math.sin(player.walkCycle) * 2.2;
+
+            // Shadow
+            ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+            ctx.beginPath();
+            ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 9, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Trousers
+            ctx.fillStyle = "#18181b";
+            ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 10 + bob, 3, 10);
+            ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 10 - bob, 3, 10);
+
+            // Fiery Burning Boots (Zagreus iconic flaming feet)
+            ctx.fillStyle = "#dc2626";
+            ctx.fillRect(pIso.x - 5, pIso.y + TILE_H / 2 - 3 + bob, 4, 3.5);
+            ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 3 - bob, 4, 3.5);
+            ctx.fillStyle = "#fbbf24";
+            ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 2 + bob, 2.5, 2);
+            ctx.fillRect(pIso.x + 2, pIso.y + TILE_H / 2 - 2 - bob, 2.5, 2);
+
+            // Charcoal Chiton/Tunic
+            ctx.fillStyle = "#1e1e24";
+            ctx.fillRect(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob, 13, 18);
+
+            // Crimson Royal Underworld Sash
+            ctx.fillStyle = "#b91c1c";
+            ctx.beginPath();
+            ctx.moveTo(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob);
+            ctx.lineTo(pIso.x + 7, pIso.y + TILE_H / 2 - 25 + bob);
+            ctx.lineTo(pIso.x + 4, pIso.y + TILE_H / 2 - 10 + bob);
+            ctx.lineTo(pIso.x - 5, pIso.y + TILE_H / 2 - 12 + bob);
+            ctx.closePath();
+            ctx.fill();
+
+            // Golden Skull Brooch Clasp
+            ctx.fillStyle = "#fbbf24";
+            ctx.beginPath();
+            ctx.arc(pIso.x - 4, pIso.y + TILE_H / 2 - 24 + bob, 2.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Head & Face
+            ctx.fillStyle = "#fde68a";
+            ctx.beginPath();
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 6.0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Fiery Red Laurel Wreath
+            const laurelPulse = Math.sin(Date.now() * 0.005) * 0.3 + 0.7;
+            ctx.fillStyle = `rgba(239, 68, 68, ${laurelPulse})`;
+            ctx.beginPath();
+            ctx.arc(pIso.x - 5, pIso.y + TILE_H / 2 - 35 + bob, 2.6, 0, Math.PI * 2);
+            ctx.arc(pIso.x + 5, pIso.y + TILE_H / 2 - 35 + bob, 2.6, 0, Math.PI * 2);
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 37 + bob, 2.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Spiky Raven Black Hair
+            ctx.fillStyle = "#09090b";
+            ctx.beginPath();
+            ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 35 + bob, 6.2, Math.PI, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
     }
@@ -1593,33 +2108,63 @@ export function initMuseumMaze() {
 
     if (isBehindWall) {
       ctx.save();
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.6;
       const pIso = toIso(player.col, player.row);
       const bob = Math.sin(player.walkCycle) * 2.2;
 
-      // Golden glowing ring
-      ctx.strokeStyle = "rgba(251, 191, 36, 0.9)";
+      // Golden glowing Underworld ring
+      ctx.strokeStyle = "rgba(251, 191, 36, 0.95)";
       ctx.lineWidth = 1.6;
       ctx.beginPath();
-      ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 28, 14, 0, 0, Math.PI * 2);
+      ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 26, 13, 0, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Soft silhouette
+      // Soft Zagreus silhouette
       ctx.fillStyle = "#fef08a";
       ctx.beginPath();
       ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 6.0, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = "#cbd5e1";
+      // Laurel glow
+      ctx.fillStyle = "rgba(239, 68, 68, 0.9)";
+      ctx.beginPath();
+      ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 36 + bob, 3.0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#b91c1c";
       ctx.fillRect(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob, 13, 18);
 
-      ctx.fillStyle = "#64748b";
+      ctx.fillStyle = "#18181b";
       ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 10 + bob, 3, 10);
       ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 10 - bob, 3, 10);
       ctx.restore();
     }
 
     ctx.restore();
+
+    // --- Pass 3.5: Floating Underworld Embers & Soul Motes (Hades Atmospheric Magic) ---
+    underworldMotes.forEach((m) => {
+      m.y += m.vy;
+      m.x += m.vx + Math.sin(m.wobble) * 0.35;
+      m.wobble += 0.035;
+
+      if (m.y < -canvas.height / 2 - 60) m.y = canvas.height / 2 + 60;
+      if (m.y > canvas.height / 2 + 60) m.y = -canvas.height / 2 - 60;
+      if (m.x < -canvas.width / 2 - 60) m.x = canvas.width / 2 + 60;
+      if (m.x > canvas.width / 2 + 60) m.x = -canvas.width / 2 - 60;
+
+      const alpha = m.alpha * (0.55 + Math.sin(m.wobble * 2) * 0.45);
+      if (m.type === "ember") {
+        ctx.fillStyle = `rgba(244, 63, 94, ${alpha})`;
+      } else if (m.type === "gold") {
+        ctx.fillStyle = `rgba(251, 191, 36, ${alpha})`;
+      } else {
+        ctx.fillStyle = `rgba(52, 211, 153, ${alpha * 0.8})`;
+      }
+      ctx.beginPath();
+      ctx.arc(m.x + canvas.width / 2, m.y + canvas.height / 2, m.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
     // --- Pass 4: Atmospheric Cinema Vignette ---
     // Soft radial falloff that frames the museum pavilion against the pure black canvas

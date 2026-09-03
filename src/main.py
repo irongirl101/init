@@ -491,6 +491,8 @@ def generate_styles(
 ):
     with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f) or {}
+    if os.environ.get("BASE_URL") is not None:
+        config["base_url"] = os.environ.get("BASE_URL")
     normalize_theme_config(config)
     pygments_theme = resolve_pygments_theme(config)
     write_theme_file(config, theme_path)
