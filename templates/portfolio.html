@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+  body {
+    background-color: #000000 !important;
+  }
+  #res-canvas {
+    display: none !important;
+  }
+</style>
 <div id="portfolio-root" class="max-w-7xl mx-auto px-2 sm:px-6 py-4 space-y-6">
 
   <!-- Gallery Exhibition Header -->
@@ -14,7 +22,7 @@
         The Pavilion Gallery
       </h1>
       <p class="text-xs sm:text-sm opacity-70 mt-1 max-w-xl font-light">
-        Original works exhibition & silent bidding ledger by {{ site.author }}. Explore the halls, discover the 3 featured lots, and submit private bids.
+        Original works exhibition & silent bidding ledger by {{ site.author }}. Explore the labyrinthian halls, discover the featured lots, and submit private bids.
       </p>
     </div>
 
@@ -62,8 +70,14 @@
         <div class="relative rounded-xl overflow-hidden border border-white/10 bg-[#060a0e] shadow-inner p-1">
           <canvas id="minimap-canvas" width="160" height="160" class="block w-full h-auto rounded-lg"></canvas>
           <div class="absolute bottom-1.5 right-2 text-[9px] font-mono uppercase text-primary/80 font-bold tracking-widest">
-            3 LOTS
+            EXHIBITION
           </div>
+        </div>
+
+        <!-- Current Exhibition Wing Indicator -->
+        <div id="current-wing-pill" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-medium tracking-wide">
+          <span id="current-wing-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="current-wing-name" class="text-white/90 truncate">🏛️ Physical Art Wing</span>
         </div>
       </div>
     </div>
@@ -87,6 +101,9 @@
       <button id="prompt-action-btn" class="btn btn-sm btn-primary ml-2 shadow-lg hover:scale-105 transition-transform font-mono">
         Inspect & Bid [E]
       </button>
+      <span id="prompt-reserved-badge" class="hidden text-xs font-mono px-3 py-1.5 rounded-xl bg-white/10 text-white/70 border border-white/20">
+        🔒 Exhibition Space Only • No Bidding
+      </span>
     </div>
 
     <!-- Mobile Virtual Buttons -->
@@ -105,20 +122,46 @@
 
   <!-- VIEW 2: Traditional Catalog Grid (Accessible Alternative) -->
   <div id="catalog-view" class="hidden space-y-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-bold font-serif">Exhibition Catalog ({{ page.artworks | length }} Works)</h2>
-      <p class="text-sm opacity-70">Click any piece to inspect details or submit an offer.</p>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-bold font-serif">Exhibition Catalog ({{ page.artworks | length }} Works)</h2>
+        <p class="text-sm opacity-70">Browse works across the Physical Art, Digital Art, and 3D Blender wings.</p>
+      </div>
+      <!-- Wing Filter Pills -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button class="catalog-filter-btn btn btn-xs btn-primary" data-category="all">
+          All ({{ page.artworks | length }})
+        </button>
+        <button class="catalog-filter-btn btn btn-xs btn-outline border-amber-500/40 text-amber-300" data-category="physical">
+          🏛️ Physical
+        </button>
+        <button class="catalog-filter-btn btn btn-xs btn-outline border-sky-500/40 text-sky-300" data-category="digital">
+          💻 Digital
+        </button>
+        <button class="catalog-filter-btn btn btn-xs btn-outline border-orange-500/40 text-orange-300" data-category="blender">
+          🧊 3D Blender
+        </button>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="catalog-cards-container">
       {% for art in page.artworks %}
-      <div class="card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group">
+      <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="{{ art.category or 'physical' }}">
         <figure class="relative overflow-hidden bg-black/40 aspect-[4/5] cursor-pointer" onclick="window.openInspectionModal('{{ art.id }}')">
           <img src="{{ site.base_url }}{{ art.image }}" alt="{{ art.title }}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" loading="lazy" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">{{ art.year }}</span>
-            <span class="badge badge-sm badge-primary">Lot #{{ loop.index }}</span>
+            <div class="flex items-center gap-1.5">
+              {% if art.category == 'digital' %}
+                <span class="badge badge-sm badge-info">💻 Digital</span>
+              {% elif art.category == 'blender' %}
+                <span class="badge badge-sm badge-secondary">🧊 3D Blender</span>
+              {% else %}
+                <span class="badge badge-sm badge-warning">🏛️ Physical</span>
+              {% endif %}
+              <span class="badge badge-sm badge-primary">Lot #{{ loop.index }}</span>
+            </div>
           </div>
         </figure>
         <div class="card-body p-5">

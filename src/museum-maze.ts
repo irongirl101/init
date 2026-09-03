@@ -37,6 +37,9 @@ interface MountedPainting {
   imgElement: HTMLImageElement;
   title: string;
   lotNum: number;
+  category: "physical" | "digital" | "blender";
+  isReservedMount?: boolean;
+  wingName?: string;
 }
 
 export function initMuseumMaze() {
@@ -123,16 +126,17 @@ export function initMuseumMaze() {
   }
 
   // --- Dimensions & Coordinate Projections ---
-  const COLS = 16;
-  const ROWS = 16;
+  const COLS = 22;
+  const ROWS = 22;
   const TILE_W = 68; // Isometric tile width
   const TILE_H = 34; // Isometric tile height
 
-  // Wall Heights:
-  // Back walls that display artworks are tall (58px) to showcase art proudly.
-  // Interior foreground partition walls are low gallery dividers (28px) so they NEVER occlude art!
-  const TALL_WALL_H = 58;
-  const LOW_WALL_H = 28;
+  // Wall Heights calibrated to true 2.5D isometric architectural ratio:
+  // Floor diamond edge = 38px (sqrt(34^2 + 17^2)).
+  // Gallery walls stand at 48px (1.26x edge ratio), matching classic 2.5D perspective.
+  // Perimeter walls stand at 58px.
+  const GALLERY_WALL_H = 48;
+  const PERIMETER_WALL_H = 58;
 
   function toIso(col: number, row: number): { x: number; y: number } {
     return {
@@ -159,53 +163,140 @@ export function initMuseumMaze() {
   window.addEventListener("resize", resize);
   resize();
 
-  // --- Architectural Gallery Floor Plan ---
-  // 0 = Parquet Floor
-  // 1 = Gallery Partition Wall
-  // 2 = Dark Perimeter Wall
-  // 3 = Leather Gallery Bench
-  // Wide open central promenade: 100% UNBLOCKED SIGHTLINE directly to Torii Gate!
+  // --- Architectural Museum Floor Plan (22x22 Curated Estate) ---
+  // Compact, intimate gallery spaces with zero isolated 1x1 blocks and zero empty voids.
+  // Wide 2-tile corridors, authentic tufted leather benches in every salon, and continuous connected exhibition walls.
+  // Paintings are mounted across BOTH South-West (SW) and South-East (SE) wall facades.
   const MAP: number[][] = [
-    // 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // 0: North Perimeter
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 1
-    [2, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 2], // 2: Feature back walls (Holds Lot 1 & 2 & 3)
-    [2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 2], // 3
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 4: Wide, open central sightline corridor
-    [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2], // 5: Low side dividers (shifted away from center)
-    [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2], // 6
-    [2, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 2], // 7: Central Atrium & Leather Bench
-    [2, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 2], // 8
-    [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2], // 9: Low side dividers
-    [2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 2], // 10
-    [2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2], // 11
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 12: Grand Promenade (unobstructed)
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 13
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 14: Foyer
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // 15: South Perimeter
+    // 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // 0: North Perimeter Wall
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 1: North Masterpiece Promenade
+    [2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2], // 2: Grand Masterpiece North Wall Run
+    [2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2], // 3: Salon Viewing Aisle & Division Spines
+    [2, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 2], // 4: Drawing Salon, Masterpiece Island & Color Salon
+    [2, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 1, 0, 0, 0, 3, 0, 0, 2], // 5: Salon Viewing Benches
+    [2, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 6: South Salon Archways
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 7: Mid Concourse Walkway
+    [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 8: Wing Portal Colonnades
+    [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 9: Cyber & 3D Entry Corridors
+    [2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 10: Gallery Headers
+    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 11: Display Alcove Corridors
+    [2, 0, 0, 0, 1, 3, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3, 1, 0, 0, 0, 2], // 12: Digital & 3D Lounge Benches
+    [2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 1, 0, 1, 0, 2], // 13: Central Rotunda Upper Leather Benches
+    [2, 0, 1, 1, 1, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 1, 1, 1, 0, 2], // 14: Central Rotunda Lower Leather Benches
+    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 15: Cross Promenade Portals
+    [2, 0, 0, 0, 1, 3, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3, 1, 0, 0, 0, 2], // 16: South Wing Benches
+    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 17: Lower Cyber & 3D Corridors
+    [2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 18: Pavilion End Portals
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 19: Grand Foyer Promenade
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 20: Grand Entrance Foyer (Spawn at 10.5, 20.5)
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // 21: South Perimeter Wall
   ];
 
-  // Check if a wall should be tall (perimeter or back artwork wall) or low (internal divider)
+  // All exhibition walls stand at calibrated 2.5D architectural height
   function getWallHeight(r: number, c: number): number {
-    if (MAP[r][c] === 2) return TALL_WALL_H; // Perimeter walls
-    if (r <= 3) return TALL_WALL_H; // North exhibition feature walls
-    return LOW_WALL_H; // Interior partition walls stay low to ensure open sightlines
+    if (MAP[r][c] === 2) return PERIMETER_WALL_H; // Perimeter walls
+    return GALLERY_WALL_H; // Exhibition partition walls
   }
 
-  // --- Mount the 3 Original Artworks on Prime Unobstructed Feature Walls ---
-  const mountedPaintings: MountedPainting[] = [];
-  const artworkMounts = [
-    // Lot #1: Torii Gate at Twilight - Center North Feature Wall (SE Face, 100% open sightline)
-    { artId: "torii", col: 8, row: 2, face: "SE" as const, lotNum: 1 },
-    // Lot #2: WALL-E Urban Solitude - East Wing Back Wall (SW Face, 100% open sightline)
-    { artId: "walle-ink", col: 13, row: 3, face: "SW" as const, lotNum: 2 },
-    // Lot #3: WALL-E Solar Awakening - West Wing Feature Wall (SE Face, 100% open sightline)
-    { artId: "walle-color", col: 3, row: 2, face: "SE" as const, lotNum: 3 },
+  // --- Museum Wing Zones & Architecture ---
+  // Physical: North Grand Fine Art Suite (r <= 7)
+  // Digital: West Cyber Digital Studio (c <= 7 && r >= 8 && r <= 18)
+  // Blender: East 3D Blender Pavilion (c >= 14 && r >= 8 && r <= 18)
+  // Nexus: Grand Central Rotunda & Entrance Foyer (c = 8..13 or r >= 19)
+  type WingZone = "physical" | "digital" | "blender" | "nexus";
+
+  function getTileZone(c: number, r: number): WingZone {
+    if (r <= 7) return "physical"; // North Grand Fine Art Suite
+    if (r >= 8 && r <= 18) {
+      if (c <= 7) return "digital"; // West Cyber Digital Studio
+      if (c >= 14) return "blender"; // East 3D Blender Pavilion
+      return "nexus"; // Central Grand Rotunda & Promenade
+    }
+    return "nexus"; // Grand Entrance Foyer (r >= 19)
+  }
+
+  // Wing-Specific Exhibition Wall Slots
+  // 1. Physical Art Gallery (North Grand Fine Art Suite - 19 feature wall slots, mixed SW and SE faces)
+  const PHYSICAL_SLOTS: Array<{ col: number; row: number; face: "SW" | "SE" }> = [
+    { col: 2, row: 2, face: "SW" },
+    { col: 3, row: 2, face: "SW" },
+    { col: 4, row: 2, face: "SW" },
+    { col: 5, row: 2, face: "SW" },
+    { col: 6, row: 2, face: "SW" },
+    { col: 8, row: 2, face: "SW" },
+    { col: 9, row: 2, face: "SW" },
+    { col: 10, row: 2, face: "SW" },
+    { col: 11, row: 2, face: "SW" },
+    { col: 12, row: 2, face: "SW" },
+    { col: 13, row: 2, face: "SW" },
+    { col: 15, row: 2, face: "SW" },
+    { col: 16, row: 2, face: "SW" },
+    { col: 17, row: 2, face: "SW" },
+    { col: 18, row: 2, face: "SW" },
+    { col: 19, row: 2, face: "SE" },
+    { col: 7, row: 3, face: "SE" },
+    { col: 14, row: 3, face: "SE" },
+    { col: 4, row: 4, face: "SW" },
   ];
 
-  artworkMounts.forEach((m) => {
-    const art = artworks.find((a) => a.id === m.artId);
-    if (!art) return;
+  // 2. Digital Art Studio (West Cyber Studio - 23 feature wall slots, mixed SW and SE faces)
+  const DIGITAL_SLOTS: Array<{ col: number; row: number; face: "SW" | "SE" }> = [
+    { col: 4, row: 8, face: "SE" },
+    { col: 7, row: 8, face: "SE" },
+    { col: 4, row: 9, face: "SE" },
+    { col: 7, row: 9, face: "SE" },
+    { col: 3, row: 10, face: "SW" },
+    { col: 4, row: 10, face: "SE" },
+    { col: 7, row: 10, face: "SE" },
+    { col: 2, row: 11, face: "SW" },
+    { col: 4, row: 11, face: "SE" },
+    { col: 7, row: 11, face: "SE" },
+    { col: 6, row: 12, face: "SW" },
+    { col: 7, row: 12, face: "SW" },
+    { col: 2, row: 13, face: "SE" },
+    { col: 4, row: 13, face: "SE" },
+    { col: 3, row: 14, face: "SW" },
+    { col: 4, row: 14, face: "SE" },
+    { col: 2, row: 15, face: "SW" },
+    { col: 4, row: 15, face: "SE" },
+    { col: 7, row: 15, face: "SE" },
+    { col: 6, row: 16, face: "SW" },
+    { col: 7, row: 16, face: "SE" },
+    { col: 2, row: 17, face: "SE" },
+    { col: 4, row: 17, face: "SE" },
+  ];
+
+  // 3. 3D Blender Pavilion (East 3D Pavilion - 6 feature wall & pedestal slots, mixed SW and SE faces)
+  const BLENDER_SLOTS: Array<{ col: number; row: number; face: "SW" | "SE" }> = [
+    { col: 14, row: 8, face: "SE" },
+    { col: 17, row: 8, face: "SE" },
+    { col: 14, row: 9, face: "SE" },
+    { col: 17, row: 9, face: "SE" },
+    { col: 14, row: 10, face: "SE" },
+    { col: 18, row: 10, face: "SW" },
+  ];
+
+  // Dynamically mount artworks into their respective wings
+  const mountedPaintings: MountedPainting[] = [];
+  let physCount = 0;
+  let digCount = 0;
+  let blendCount = 0;
+
+  artworks.forEach((art, idx) => {
+    const cat = (art.category as "physical" | "digital" | "blender") || "physical";
+    let slot: { col: number; row: number; face: "SW" | "SE" };
+
+    if (cat === "digital") {
+      slot = DIGITAL_SLOTS[digCount % DIGITAL_SLOTS.length];
+      digCount++;
+    } else if (cat === "blender") {
+      slot = BLENDER_SLOTS[blendCount % BLENDER_SLOTS.length];
+      blendCount++;
+    } else {
+      slot = PHYSICAL_SLOTS[physCount % PHYSICAL_SLOTS.length];
+      physCount++;
+    }
 
     const img = new Image();
     const imgSrc =
@@ -214,28 +305,57 @@ export function initMuseumMaze() {
         : baseUrl + art.image;
     img.src = imgSrc;
 
+    const wingName =
+      cat === "digital"
+        ? "Digital Art Studio"
+        : cat === "blender"
+        ? "3D Blender Pavilion"
+        : "Physical Fine Art Wing";
+
     mountedPaintings.push({
-      artId: m.artId,
-      col: m.col,
-      row: m.row,
-      face: m.face,
+      artId: art.id,
+      col: slot.col,
+      row: slot.row,
+      face: slot.face,
       imgElement: img,
       title: art.title,
-      lotNum: m.lotNum,
+      lotNum: idx + 1,
+      category: cat,
+      isReservedMount: false,
+      wingName: wingName,
+    });
+  });
+
+  // Add dedicated illuminated museum wing reserved mounts for empty exhibition space
+  // (Shows upcoming display plinth without allowing bidding)
+  const remainingBlenderSlots = BLENDER_SLOTS.slice(blendCount, blendCount + 2);
+  remainingBlenderSlots.forEach((slot, i) => {
+    const dummyImg = new Image();
+    mountedPaintings.push({
+      artId: `reserved-blender-${i}`,
+      col: slot.col,
+      row: slot.row,
+      face: slot.face,
+      imgElement: dummyImg,
+      title: "3D Blender Pavilion",
+      lotNum: 0,
+      category: "blender",
+      isReservedMount: true,
+      wingName: "3D Blender Pavilion",
     });
   });
 
   // --- Visitor State & Smooth Velocity ---
   const player = {
-    col: 7.5,
-    row: 12.5, // Spawns in the open Grand Promenade
+    col: 10.5,
+    row: 20.5, // Spawns safely in the open Grand Entrance Foyer
     vx: 0,
     vy: 0,
     targetCol: null as number | null,
     targetRow: null as number | null,
-    radius: 0.26, // Slimmer collision radius for effortless corner sliding
-    maxSpeed: 0.085,
-    accel: 0.02,
+    radius: 0.28, // Robust collision radius: 3x frame step size, completely preventing tunnel clipping
+    maxSpeed: 0.09,
+    accel: 0.03,
     friction: 0.78,
     walkCycle: 0,
     distMoved: 0,
@@ -248,19 +368,28 @@ export function initMuseumMaze() {
     if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
       return;
     }
-    keys[e.key.toLowerCase()] = true;
+    const k = e.key.toLowerCase();
+    const c = e.code.toLowerCase();
+    keys[k] = true;
+    keys[c] = true;
 
-    if (e.key.toLowerCase() === "e" || e.code === "Space") {
+    if (k === "e" || c === "keye" || c === "space") {
       const near = getNearbyPainting(player.col, player.row, 2.4);
       if (near) {
-        openInspectionModal(near.artId);
+        // Bidding on exhibition space is strictly disabled
+        if (!near.isReservedMount) {
+          openInspectionModal(near.artId);
+        }
         e.preventDefault();
       }
     }
   });
 
   window.addEventListener("keyup", (e) => {
-    keys[e.key.toLowerCase()] = false;
+    const k = e.key.toLowerCase();
+    const c = e.code.toLowerCase();
+    keys[k] = false;
+    keys[c] = false;
   });
 
   // Camera coordinates
@@ -269,7 +398,7 @@ export function initMuseumMaze() {
     y: 0,
   };
 
-  function isWalkable(c: number, r: number, radius = 0.26): boolean {
+  function isWalkable(c: number, r: number, radius = 0.28): boolean {
     const minC = Math.floor(c - radius);
     const maxC = Math.floor(c + radius);
     const minR = Math.floor(r - radius);
@@ -295,7 +424,12 @@ export function initMuseumMaze() {
     let minDist = maxDist;
 
     for (const p of mountedPaintings) {
-      const d = Math.hypot(pc - (p.col + 0.5), pr - (p.row + 0.5));
+      // Viewing target adjusted for wall face direction:
+      // SW face is viewed from (col + 0.5, row + 1.1)
+      // SE face is viewed from (col + 1.1, row + 0.5)
+      const targetC = p.face === "SE" ? p.col + 1.1 : p.col + 0.5;
+      const targetR = p.face === "SW" ? p.row + 1.1 : p.row + 0.5;
+      const d = Math.hypot(pc - targetC, pr - targetR);
       if (d < minDist) {
         minDist = d;
         nearest = p;
@@ -431,6 +565,10 @@ export function initMuseumMaze() {
   const modal = document.getElementById("artwork-inspection-modal") as HTMLDialogElement | null;
 
   function openInspectionModal(artId: string) {
+    if (artId.startsWith("reserved-")) return;
+    const mounted = mountedPaintings.find((m) => m.artId === artId);
+    if (mounted?.isReservedMount) return; // Disallow bidding on exhibition space
+
     playChime();
     activeModalArtId = artId;
     const art = artworks.find((a) => a.id === artId);
@@ -514,7 +652,9 @@ export function initMuseumMaze() {
   if (promptBtn) {
     promptBtn.addEventListener("click", () => {
       const p = getNearbyPainting(player.col, player.row, 2.4);
-      if (p) openInspectionModal(p.artId);
+      if (p && !p.isReservedMount) {
+        openInspectionModal(p.artId);
+      }
     });
   }
 
@@ -613,6 +753,28 @@ export function initMuseumMaze() {
     });
   }
 
+  // Catalog category filter buttons
+  document.querySelectorAll(".catalog-filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const category = btn.getAttribute("data-category") || "all";
+      document.querySelectorAll(".catalog-filter-btn").forEach((b) => {
+        b.classList.remove("btn-primary");
+        b.classList.add("btn-outline");
+      });
+      btn.classList.add("btn-primary");
+      btn.classList.remove("btn-outline");
+
+      document.querySelectorAll(".catalog-card").forEach((card) => {
+        const cardCat = card.getAttribute("data-category");
+        if (category === "all" || cardCat === category) {
+          (card as HTMLElement).style.display = "";
+        } else {
+          (card as HTMLElement).style.display = "none";
+        }
+      });
+    });
+  });
+
   const promptEl = document.getElementById("proximity-prompt");
   const promptTitleEl = document.getElementById("prompt-title");
 
@@ -633,10 +795,10 @@ export function initMuseumMaze() {
     let targetVx = 0;
     let targetVy = 0;
 
-    const up = keys["w"] || keys["arrowup"];
-    const down = keys["s"] || keys["arrowdown"];
-    const left = keys["a"] || keys["arrowleft"];
-    const right = keys["d"] || keys["arrowright"];
+    const up = keys["w"] || keys["arrowup"] || keys["keyw"];
+    const down = keys["s"] || keys["arrowdown"] || keys["keys"];
+    const left = keys["a"] || keys["arrowleft"] || keys["keya"];
+    const right = keys["d"] || keys["arrowright"] || keys["keyd"];
 
     let screenX = 0;
     let screenY = 0;
@@ -656,8 +818,8 @@ export function initMuseumMaze() {
       // screenX = (col - row) * (TILE_W / 2)
       // screenY = (col + row) * (TILE_H / 2)
       // Reverse transformation:
-      const dC = (nx / (TILE_W / 2) + ny / (TILE_H / 2)) * 0.5 * player.maxSpeed * 32;
-      const dR = (ny / (TILE_H / 2) - nx / (TILE_W / 2)) * 0.5 * player.maxSpeed * 32;
+      const dC = (nx / (TILE_W / 2) + ny / (TILE_H / 2)) * 0.5 * player.maxSpeed * 34;
+      const dR = (ny / (TILE_H / 2) - nx / (TILE_W / 2)) * 0.5 * player.maxSpeed * 34;
 
       targetVx = dC;
       targetVy = dR;
@@ -679,29 +841,27 @@ export function initMuseumMaze() {
     }
 
     // Smooth acceleration & friction easing
-    player.vx += (targetVx - player.vx) * 0.25;
-    player.vy += (targetVy - player.vy) * 0.25;
+    player.vx += (targetVx - player.vx) * 0.28;
+    player.vy += (targetVy - player.vy) * 0.28;
 
     // Apply movement with wall collision & smooth sliding
     if (Math.abs(player.vx) > 0.001 || Math.abs(player.vy) > 0.001) {
       player.walkCycle += 0.22;
 
+      // Strict axis-separated collision resolution:
+      // Prevents all wall clipping while allowing smooth sliding along corridors
       const nextC = player.col + player.vx;
-      const nextR = player.row + player.vy;
-
-      // Full diagonal step
-      if (isWalkable(nextC, nextR, player.radius)) {
+      if (isWalkable(nextC, player.row, player.radius)) {
         player.col = nextC;
+      } else {
+        player.vx = 0;
+      }
+
+      const nextR = player.row + player.vy;
+      if (isWalkable(player.col, nextR, player.radius)) {
         player.row = nextR;
       } else {
-        // Wall slide along Col axis
-        if (isWalkable(nextC, player.row, player.radius)) {
-          player.col = nextC;
-        }
-        // Wall slide along Row axis
-        if (isWalkable(player.col, nextR, player.radius)) {
-          player.row = nextR;
-        }
+        player.vy = 0;
       }
 
       player.distMoved += Math.hypot(player.vx, player.vy);
@@ -716,15 +876,224 @@ export function initMuseumMaze() {
     camera.x += (playerIso.x - camera.x) * 0.08;
     camera.y += (playerIso.y - camera.y) * 0.08;
 
-    // 3. Artwork Proximity Check
+    // 3. Artwork Proximity Check & HUD Wing Indicator Update
+    const currentZone = getTileZone(Math.floor(player.col), Math.floor(player.row));
+    const wingNameEl = document.getElementById("current-wing-name");
+    const wingDotEl = document.getElementById("current-wing-dot");
+    if (wingNameEl && wingDotEl) {
+      if (currentZone === "physical") {
+        wingNameEl.textContent = "🏛️ Physical Fine Art Wing";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-amber-400 animate-pulse";
+      } else if (currentZone === "digital") {
+        wingNameEl.textContent = "💻 Digital Art Studio";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-sky-400 animate-pulse";
+      } else if (currentZone === "blender") {
+        wingNameEl.textContent = "🧊 3D Blender Pavilion";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-orange-400 animate-pulse";
+      } else {
+        wingNameEl.textContent = "☕ Grand Central Nexus";
+        wingDotEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+      }
+    }
+
     const near = getNearbyPainting(player.col, player.row, 2.4);
+    const promptSubtitleEl = document.getElementById("prompt-subtitle");
+    const promptActionBtn = document.getElementById("prompt-action-btn");
+    const promptReservedBadge = document.getElementById("prompt-reserved-badge");
     if (near && promptEl && promptTitleEl) {
-      promptTitleEl.textContent = `${near.title} (Lot #${near.lotNum})`;
+      if (near.isReservedMount) {
+        promptTitleEl.textContent = `${near.title} (Exhibition Space)`;
+        if (promptSubtitleEl) {
+          promptSubtitleEl.textContent = "Reserved Exhibition Space • Bidding Unavailable";
+          promptSubtitleEl.className = "text-[10px] text-slate-400 uppercase font-bold tracking-wider";
+        }
+        if (promptActionBtn) promptActionBtn.classList.add("hidden");
+        if (promptReservedBadge) promptReservedBadge.classList.remove("hidden");
+      } else {
+        promptTitleEl.textContent = `${near.title} (Lot #${near.lotNum})`;
+        if (promptSubtitleEl) {
+          promptSubtitleEl.textContent = `${near.wingName || "Museum Gallery"} • Inspect & Place Offer`;
+          promptSubtitleEl.className = "text-[10px] text-primary uppercase font-bold tracking-wider";
+        }
+        if (promptActionBtn) promptActionBtn.classList.remove("hidden");
+        if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
+      }
       promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
       promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
     } else if (promptEl) {
       promptEl.classList.add("opacity-0", "translate-y-4", "scale-95");
       promptEl.classList.remove("opacity-100", "translate-y-0", "scale-100");
+    }
+
+    // Helper: Draw themed artwork or reserved exhibition display
+    function drawArtworkCard(piece: MountedPainting, isNear: boolean) {
+      const isDigital = piece.category === "digital";
+      const isBlender = piece.category === "blender";
+
+      // 1. Overhead Light Wash Cone
+      const lightWash = ctx.createLinearGradient(0, -22, 0, 22);
+      if (isDigital) {
+        lightWash.addColorStop(0, "rgba(224, 242, 254, 0.35)");
+        lightWash.addColorStop(0.4, "rgba(56, 189, 248, 0.15)");
+        lightWash.addColorStop(1, "rgba(56, 189, 248, 0)");
+      } else if (isBlender) {
+        lightWash.addColorStop(0, "rgba(255, 237, 213, 0.35)");
+        lightWash.addColorStop(0.4, "rgba(249, 115, 22, 0.16)");
+        lightWash.addColorStop(1, "rgba(249, 115, 22, 0)");
+      } else {
+        lightWash.addColorStop(0, "rgba(254, 240, 138, 0.28)");
+        lightWash.addColorStop(0.4, "rgba(251, 191, 36, 0.12)");
+        lightWash.addColorStop(1, "rgba(251, 191, 36, 0)");
+      }
+      ctx.fillStyle = lightWash;
+      ctx.beginPath();
+      ctx.moveTo(-6, -22);
+      ctx.lineTo(6, -22);
+      ctx.lineTo(20, 22);
+      ctx.lineTo(-20, 22);
+      ctx.closePath();
+      ctx.fill();
+
+      // 2. Wall Cast Shadow
+      ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+      ctx.fillRect(-17, -18, 34, 38);
+
+      // 3. Outer Frame & Inset
+      if (isDigital) {
+        // Brushed Aluminum Modern Floating Frame
+        ctx.fillStyle = isNear ? "#38bdf8" : "#334155";
+        ctx.fillRect(-16, -19, 32, 38);
+        ctx.fillStyle = isNear ? "#0284c7" : "#0f172a";
+        ctx.fillRect(-15, -18, 30, 36);
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillRect(-14, -17, 28, 34);
+      } else if (isBlender) {
+        // Dark Studio Shadowbox Frame with Blender Orange Rim
+        ctx.fillStyle = isNear ? "#fb923c" : "#ea580c";
+        ctx.fillRect(-16, -19, 32, 38);
+        ctx.fillStyle = "#18181b";
+        ctx.fillRect(-15, -18, 30, 36);
+        ctx.fillStyle = "#27272a";
+        ctx.fillRect(-14, -17, 28, 34);
+      } else {
+        // Gilded Antique Brass Frame (Physical)
+        ctx.fillStyle = isNear ? "#f59e0b" : "#b45309";
+        ctx.fillRect(-16, -19, 32, 38);
+        ctx.fillStyle = isNear ? "#fbbf24" : "#78350f";
+        ctx.fillRect(-15, -18, 30, 36);
+        ctx.fillStyle = "#faf8f5";
+        ctx.fillRect(-14, -17, 28, 34);
+      }
+
+      // 4. Artwork Canvas OR Reserved Exhibition Display
+      if (piece.isReservedMount) {
+        if (isDigital) {
+          ctx.fillStyle = "#090d16";
+          ctx.fillRect(-12, -15, 24, 30);
+          // Holographic Cybernetic Diamond Icon
+          ctx.strokeStyle = "#38bdf8";
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(0, -9);
+          ctx.lineTo(8, -1);
+          ctx.lineTo(0, 7);
+          ctx.lineTo(-8, -1);
+          ctx.closePath();
+          ctx.stroke();
+
+          ctx.fillStyle = "#38bdf8";
+          ctx.font = "bold 4px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("DIGITAL", 0, -1);
+          ctx.font = "3.2px sans-serif";
+          ctx.fillStyle = "#94a3b8";
+          ctx.fillText("STUDIO", 0, 11);
+        } else if (isBlender) {
+          ctx.fillStyle = "#121215";
+          ctx.fillRect(-12, -15, 24, 30);
+          // Stylized 3D Wireframe Cube
+          ctx.strokeStyle = "#f97316";
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(-6, -8, 12, 12);
+          ctx.beginPath();
+          ctx.moveTo(-6, -8);
+          ctx.lineTo(-2, -12);
+          ctx.lineTo(10, -12);
+          ctx.lineTo(6, -8);
+          ctx.moveTo(10, -12);
+          ctx.lineTo(10, 0);
+          ctx.lineTo(6, 4);
+          ctx.stroke();
+
+          ctx.fillStyle = "#f97316";
+          ctx.font = "bold 4px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("BLENDER", 0, 8);
+          ctx.font = "3.2px sans-serif";
+          ctx.fillStyle = "#a1a1aa";
+          ctx.fillText("3D LAB", 0, 12);
+        }
+      } else {
+        if (piece.imgElement.complete && piece.imgElement.naturalWidth > 0) {
+          ctx.drawImage(piece.imgElement, -12, -15, 24, 30);
+        } else {
+          ctx.fillStyle = isDigital ? "#0f172a" : isBlender ? "#18181b" : "#1e293b";
+          ctx.fillRect(-12, -15, 24, 30);
+        }
+      }
+
+      // 5. Overhead Picture Lamp Fixture
+      if (isDigital) {
+        ctx.fillStyle = "#0284c7";
+        ctx.fillRect(-10, -25, 20, 3.5);
+        ctx.fillStyle = isNear ? "#e0f2fe" : "#38bdf8";
+        ctx.fillRect(-7, -24, 14, 1.5);
+      } else if (isBlender) {
+        ctx.fillStyle = "#c2410c";
+        ctx.fillRect(-10, -25, 20, 3.5);
+        ctx.fillStyle = isNear ? "#ffedd5" : "#f97316";
+        ctx.fillRect(-7, -24, 14, 1.5);
+      } else {
+        ctx.fillStyle = "#d97706";
+        ctx.fillRect(-10, -25, 20, 3.5);
+        ctx.fillStyle = isNear ? "#fef08a" : "#fbbf24";
+        ctx.fillRect(-7, -24, 14, 1.5);
+      }
+
+      // 6. Identification Placard
+      if (isDigital) {
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(-11, 20, 22, 5.5);
+        ctx.strokeStyle = "#0284c7";
+        ctx.lineWidth = 0.6;
+        ctx.strokeRect(-11, 20, 22, 5.5);
+        ctx.fillStyle = "#38bdf8";
+        ctx.font = "bold 4px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(piece.isReservedMount ? "DIGITAL WING" : `LOT #${piece.lotNum}`, 0, 22.5);
+      } else if (isBlender) {
+        ctx.fillStyle = "#09090b";
+        ctx.fillRect(-11, 20, 22, 5.5);
+        ctx.strokeStyle = "#ea580c";
+        ctx.lineWidth = 0.6;
+        ctx.strokeRect(-11, 20, 22, 5.5);
+        ctx.fillStyle = "#fb923c";
+        ctx.font = "bold 4px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(piece.isReservedMount ? "3D BLENDER" : `LOT #${piece.lotNum}`, 0, 22.5);
+      } else {
+        ctx.fillStyle = "#78350f";
+        ctx.fillRect(-11, 20, 22, 5.5);
+        ctx.fillStyle = "#fef3c7";
+        ctx.font = "bold 4.5px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`LOT #${piece.lotNum}`, 0, 22.5);
+      }
     }
 
     // --- CANVAS DRAWING ---
@@ -737,11 +1106,12 @@ export function initMuseumMaze() {
     ctx.save();
     ctx.translate(canvas.width / 2 - camera.x, canvas.height / 2 - camera.y);
 
-    // --- Pass 1: Polished Dark Mahogany French Parquet Floors ---
+    // --- Pass 1: Multi-Wing Themed French Herringbone Parquet Floors ---
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         if (MAP[r][c] === 0 || MAP[r][c] === 3) {
           const pt = toIso(c, r);
+          const zone = getTileZone(c, r);
 
           ctx.beginPath();
           ctx.moveTo(pt.x, pt.y);
@@ -750,27 +1120,55 @@ export function initMuseumMaze() {
           ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
           ctx.closePath();
 
-          // Dark varnished parquet with subtle warm grain
           const isAlt = (r + c) % 2 === 0;
-          ctx.fillStyle = isAlt ? "#241a13" : "#1c140e";
+
+          // Distinct floor color scheme per wing
+          if (zone === "digital") {
+            ctx.fillStyle = isAlt ? "#15202d" : "#0e1620"; // Cool obsidian slate
+          } else if (zone === "blender") {
+            ctx.fillStyle = isAlt ? "#1a1a1e" : "#121215"; // Studio graphite ebony
+          } else if (zone === "nexus") {
+            ctx.fillStyle = isAlt ? "#27170e" : "#1e1008"; // Transitional walnut
+          } else {
+            ctx.fillStyle = isAlt ? "#2c190f" : "#22130b"; // Rich warm walnut (Physical)
+          }
           ctx.fill();
 
-          // Delicate plank lines
-          ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+          // Delicate outer plank grout seam
+          ctx.strokeStyle = "rgba(0, 0, 0, 0.45)";
           ctx.lineWidth = 0.8;
           ctx.stroke();
 
-          // Diagonal parquet sheen
-          ctx.strokeStyle = "rgba(255, 235, 205, 0.04)";
+          // French Herringbone interior plank grooves
+          ctx.strokeStyle = "rgba(10, 5, 2, 0.35)";
+          ctx.lineWidth = 0.6;
           ctx.beginPath();
           ctx.moveTo(pt.x - TILE_W / 4, pt.y + TILE_H / 4);
+          ctx.lineTo(pt.x, pt.y + TILE_H / 2);
           ctx.lineTo(pt.x + TILE_W / 4, pt.y + (3 * TILE_H) / 4);
+          ctx.moveTo(pt.x, pt.y);
+          ctx.lineTo(pt.x + TILE_W / 4, pt.y + TILE_H / 4);
+          ctx.lineTo(pt.x, pt.y + TILE_H / 2);
+          ctx.stroke();
+
+          // Wing-specific gloss reflection
+          if (zone === "digital") {
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+          } else if (zone === "blender") {
+            ctx.strokeStyle = "rgba(249, 115, 22, 0.08)";
+          } else {
+            ctx.strokeStyle = "rgba(255, 230, 195, 0.05)";
+          }
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(pt.x - TILE_W / 3, pt.y + TILE_H / 3);
+          ctx.lineTo(pt.x + TILE_W / 3, pt.y + (2 * TILE_H) / 3);
           ctx.stroke();
         }
       }
     }
 
-    // --- Pass 2: Warm Directional Art Spotlights on the Floor ---
+    // --- Pass 2: Directional Art Spotlights on Floor (Colored by Wing) ---
     mountedPaintings.forEach((piece) => {
       const isNear = near?.artId === piece.artId;
       const spotPos = toIso(
@@ -781,22 +1179,33 @@ export function initMuseumMaze() {
       const spot = ctx.createRadialGradient(
         spotPos.x,
         spotPos.y + TILE_H / 2,
-        4,
+        3,
         spotPos.x,
         spotPos.y + TILE_H / 2,
-        isNear ? 55 : 38
+        isNear ? 54 : 38
       );
-      spot.addColorStop(0, isNear ? "rgba(255, 230, 160, 0.45)" : "rgba(255, 230, 160, 0.22)");
-      spot.addColorStop(0.7, isNear ? "rgba(255, 215, 130, 0.15)" : "rgba(255, 215, 130, 0.06)");
-      spot.addColorStop(1, "rgba(255, 215, 130, 0)");
+
+      if (piece.category === "digital") {
+        spot.addColorStop(0, isNear ? "rgba(56, 189, 248, 0.60)" : "rgba(56, 189, 248, 0.32)");
+        spot.addColorStop(0.5, isNear ? "rgba(14, 165, 233, 0.24)" : "rgba(14, 165, 233, 0.12)");
+        spot.addColorStop(1, "rgba(14, 165, 233, 0)");
+      } else if (piece.category === "blender") {
+        spot.addColorStop(0, isNear ? "rgba(249, 115, 22, 0.65)" : "rgba(249, 115, 22, 0.36)");
+        spot.addColorStop(0.5, isNear ? "rgba(234, 88, 12, 0.26)" : "rgba(234, 88, 12, 0.12)");
+        spot.addColorStop(1, "rgba(234, 88, 12, 0)");
+      } else {
+        spot.addColorStop(0, isNear ? "rgba(254, 240, 138, 0.48)" : "rgba(251, 191, 36, 0.26)");
+        spot.addColorStop(0.5, isNear ? "rgba(245, 158, 11, 0.20)" : "rgba(245, 158, 11, 0.09)");
+        spot.addColorStop(1, "rgba(245, 158, 11, 0)");
+      }
 
       ctx.fillStyle = spot;
       ctx.beginPath();
       ctx.ellipse(
         spotPos.x,
         spotPos.y + TILE_H / 2,
-        isNear ? 48 : 34,
-        isNear ? 24 : 17,
+        isNear ? 50 : 36,
+        isNear ? 25 : 18,
         0,
         0,
         Math.PI * 2
@@ -819,25 +1228,29 @@ export function initMuseumMaze() {
         if (cellType === 1 || cellType === 2) {
           const isGreen = cellType === 2;
           const wallH = getWallHeight(r, c);
+          const zone = getTileZone(c, r);
 
-          // Neighbor checks: ONLY draw faces and edges that face empty floor!
-          // Adjacent wall cells seamlessly share vertices without seam strokes!
-          const hasSouthNeighborFloor = r + 1 < ROWS && MAP[r + 1][c] !== 1 && MAP[r + 1][c] !== 2;
-          const hasEastNeighborFloor = c + 1 < COLS && MAP[r][c + 1] !== 1 && MAP[r][c + 1] !== 2;
-          const hasNorthNeighborFloor = r - 1 >= 0 && MAP[r - 1][c] !== 1 && MAP[r - 1][c] !== 2;
-          const hasWestNeighborFloor = c - 1 >= 0 && MAP[r][c - 1] !== 1 && MAP[r][c - 1] !== 2;
+          const isWall = (col: number, row: number) => {
+            if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
+            return MAP[row][col] === 1 || MAP[row][col] === 2;
+          };
 
-          // Soft Ambient Wall Drop Shadow
-          ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+          const hasSEFloor = !isWall(c + 1, r);
+          const hasSWFloor = !isWall(c, r + 1);
+          const hasNEFloor = !isWall(c, r - 1);
+          const hasNWFloor = !isWall(c - 1, r);
+
+          // Soft Ambient Wall Drop Shadow on Wood Floor
+          ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
           ctx.beginPath();
           ctx.moveTo(pt.x, pt.y + TILE_H);
-          ctx.lineTo(pt.x + TILE_W / 2 + 8, pt.y + TILE_H / 2 + 8);
-          ctx.lineTo(pt.x - TILE_W / 2 - 8, pt.y + TILE_H / 2 + 8);
+          ctx.lineTo(pt.x + TILE_W / 2 + 10, pt.y + TILE_H / 2 + 10);
+          ctx.lineTo(pt.x - TILE_W / 2 - 10, pt.y + TILE_H / 2 + 10);
           ctx.closePath();
           ctx.fill();
 
-          // 1. South-East Facing Wall Face (Right face) - only if adjacent to floor!
-          if (hasSouthNeighborFloor) {
+          // 1. South-East Facing Wall Face (Down-Right face)
+          if (hasSEFloor) {
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
@@ -845,35 +1258,70 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
             ctx.closePath();
 
-            // Warm gallery plaster gradient OR sleek obsidian perimeter
             if (isGreen) {
-              ctx.fillStyle = "#141617";
+              const greenGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              greenGrad.addColorStop(0, "#0a261d");
+              greenGrad.addColorStop(1, "#051711");
+              ctx.fillStyle = greenGrad;
+            } else if (zone === "digital") {
+              const slateGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              slateGrad.addColorStop(0, "#f8fafc");
+              slateGrad.addColorStop(0.75, "#e2e8f0");
+              slateGrad.addColorStop(1, "#cbd5e1");
+              ctx.fillStyle = slateGrad;
+            } else if (zone === "blender") {
+              const graphGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              graphGrad.addColorStop(0, "#2d2d33");
+              graphGrad.addColorStop(0.75, "#202025");
+              graphGrad.addColorStop(1, "#161619");
+              ctx.fillStyle = graphGrad;
             } else {
-              const plasterGrad = ctx.createLinearGradient(
-                pt.x,
-                pt.y + TILE_H - wallH,
-                pt.x,
-                pt.y + TILE_H
-              );
-              plasterGrad.addColorStop(0, "#faf6ef");
-              plasterGrad.addColorStop(0.85, "#ece5d9");
-              plasterGrad.addColorStop(1, "#dfd7ca");
+              const plasterGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              plasterGrad.addColorStop(0, "#fcfaf5");
+              plasterGrad.addColorStop(0.75, "#f1e9dc");
+              plasterGrad.addColorStop(1, "#e5dbc9");
               ctx.fillStyle = plasterGrad;
             }
             ctx.fill();
 
-            // Continuous Dark Wood Baseboard Trim
-            ctx.fillStyle = isGreen ? "#0a0b0c" : "#2d1a10";
+            // Baseboard Trim (7px tall)
+            ctx.fillStyle = isGreen
+              ? "#1b1008"
+              : zone === "digital"
+              ? "#0f172a"
+              : zone === "blender"
+              ? "#09090b"
+              : "#2e180d";
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
-            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 6);
-            ctx.lineTo(pt.x, pt.y + TILE_H - 6);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 7);
+            ctx.lineTo(pt.x, pt.y + TILE_H - 7);
             ctx.closePath();
             ctx.fill();
 
+            // Baseboard Bevel Highlight
+            ctx.strokeStyle = isGreen
+              ? "rgba(251, 191, 36, 0.18)"
+              : zone === "digital"
+              ? "rgba(56, 189, 248, 0.60)"
+              : zone === "blender"
+              ? "rgba(249, 115, 22, 0.70)"
+              : "rgba(251, 191, 36, 0.35)";
+            ctx.lineWidth = 0.9;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H - 7);
+            ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 7);
+            ctx.stroke();
+
             // Crown Highlight
-            ctx.strokeStyle = isGreen ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.6)";
+            ctx.strokeStyle = isGreen
+              ? "rgba(255,255,255,0.12)"
+              : zone === "digital"
+              ? "rgba(186, 230, 253, 0.85)"
+              : zone === "blender"
+              ? "rgba(249, 115, 22, 0.50)"
+              : "rgba(255, 255, 255, 0.70)";
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
@@ -881,8 +1329,8 @@ export function initMuseumMaze() {
             ctx.stroke();
           }
 
-          // 2. South-West Facing Wall Face (Left face) - only if adjacent to floor!
-          if (hasEastNeighborFloor) {
+          // 2. South-West Facing Wall Face (Down-Left face)
+          if (hasSWFloor) {
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
@@ -891,33 +1339,69 @@ export function initMuseumMaze() {
             ctx.closePath();
 
             if (isGreen) {
-              ctx.fillStyle = "#111314";
+              const greenShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              greenShade.addColorStop(0, "#081f18");
+              greenShade.addColorStop(1, "#04130e");
+              ctx.fillStyle = greenShade;
+            } else if (zone === "digital") {
+              const slateShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              slateShade.addColorStop(0, "#e2e8f0");
+              slateShade.addColorStop(0.75, "#cbd5e1");
+              slateShade.addColorStop(1, "#94a3b8");
+              ctx.fillStyle = slateShade;
+            } else if (zone === "blender") {
+              const graphShade = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              graphShade.addColorStop(0, "#222227");
+              graphShade.addColorStop(0.75, "#1a1a1e");
+              graphShade.addColorStop(1, "#111114");
+              ctx.fillStyle = graphShade;
             } else {
-              const shadeGrad = ctx.createLinearGradient(
-                pt.x,
-                pt.y + TILE_H - wallH,
-                pt.x,
-                pt.y + TILE_H
-              );
-              shadeGrad.addColorStop(0, "#ebe4d8");
-              shadeGrad.addColorStop(0.85, "#dbd2c4");
-              shadeGrad.addColorStop(1, "#cec4b5");
+              const shadeGrad = ctx.createLinearGradient(pt.x, pt.y + TILE_H - wallH, pt.x, pt.y + TILE_H);
+              shadeGrad.addColorStop(0, "#efe7d9");
+              shadeGrad.addColorStop(0.75, "#e2d7c5");
+              shadeGrad.addColorStop(1, "#d6c9b3");
               ctx.fillStyle = shadeGrad;
             }
             ctx.fill();
 
-            // Baseboard
-            ctx.fillStyle = isGreen ? "#08090a" : "#24140b";
+            // Baseboard (7px tall)
+            ctx.fillStyle = isGreen
+              ? "#160c06"
+              : zone === "digital"
+              ? "#0c1322"
+              : zone === "blender"
+              ? "#060608"
+              : "#28140a";
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
-            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 6);
-            ctx.lineTo(pt.x, pt.y + TILE_H - 6);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 7);
+            ctx.lineTo(pt.x, pt.y + TILE_H - 7);
             ctx.closePath();
             ctx.fill();
 
+            // Baseboard Bevel
+            ctx.strokeStyle = isGreen
+              ? "rgba(251, 191, 36, 0.15)"
+              : zone === "digital"
+              ? "rgba(56, 189, 248, 0.45)"
+              : zone === "blender"
+              ? "rgba(249, 115, 22, 0.55)"
+              : "rgba(251, 191, 36, 0.30)";
+            ctx.lineWidth = 0.9;
+            ctx.beginPath();
+            ctx.moveTo(pt.x, pt.y + TILE_H - 7);
+            ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 7);
+            ctx.stroke();
+
             // Crown highlight
-            ctx.strokeStyle = isGreen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.4)";
+            ctx.strokeStyle = isGreen
+              ? "rgba(255,255,255,0.10)"
+              : zone === "digital"
+              ? "rgba(186, 230, 253, 0.60)"
+              : zone === "blender"
+              ? "rgba(249, 115, 22, 0.35)"
+              : "rgba(255, 255, 255, 0.45)";
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
@@ -925,134 +1409,106 @@ export function initMuseumMaze() {
             ctx.stroke();
           }
 
-          // 3. Continuous Wall Top Coping (Seamless surface, NO internal seams!)
+          // 3. Continuous Wall Top Coping
           ctx.beginPath();
           ctx.moveTo(pt.x, pt.y - wallH);
           ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
           ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           ctx.closePath();
-          ctx.fillStyle = isGreen ? "#1e2122" : "#faf7f0";
+          ctx.fillStyle = isGreen
+            ? "#162820"
+            : zone === "digital"
+            ? "#f1f5f9"
+            : zone === "blender"
+            ? "#222226"
+            : "#faf7f0";
           ctx.fill();
 
-          // ONLY stroke the outer silhouette of the wall, NEVER internal tile borders!
-          ctx.strokeStyle = "rgba(0, 0, 0, 0.1)";
+          // Outer silhouette stroke
+          ctx.strokeStyle = isGreen
+            ? "rgba(0,0,0,0.35)"
+            : zone === "digital"
+            ? "rgba(56, 189, 248, 0.25)"
+            : zone === "blender"
+            ? "rgba(249, 115, 22, 0.35)"
+            : "rgba(100, 80, 60, 0.15)";
           ctx.lineWidth = 0.8;
           ctx.beginPath();
-          if (hasNorthNeighborFloor) {
+          if (hasNEFloor) {
             ctx.moveTo(pt.x, pt.y - wallH);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           }
-          if (hasSouthNeighborFloor) {
+          if (hasSEFloor) {
             ctx.moveTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - wallH);
             ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
           }
-          if (hasEastNeighborFloor) {
+          if (hasSWFloor) {
             ctx.moveTo(pt.x, pt.y + TILE_H - wallH);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           }
-          if (hasWestNeighborFloor) {
+          if (hasNWFloor) {
             ctx.moveTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
             ctx.lineTo(pt.x, pt.y - wallH);
           }
           ctx.stroke();
 
-          // 4. Render Mounted Artwork on Feature Walls (Elevated at eye level)
+          // 4. Render Mounted Artwork on Feature Walls (True Isometric Wall Projection)
           const piece = mountedPaintings.find((a) => a.col === c && a.row === r);
           if (piece) {
             const isNear = near?.artId === piece.artId;
             ctx.save();
 
             if (piece.face === "SE") {
-              const cx = pt.x + TILE_W / 4;
-              const cy = pt.y + TILE_H / 2 - wallH * 0.52;
+              const midX = pt.x + TILE_W / 4;
+              const midY = pt.y + (3 * TILE_H) / 4 - wallH / 2;
 
-              // Gilded Brass Frame
-              ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-              ctx.fillRect(cx - 18, cy - 24, 36, 46); // Shadow
-
-              ctx.fillStyle = isNear ? "#f59e0b" : "#b45309";
-              ctx.fillRect(cx - 17, cy - 23, 34, 44);
-
-              ctx.fillStyle = "#78350f";
-              ctx.fillRect(cx - 16, cy - 22, 32, 42);
-
-              // Linen Matte
-              ctx.fillStyle = "#faf8f5";
-              ctx.fillRect(cx - 15, cy - 21, 30, 40);
-
-              // Real Artwork Image
-              if (piece.imgElement.complete && piece.imgElement.naturalWidth > 0) {
-                ctx.drawImage(piece.imgElement, cx - 13, cy - 19, 26, 36);
-              } else {
-                ctx.fillStyle = "#1e293b";
-                ctx.fillRect(cx - 13, cy - 19, 26, 36);
-              }
-
-              // Overhead Brass Picture Lamp
-              ctx.fillStyle = "#d97706";
-              ctx.fillRect(cx - 11, cy - 28, 22, 3.5);
-              ctx.fillStyle = isNear ? "#fef08a" : "#fbbf24";
-              ctx.fillRect(cx - 8, cy - 26, 16, 1.5);
-
-              // Engraved Brass Placard
-              ctx.fillStyle = "#78350f";
-              ctx.fillRect(cx - 12, cy + 24, 24, 6);
-              ctx.fillStyle = "#fef3c7";
-              ctx.font = "bold 4.5px sans-serif";
-              ctx.textAlign = "center";
-              ctx.fillText(`LOT #${piece.lotNum}`, cx, cy + 29);
+              ctx.translate(midX, midY);
+              ctx.transform(1, -0.5, 0, 1, 0, 0);
+              drawArtworkCard(piece, isNear);
             } else {
-              const cx = pt.x - TILE_W / 4;
-              const cy = pt.y + TILE_H / 2 - wallH * 0.52;
+              const midX = pt.x - TILE_W / 4;
+              const midY = pt.y + (3 * TILE_H) / 4 - wallH / 2;
 
-              ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-              ctx.fillRect(cx - 18, cy - 24, 36, 46);
-
-              ctx.fillStyle = isNear ? "#f59e0b" : "#b45309";
-              ctx.fillRect(cx - 17, cy - 23, 34, 44);
-
-              ctx.fillStyle = "#78350f";
-              ctx.fillRect(cx - 16, cy - 22, 32, 42);
-
-              ctx.fillStyle = "#faf8f5";
-              ctx.fillRect(cx - 15, cy - 21, 30, 40);
-
-              if (piece.imgElement.complete && piece.imgElement.naturalWidth > 0) {
-                ctx.drawImage(piece.imgElement, cx - 13, cy - 19, 26, 36);
-              } else {
-                ctx.fillStyle = "#1e293b";
-                ctx.fillRect(cx - 13, cy - 19, 26, 36);
-              }
-
-              ctx.fillStyle = "#d97706";
-              ctx.fillRect(cx - 11, cy - 28, 22, 3.5);
-              ctx.fillStyle = isNear ? "#fef08a" : "#fbbf24";
-              ctx.fillRect(cx - 8, cy - 26, 16, 1.5);
-
-              ctx.fillStyle = "#78350f";
-              ctx.fillRect(cx - 12, cy + 24, 24, 6);
-              ctx.fillStyle = "#fef3c7";
-              ctx.font = "bold 4.5px sans-serif";
-              ctx.textAlign = "center";
-              ctx.fillText(`LOT #${piece.lotNum}`, cx, cy + 29);
+              ctx.translate(midX, midY);
+              ctx.transform(1, 0.5, 0, 1, 0, 0);
+              drawArtworkCard(piece, isNear);
             }
             ctx.restore();
           }
         } else if (cellType === 3) {
-          // B. Cognac Leather Gallery Bench
-          ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+          // B. Tufted Cognac Leather Gallery Bench
+          ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
           ctx.beginPath();
-          ctx.ellipse(pt.x, pt.y + TILE_H / 2 + 4, 20, 10, 0, 0, Math.PI * 2);
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 + 5, 22, 11, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          ctx.fillStyle = "#1b120c";
-          ctx.fillRect(pt.x - 16, pt.y + TILE_H / 2 - 14, 32, 14);
+          // Dark Walnut Bench Frame
+          ctx.fillStyle = "#261309";
+          ctx.fillRect(pt.x - 17, pt.y + TILE_H / 2 - 13, 34, 13);
 
-          ctx.fillStyle = "#5c3317";
+          // Tufted Cognac Leather Cushion
+          const cushionGrad = ctx.createLinearGradient(
+            pt.x,
+            pt.y + TILE_H / 2 - 18,
+            pt.x,
+            pt.y + TILE_H / 2 - 10
+          );
+          cushionGrad.addColorStop(0, "#8c4a22");
+          cushionGrad.addColorStop(0.5, "#6e3515");
+          cushionGrad.addColorStop(1, "#54260d");
+          ctx.fillStyle = cushionGrad;
           ctx.beginPath();
-          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 14, 18, 9, 0, 0, Math.PI * 2);
+          ctx.ellipse(pt.x, pt.y + TILE_H / 2 - 14, 20, 9.5, 0, 0, Math.PI * 2);
           ctx.fill();
+
+          // Tufting Buttons & Creases
+          ctx.strokeStyle = "rgba(40, 20, 8, 0.5)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(pt.x - 10, pt.y + TILE_H / 2 - 14);
+          ctx.lineTo(pt.x + 10, pt.y + TILE_H / 2 - 14);
+          ctx.stroke();
         }
 
         // C. Render Visitor Avatar with Glowing Golden Aura Ring
@@ -1125,9 +1581,63 @@ export function initMuseumMaze() {
       }
     }
 
+    // X-Ray Silhouette Pass:
+    // If the visitor is occluded behind foreground walls, render a luminous silhouette
+    // so they are always visible and never awkwardly clipped in 2.5D perspective
+    const pC = Math.floor(player.col);
+    const pR = Math.floor(player.row);
+    const isBehindWall =
+      (pR + 1 < ROWS && (MAP[pR + 1][pC] === 1 || MAP[pR + 1][pC] === 2)) ||
+      (pC + 1 < COLS && (MAP[pR][pC + 1] === 1 || MAP[pR][pC + 1] === 2)) ||
+      (pR + 1 < ROWS && pC + 1 < COLS && (MAP[pR + 1][pC + 1] === 1 || MAP[pR + 1][pC + 1] === 2));
+
+    if (isBehindWall) {
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      const pIso = toIso(player.col, player.row);
+      const bob = Math.sin(player.walkCycle) * 2.2;
+
+      // Golden glowing ring
+      ctx.strokeStyle = "rgba(251, 191, 36, 0.9)";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.ellipse(pIso.x, pIso.y + TILE_H / 2, 28, 14, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Soft silhouette
+      ctx.fillStyle = "#fef08a";
+      ctx.beginPath();
+      ctx.arc(pIso.x, pIso.y + TILE_H / 2 - 33 + bob, 6.0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.fillRect(pIso.x - 6, pIso.y + TILE_H / 2 - 28 + bob, 13, 18);
+
+      ctx.fillStyle = "#64748b";
+      ctx.fillRect(pIso.x - 4, pIso.y + TILE_H / 2 - 10 + bob, 3, 10);
+      ctx.fillRect(pIso.x + 1, pIso.y + TILE_H / 2 - 10 - bob, 3, 10);
+      ctx.restore();
+    }
+
     ctx.restore();
 
-    // --- Pass 4: Top-Left Blueprint Radar ---
+    // --- Pass 4: Atmospheric Cinema Vignette ---
+    // Soft radial falloff that frames the museum pavilion against the pure black canvas
+    const vig = ctx.createRadialGradient(
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.min(canvas.width, canvas.height) * 0.40,
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.max(canvas.width, canvas.height) * 0.78
+    );
+    vig.addColorStop(0, "rgba(0, 0, 0, 0)");
+    vig.addColorStop(0.65, "rgba(0, 0, 0, 0.25)");
+    vig.addColorStop(1, "rgba(0, 0, 0, 0.85)");
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // --- Pass 5: Top-Left Blueprint Radar ---
     if (minimapCtx && minimapCanvas) {
       minimapCtx.clearRect(0, 0, minimapCanvas.width, minimapCanvas.height);
 
@@ -1140,19 +1650,34 @@ export function initMuseumMaze() {
       minimapCtx.fillStyle = "#070c10";
       minimapCtx.fillRect(0, 0, mw, mh);
 
-      // White continuous walls
-      minimapCtx.fillStyle = "rgba(255, 255, 255, 0.4)";
+      // Tinted floor areas and walls by wing
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          if (MAP[r][c] === 1 || MAP[r][c] === 2) {
+          const zone = getTileZone(c, r);
+          if (MAP[r][c] === 0 || MAP[r][c] === 3) {
+            if (zone === "physical") minimapCtx.fillStyle = "rgba(245, 158, 11, 0.12)";
+            else if (zone === "digital") minimapCtx.fillStyle = "rgba(56, 189, 248, 0.14)";
+            else if (zone === "blender") minimapCtx.fillStyle = "rgba(249, 115, 22, 0.14)";
+            else minimapCtx.fillStyle = "rgba(255, 255, 255, 0.03)";
+            minimapCtx.fillRect(c * cellW, r * cellH, cellW, cellH);
+          } else if (MAP[r][c] === 1 || MAP[r][c] === 2) {
+            if (zone === "digital") minimapCtx.fillStyle = "rgba(186, 230, 253, 0.55)";
+            else if (zone === "blender") minimapCtx.fillStyle = "rgba(253, 186, 116, 0.55)";
+            else minimapCtx.fillStyle = "rgba(255, 255, 255, 0.45)";
             minimapCtx.fillRect(c * cellW, r * cellH, cellW, cellH);
           }
         }
       }
 
-      // Amber lot pins
+      // Color-coded wing pins
       mountedPaintings.forEach((p) => {
-        minimapCtx.fillStyle = "#f59e0b";
+        if (p.category === "digital") {
+          minimapCtx.fillStyle = "#38bdf8"; // Cyan
+        } else if (p.category === "blender") {
+          minimapCtx.fillStyle = "#f97316"; // Blender Orange
+        } else {
+          minimapCtx.fillStyle = "#f59e0b"; // Warm Gold
+        }
         minimapCtx.beginPath();
         minimapCtx.arc((p.col + 0.5) * cellW, (p.row + 0.5) * cellH, 3.5, 0, Math.PI * 2);
         minimapCtx.fill();
