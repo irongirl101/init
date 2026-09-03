@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #20 - OpenTofu | init</title>
+  <link rel="stylesheet" href="/init/assets/main-BId8snTX.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #20 - OpenTofu</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-08-21</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/CNCF.html">CNCF</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Cloud.html">Cloud</a>
+            
+            <a class="badge badge-sm" href="/init/tags/docs.html">docs</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Linux Foundation.html">Linux Foundation</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>OpenTofu is an OSS tool for building, changing, and versioning infrastructure safely and efficiently. It can manage existing and popular service providers (like Azure, AWS, GCP) as well as custom in-house solutions.<br />
+It came in as a replacement for HashiCorp's Terraform -- ending its status as a truly open-source tool (changed license from the open-source Mozilla Public License (MPL 2.0) to a restrictive Business Source License (BSL 1.1)). To keep a completely free and open option available, companies like Spacelift, Harness, and env0 launched the project under the neutral stewardship of the Linux Foundation :) </p>
+<h3 id="how-does-it-work">How does it work?<a class="headerlink" href="#how-does-it-work" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Declarative Approach: Users write human-readable code to define the desired end state of their data centers, networks, and cloud resources.</li>
+<li>HashiCorp Configuration Language (HCL): It uses the exact same declarative syntax as Terraform, meaning existing scripts work seamlessly without changes.</li>
+<li>State Management: It tracks your real-world infrastructure using state files, ensuring changes are predictable and reliable.</li>
+</ul>
+<h3 id="a-couple-of-its-key-features">A couple of its key features:<a class="headerlink" href="#a-couple-of-its-key-features" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Resource Graph Execution: Automatically builds a dependency graph of all resources to parallelize operations on non-dependent assets for maximum deployment speed.</li>
+<li>Change Automation: Generates precise execution plans before running modifications, detailing exactly what will be created, updated, or destroyed.</li>
+<li>End-to-End State Encryption: Provides built-in client-side encryption for state files to secure sensitive variables and secrets natively.</li>
+<li>Provider Iteration: Supports for_each loops directly across provider configurations.</li>
+<li>Targeted Deployment (-exclude): Introduces a dedicated -exclude flag to skip specific resources during planning and apply steps.</li>
+<li>Vast Ecosystem: Fully compatible with over 3,900 providers and 23,600 modules through the public OpenTofu Registry.</li>
+</ul>
+<p>There are wayyy more layers to OpenTofu -- as it would be in any CNCF project XP, so much that i cannot cover here. They are also, a very active repository!</p>
+<p>Repository Link: <img alt="Repo" src="https://github.com/opentofu/opentofu" /><br />
+Documentation Link: <img alt="Docs" src="https://opentofu.org/docs/" /></p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-CY_eUqrH.js"></script>
+</body>
+
+</html>
