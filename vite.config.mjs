@@ -239,6 +239,13 @@ const py_build_plugin = (baseUrl = '') => {
             fs.cpSync(dataSrcDir, dataDstDir, { recursive: true });
           }
 
+          // Copy audio files from assets/audio to dist/assets/audio recursively
+          const audioSrcDir = path.join(__dirname, 'assets', 'audio');
+          const audioDstDir = path.join(__dirname, 'dist', 'assets', 'audio');
+          if (fs.existsSync(audioSrcDir)) {
+            fs.cpSync(audioSrcDir, audioDstDir, { recursive: true });
+          }
+
           // Post-process HTML files to point script/style to built assets
           const htmlFiles = glob.sync(path.join(__dirname, 'dist', '**/*.html'));
           const builtAssets = glob.sync(path.join(__dirname, 'dist', 'assets', '*.js'));
@@ -450,6 +457,13 @@ export default defineConfig(async ({ command }) => {
       const dataDst = path.join(__dirname, 'dist', 'data');
       if (fs.existsSync(dataSrc)) {
         fs.cpSync(dataSrc, dataDst, { recursive: true });
+      }
+
+      // 4. Ensure assets/audio directory is copied to dist
+      const audioSrc = path.join(__dirname, 'assets', 'audio');
+      const audioDst = path.join(__dirname, 'dist', 'assets', 'audio');
+      if (fs.existsSync(audioSrc)) {
+        fs.cpSync(audioSrc, audioDst, { recursive: true });
       }
     } catch (e) {
       console.error('Failed to generate static files:', e);

@@ -56,24 +56,6 @@
   <!-- VIEW 1: Museum Interactive Canvas -->
   <div id="museum-view" class="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] bg-black">
     
-    <!-- Top-Right Floating Spotify Hades OST Player HUD -->
-    <div id="spotify-player-widget" class="absolute top-4 right-4 z-20 pointer-events-auto transition-all duration-300 select-none flex flex-col items-end">
-      <div id="spotify-player-panel" class="bg-[#0e1217]/95 backdrop-blur-xl rounded-2xl border border-amber-500/40 shadow-[0_12px_40px_rgba(0,0,0,0.85)] p-3 w-[330px] max-w-[90vw] transition-all duration-300">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/10">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-            <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-300">Hades Original Soundtrack</span>
-          </div>
-          <button id="spotify-minimize-btn" class="btn btn-ghost btn-xs text-white/70 hover:text-white p-1" title="Minimize / Expand">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-          </button>
-        </div>
-        <div id="spotify-iframe-container" class="transition-all duration-300">
-          <iframe style="border-radius:12px; display: block;" src="https://open.spotify.com/embed/album/5jTYZA6b4VoSRnR5TMldgb?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-      </div>
-    </div>
-
     <!-- Top-Left In-Game HUD: Token Balance & Radar (1:1 with Concept Image) -->
     <div class="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-auto select-none">
       <div class="bg-[#12161a]/90 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-3 min-w-[190px]">
@@ -323,6 +305,139 @@
     <button>close</button>
   </form>
 </dialog>
+
+<!-- RETRO PIXEL-ART HADES MEDIA PLAYER (Outside Game Area, Draggable Floating Gadget) -->
+<div id="pixel-player-container" class="fixed bottom-6 right-6 z-40 select-none transition-shadow drop-shadow-[0_18px_45px_rgba(0,0,0,0.95)]" style="image-rendering: pixelated;">
+  <div class="relative w-[190px] sm:w-[215px] flex flex-col items-end">
+    
+    <!-- Drag Handle & Gadget Top Bar (Matches Homepage Emerald/Jade Scheme) -->
+    <div id="pixel-player-drag-handle" class="w-full flex items-center justify-between px-2 mb-1 text-[10px] font-mono bg-[#04241c]/95 backdrop-blur-md rounded-t-lg border-t border-x border-[#208c73]/40 py-1.5 cursor-grab active:cursor-grabbing shadow-lg">
+      <span class="flex items-center gap-1.5 pointer-events-none">
+        <span id="pixel-status-dot" class="w-2 h-2 bg-[#34d399] animate-pulse"></span>
+        <span class="tracking-widest uppercase font-bold text-[9px] text-[#34d399]">HADES.OST</span>
+      </span>
+      <div class="flex items-center gap-1.5">
+        <button id="pixel-mode-toggle-btn" class="text-[8px] font-mono px-1.5 py-0.5 bg-[#0f4034] text-[#a7f3d0] border border-[#208c73]/60 hover:bg-[#208c73]/40 transition-colors" title="Toggle Spotify Player">
+          SPOTIFY
+        </button>
+        <button id="pixel-player-minimize-btn" class="text-white/70 hover:text-white px-1 font-mono font-bold text-xs" title="Minimize">
+          ─
+        </button>
+      </div>
+    </div>
+
+    <!-- Handheld Chassis Body (Homepage Emerald #0f4034 & Stygian Gold Accents) -->
+    <div id="pixel-player-body" class="relative w-full aspect-[160/190] cursor-default transition-all duration-300">
+      <svg viewBox="0 0 160 190" class="w-full h-full block" style="shape-rendering: crispEdges;">
+        <!-- Outermost Black Pixel Border (Stepped Corners) -->
+        <rect x="8" y="4" width="136" height="182" fill="#000000" />
+        <rect x="4" y="8" width="144" height="174" fill="#000000" />
+
+        <!-- Right-Side Hardware Buttons (Obsidian with Gold Accent) -->
+        <rect x="148" y="32" width="6" height="26" fill="#000000" />
+        <rect x="146" y="34" width="6" height="22" fill="#04241c" />
+        <rect x="148" y="68" width="6" height="26" fill="#000000" />
+        <rect x="146" y="70" width="6" height="22" fill="#04241c" />
+
+        <!-- Chassis Main Body (Homepage Deep Emerald Jade #0f4034) -->
+        <rect x="10" y="10" width="132" height="170" fill="#0f4034" />
+        
+        <!-- Top & Left Pixel Highlights (Homepage Radiant Teal-Emerald #208c73) -->
+        <rect x="10" y="10" width="132" height="6" fill="#208c73" />
+        <rect x="10" y="10" width="6" height="170" fill="#208c73" />
+        
+        <!-- Bottom & Right Pixel Shadows (Homepage Deep Forest Abyss #04241c) -->
+        <rect x="10" y="174" width="132" height="6" fill="#04241c" />
+        <rect x="136" y="10" width="6" height="170" fill="#04241c" />
+
+        <!-- Screen Black Bezel -->
+        <rect x="22" y="20" width="108" height="150" fill="#000000" />
+        
+        <!-- Screen Inner Surface (Deep Abyssal Jade #031812) -->
+        <rect x="26" y="24" width="100" height="142" fill="#031812" />
+
+        <!-- Diagonal Pixel Glare / Reflection (Emerald Shaded) -->
+        <polygon points="26,24 82,24 26,80" fill="#092e24" />
+        <polygon points="26,24 62,24 26,60" fill="#114335" />
+        <polygon points="82,24 100,24 54,70 36,70" fill="#06221a" />
+        
+        <!-- Screen Corner Pixel Specks (Matching Reference Image) -->
+        <rect x="36" y="142" width="8" height="4" fill="#092e24" />
+        <rect x="32" y="150" width="6" height="4" fill="#092e24" />
+        <rect x="52" y="156" width="10" height="4" fill="#06221a" />
+        <rect x="114" y="138" width="6" height="6" fill="#092e24" />
+        <rect x="118" y="148" width="4" height="4" fill="#06221a" />
+
+        <!-- Neon Mint/Jade Audio Progress Line (Matching Reference Image) -->
+        <rect id="pixel-progress-line" x="32" y="108" width="88" height="4" fill="#34d399" />
+
+        <!-- Pixel Transport Buttons in Glowing Mint #34d399 -->
+        <!-- Prev Button (<) -->
+        <g id="pixel-btn-prev" class="cursor-pointer hover:opacity-75 transition-opacity">
+          <rect x="44" y="124" width="4" height="14" fill="#34d399" />
+          <rect x="48" y="121" width="4" height="20" fill="#34d399" />
+          <rect x="52" y="118" width="4" height="26" fill="#34d399" />
+          <rect x="48" y="125" width="4" height="12" fill="#031812" />
+        </g>
+
+        <!-- Play / Pause Button (|>) -->
+        <g id="pixel-btn-play" class="cursor-pointer hover:opacity-75 transition-opacity">
+          <!-- Play Triangle Glyph -->
+          <g id="pixel-glyph-play">
+            <rect x="72" y="118" width="4" height="26" fill="#34d399" />
+            <rect x="76" y="121" width="4" height="20" fill="#34d399" />
+            <rect x="80" y="124" width="4" height="14" fill="#34d399" />
+            <rect x="84" y="127" width="3" height="8" fill="#34d399" />
+          </g>
+          <!-- Pause Double-Bar Glyph -->
+          <g id="pixel-glyph-pause" class="hidden">
+            <rect x="72" y="118" width="5" height="26" fill="#34d399" />
+            <rect x="81" y="118" width="5" height="26" fill="#34d399" />
+          </g>
+        </g>
+
+        <!-- Next Button (>) -->
+        <g id="pixel-btn-next" class="cursor-pointer hover:opacity-75 transition-opacity">
+          <rect x="104" y="118" width="4" height="26" fill="#34d399" />
+          <rect x="100" y="121" width="4" height="20" fill="#34d399" />
+          <rect x="96" y="124" width="4" height="14" fill="#34d399" />
+          <rect x="100" y="125" width="4" height="12" fill="#031812" />
+        </g>
+      </svg>
+
+      <!-- Track Name In-Screen Pixel Display (Above the progress line) -->
+      <div class="absolute top-[64px] left-[28px] right-[28px] overflow-hidden pointer-events-none text-center">
+        <div id="pixel-track-title" class="text-[9px] font-mono text-[#34d399] whitespace-nowrap tracking-wider font-bold animate-pulse">
+          NO ESCAPE
+        </div>
+        <div id="pixel-track-artist" class="text-[7px] font-mono text-[#a7f3d0]/80 whitespace-nowrap tracking-widest uppercase">
+          FAINT BGM • DARREN KORB
+        </div>
+      </div>
+    </div>
+
+    <!-- Official Spotify Player Drawer (Directly playable Spotify album) -->
+    <div id="pixel-spotify-drawer" class="hidden w-full mt-2 bg-[#04241c] border-2 border-[#208c73] rounded-xl p-2 shadow-2xl transition-all duration-300">
+      <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[#208c73]/30 text-[9px] font-mono text-[#fbbf24]">
+        <span class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+          <span>SPOTIFY STREAM</span>
+        </span>
+        <button id="pixel-spotify-close-drawer" class="text-white/60 hover:text-white">✕</button>
+      </div>
+      <p class="text-[8px] font-mono text-[#a7f3d0]/70 mb-1 leading-tight">Click play on Spotify to stream official audio:</p>
+      <iframe style="border-radius:8px; display: block;" src="https://open.spotify.com/embed/album/5jTYZA6b4VoSRnR5TMldgb?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+
+    <!-- Minimized Pixel Badge (Shown when minimized) -->
+    <div id="pixel-player-badge" class="hidden cursor-pointer bg-[#04241c] border-2 border-[#208c73] px-3 py-1.5 rounded-lg shadow-xl flex items-center gap-2 hover:border-[#34d399] transition-colors">
+      <span class="w-2.5 h-2.5 bg-[#34d399] animate-pulse"></span>
+      <span class="text-[10px] font-mono font-bold text-[#34d399] tracking-wider">HADES.OST</span>
+      <span class="text-[10px] text-white/60 ml-1 font-mono">□</span>
+    </div>
+
+  </div>
+</div>
 
 <!-- Artwork data injected safely for the JS engine -->
 <script type="application/json" id="museum-artworks-data" data-base-url="{{ site.base_url }}">

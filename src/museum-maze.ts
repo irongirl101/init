@@ -125,47 +125,345 @@ export function initMuseumMaze() {
     });
   }
 
-  // --- Spotify Player HUD Controls ---
-  const spotifyToggleBtn = document.getElementById("spotify-bgm-toggle-btn");
-  const spotifyWidget = document.getElementById("spotify-player-widget");
-  const spotifyPanel = document.getElementById("spotify-player-panel");
-  const spotifyIframeContainer = document.getElementById("spotify-iframe-container");
-  const spotifyMinimizeBtn = document.getElementById("spotify-minimize-btn");
+  // --- Retro Pixel-Art Hades Media Player Controller (MP3 Audio) ---
+  const HADES_TRACKS = [
+    { title: "GOOD RIDDANCE", artist: "EURYDICE & ASHLEY • HADES", scale: [146.83, 155.56, 174.61, 196.00, 220.00, 233.08, 261.63, 293.66], drone: 73.42 },
+    { title: "NO ESCAPE", artist: "DARREN KORB • HADES", scale: [146.83, 155.56, 174.61, 196.00, 220.00, 233.08, 261.63, 293.66], drone: 73.42 },
+    { title: "HOUSE OF HADES", artist: "DARREN KORB • HADES", scale: [110.00, 130.81, 146.83, 164.81, 196.00, 220.00], drone: 55.00 },
+    { title: "OUT OF TARTARUS", artist: "DARREN KORB • HADES", scale: [146.83, 174.61, 196.00, 220.00, 261.63], drone: 73.42 },
+    { title: "IN THE BLOOD", artist: "DARREN KORB & ASHLEY", scale: [164.81, 196.00, 220.00, 246.94, 293.66], drone: 82.41 },
+    { title: "LAMENT OF ORPHEUS", artist: "DARREN KORB • HADES", scale: [130.81, 146.83, 164.81, 196.00, 220.00], drone: 65.41 }
+  ];
 
-  let isSpotifyMinimized = false;
+  let currentTrackIdx = 0;
+  let isBgmPlaying = false;
+  let bgmInterval: number | null = null;
+  let droneOsc: OscillatorNode | null = null;
+  let droneGain: GainNode | null = null;
 
-  function toggleSpotifyPanel() {
-    if (!spotifyPanel || !spotifyIframeContainer) return;
-    isSpotifyMinimized = !isSpotifyMinimized;
-    if (isSpotifyMinimized) {
-      spotifyIframeContainer.classList.add("hidden");
-      spotifyPanel.classList.add("w-[230px]");
-      spotifyPanel.classList.remove("w-[330px]");
-      if (spotifyMinimizeBtn) {
-        spotifyMinimizeBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>`;
+  // Real MP3 Audio Element
+  const isGhPages = window.location.pathname.startsWith("/init");
+  const audioBasePath = isGhPages ? "/init/assets/audio/" : "/assets/audio/";
+  const audioSrcCandidates = [
+    `${audioBasePath}hades-theme.mp3`,
+    "./assets/audio/hades-theme.mp3",
+    "../assets/audio/hades-theme.mp3",
+    "/assets/audio/hades-theme.mp3",
+    `${audioBasePath}Good%20Riddance%20(Eurydice%20S....mp3`
+  ];
+
+  let bgmAudio: HTMLAudioElement | null = null;
+  try {
+    bgmAudio = new Audio(audioSrcCandidates[0]);
+    bgmAudio.loop = true;
+    bgmAudio.volume = 0.03; // Ultra-faint, gentle ambient whisper volume
+
+    let candidateIdx = 0;
+    bgmAudio.addEventListener("error", () => {
+      candidateIdx++;
+      if (candidateIdx < audioSrcCandidates.length && bgmAudio) {
+        bgmAudio.src = audioSrcCandidates[candidateIdx];
+        if (isBgmPlaying) bgmAudio.play().catch(() => {});
       }
-    } else {
-      spotifyIframeContainer.classList.remove("hidden");
-      spotifyPanel.classList.remove("w-[230px]");
-      spotifyPanel.classList.add("w-[330px]");
-      if (spotifyMinimizeBtn) {
-        spotifyMinimizeBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>`;
-      }
+    });
+  } catch {
+    // Handled
+  }
+
+  const pixelContainer = document.getElementById("pixel-player-container");
+  const pixelDragHandle = document.getElementById("pixel-player-drag-handle");
+  const pixelBody = document.getElementById("pixel-player-body");
+  const pixelBadge = document.getElementById("pixel-player-badge");
+  const pixelMinimizeBtn = document.getElementById("pixel-player-minimize-btn");
+  const pixelModeToggleBtn = document.getElementById("pixel-mode-toggle-btn");
+  const pixelBtnPlay = document.getElementById("pixel-btn-play");
+  const pixelBtnPrev = document.getElementById("pixel-btn-prev");
+  const pixelBtnNext = document.getElementById("pixel-btn-next");
+  const pixelGlyphPlay = document.getElementById("pixel-glyph-play");
+  const pixelGlyphPause = document.getElementById("pixel-glyph-pause");
+  const pixelTrackTitle = document.getElementById("pixel-track-title");
+  const pixelTrackArtist = document.getElementById("pixel-track-artist");
+  const pixelProgressLine = document.getElementById("pixel-progress-line");
+  const pixelSpotifyDrawer = document.getElementById("pixel-spotify-drawer");
+  const pixelSpotifyCloseDrawer = document.getElementById("pixel-spotify-close-drawer");
+  const spotifyNavbarBtn = document.getElementById("spotify-bgm-toggle-btn");
+
+  function updatePixelDisplay() {
+    const track = HADES_TRACKS[currentTrackIdx];
+    if (pixelTrackTitle) pixelTrackTitle.textContent = track.title;
+    if (pixelTrackArtist) pixelTrackArtist.textContent = track.artist;
+  }
+
+  // Faint, soothing plucked string synthesis fallback
+  function playPluckedString(freq: number) {
+    if (!audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(freq, now);
+
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.exponentialRampToValueAtTime(250, now + 0.8);
+
+      gain.gain.setValueAtTime(0.004, now);
+      gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.85);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.9);
+    } catch {
+      // Handled
     }
   }
 
-  if (spotifyMinimizeBtn) {
-    spotifyMinimizeBtn.addEventListener("click", toggleSpotifyPanel);
+  function startProceduralBgm() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+
+    try {
+      if (!droneOsc && audioCtx) {
+        const track = HADES_TRACKS[currentTrackIdx];
+        droneOsc = audioCtx.createOscillator();
+        droneGain = audioCtx.createGain();
+        droneOsc.type = "triangle";
+        droneOsc.frequency.setValueAtTime(track.drone, audioCtx.currentTime);
+        droneGain.gain.setValueAtTime(0.0015, audioCtx.currentTime);
+        droneOsc.connect(droneGain);
+        droneGain.connect(audioCtx.destination);
+        droneOsc.start();
+      }
+    } catch {
+      // Ignored
+    }
+
+    if (bgmInterval) clearInterval(bgmInterval);
+    let noteStep = 0;
+    bgmInterval = window.setInterval(() => {
+      if (!isBgmPlaying) return;
+      const track = HADES_TRACKS[currentTrackIdx];
+      const scale = track.scale;
+      const noteFreq = scale[noteStep % scale.length];
+      playPluckedString(noteFreq);
+      noteStep = (noteStep + 1 + (Math.random() > 0.75 ? 2 : 0)) % scale.length;
+    }, 420);
   }
-  if (spotifyToggleBtn) {
-    spotifyToggleBtn.addEventListener("click", () => {
-      if (!spotifyWidget) return;
-      if (spotifyWidget.classList.contains("hidden")) {
-        spotifyWidget.classList.remove("hidden");
-      } else {
-        toggleSpotifyPanel();
+
+  function stopProceduralBgm() {
+    if (bgmInterval) {
+      clearInterval(bgmInterval);
+      bgmInterval = null;
+    }
+    if (droneOsc) {
+      try {
+        droneOsc.stop();
+        droneOsc.disconnect();
+      } catch {
+        // Disconnected
+      }
+      droneOsc = null;
+      droneGain = null;
+    }
+  }
+
+  function startBgmMusic() {
+    // 1. Primary: Real Hades MP3 Audio Track (Ultra-faint whisper)
+    if (bgmAudio) {
+      bgmAudio.volume = 0.03;
+      bgmAudio.play().catch(() => {
+        // Fallback to procedural synthesis if browser autoplay policy blocks MP3
+        startProceduralBgm();
+      });
+    } else {
+      startProceduralBgm();
+    }
+  }
+
+  function stopBgmMusic() {
+    if (bgmAudio) {
+      bgmAudio.pause();
+    }
+    stopProceduralBgm();
+  }
+
+  function toggleBgm() {
+    isBgmPlaying = !isBgmPlaying;
+    if (isBgmPlaying) {
+      if (pixelGlyphPlay) pixelGlyphPlay.classList.add("hidden");
+      if (pixelGlyphPause) pixelGlyphPause.classList.remove("hidden");
+      if (pixelProgressLine) pixelProgressLine.classList.add("animate-pulse");
+      if (spotifyNavbarBtn) {
+        spotifyNavbarBtn.classList.add("border-emerald-400", "bg-emerald-500/20", "text-emerald-300");
+      }
+      startBgmMusic();
+    } else {
+      if (pixelGlyphPlay) pixelGlyphPlay.classList.remove("hidden");
+      if (pixelGlyphPause) pixelGlyphPause.classList.add("hidden");
+      if (pixelProgressLine) pixelProgressLine.classList.remove("animate-pulse");
+      if (spotifyNavbarBtn) {
+        spotifyNavbarBtn.classList.remove("border-emerald-400", "bg-emerald-500/20", "text-emerald-300");
+      }
+      stopBgmMusic();
+    }
+  }
+
+  if (pixelBtnPlay) {
+    pixelBtnPlay.addEventListener("click", toggleBgm);
+  }
+
+  if (pixelBtnNext) {
+    pixelBtnNext.addEventListener("click", () => {
+      currentTrackIdx = (currentTrackIdx + 1) % HADES_TRACKS.length;
+      updatePixelDisplay();
+      if (isBgmPlaying) {
+        stopBgmMusic();
+        startBgmMusic();
       }
     });
+  }
+
+  if (pixelBtnPrev) {
+    pixelBtnPrev.addEventListener("click", () => {
+      currentTrackIdx = (currentTrackIdx - 1 + HADES_TRACKS.length) % HADES_TRACKS.length;
+      updatePixelDisplay();
+      if (isBgmPlaying) {
+        stopBgmMusic();
+        startBgmMusic();
+      }
+    });
+  }
+
+  // --- Minimize / Maximise Handling ---
+  if (pixelMinimizeBtn) {
+    pixelMinimizeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (pixelBody) pixelBody.classList.add("hidden");
+      if (pixelSpotifyDrawer) pixelSpotifyDrawer.classList.add("hidden");
+      if (pixelDragHandle) pixelDragHandle.classList.add("hidden");
+      if (pixelBadge) pixelBadge.classList.remove("hidden");
+    });
+  }
+
+  if (pixelBadge) {
+    pixelBadge.addEventListener("click", () => {
+      if (pixelBody) pixelBody.classList.remove("hidden");
+      if (pixelDragHandle) pixelDragHandle.classList.remove("hidden");
+      if (pixelBadge) pixelBadge.classList.add("hidden");
+    });
+  }
+
+  if (pixelModeToggleBtn) {
+    pixelModeToggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (pixelSpotifyDrawer) {
+        pixelSpotifyDrawer.classList.toggle("hidden");
+      }
+    });
+  }
+
+  if (pixelSpotifyCloseDrawer) {
+    pixelSpotifyCloseDrawer.addEventListener("click", () => {
+      if (pixelSpotifyDrawer) pixelSpotifyDrawer.classList.add("hidden");
+    });
+  }
+
+  if (spotifyNavbarBtn) {
+    spotifyNavbarBtn.addEventListener("click", () => {
+      if (!pixelContainer) return;
+      if (pixelContainer.classList.contains("hidden")) {
+        pixelContainer.classList.remove("hidden");
+      }
+      if (pixelBody && pixelBody.classList.contains("hidden")) {
+        pixelBody.classList.remove("hidden");
+        if (pixelDragHandle) pixelDragHandle.classList.remove("hidden");
+        if (pixelBadge) pixelBadge.classList.add("hidden");
+      } else {
+        toggleBgm();
+      }
+    });
+  }
+
+  // --- Draggable Player Implementation ("move the player around") ---
+  if (pixelContainer && pixelDragHandle) {
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let initialLeft = 0;
+    let initialTop = 0;
+
+    const onPointerDown = (clientX: number, clientY: number, target: EventTarget | null) => {
+      // Don't drag if user clicked an interactive button inside the header
+      if (target instanceof Element && (target.closest("button") || target.tagName === "BUTTON")) {
+        return;
+      }
+
+      isDragging = true;
+      startX = clientX;
+      startY = clientY;
+
+      const rect = pixelContainer.getBoundingClientRect();
+      initialLeft = rect.left;
+      initialTop = rect.top;
+
+      // Lock positioning to left/top so bottom/right doesn't fight drag
+      pixelContainer.style.bottom = "auto";
+      pixelContainer.style.right = "auto";
+      pixelContainer.style.left = `${initialLeft}px`;
+      pixelContainer.style.top = `${initialTop}px`;
+    };
+
+    const onPointerMove = (clientX: number, clientY: number) => {
+      if (!isDragging) return;
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      const newLeft = Math.max(10, Math.min(window.innerWidth - pixelContainer.offsetWidth - 10, initialLeft + dx));
+      const newTop = Math.max(10, Math.min(window.innerHeight - pixelContainer.offsetHeight - 10, initialTop + dy));
+
+      pixelContainer.style.left = `${newLeft}px`;
+      pixelContainer.style.top = `${newTop}px`;
+    };
+
+    const onPointerUp = () => {
+      isDragging = false;
+    };
+
+    pixelDragHandle.addEventListener("mousedown", (e) => {
+      onPointerDown(e.clientX, e.clientY, e.target);
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      onPointerMove(e.clientX, e.clientY);
+    });
+
+    window.addEventListener("mouseup", onPointerUp);
+
+    // Touch support for mobile / tablets
+    pixelDragHandle.addEventListener("touchstart", (e) => {
+      if (e.touches.length > 0) {
+        onPointerDown(e.touches[0].clientX, e.touches[0].clientY, e.target);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (e) => {
+      if (isDragging && e.touches.length > 0) {
+        onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchend", onPointerUp);
   }
 
   // --- Dimensions & Coordinate Projections ---
