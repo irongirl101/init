@@ -5,9 +5,21 @@
     "highest_bid": 850,
     "leading_patron": "Miles_M",
     "bids": [
-      { "patron": "ArtLover99", "amount": 550, "timestamp": "2026-08-28" },
-      { "patron": "SothebyBot", "amount": 700, "timestamp": "2026-08-30" },
-      { "patron": "Miles_M", "amount": 850, "timestamp": "2026-09-01" }
+      {
+        "patron": "ArtLover99",
+        "amount": 550,
+        "timestamp": "2026-08-28"
+      },
+      {
+        "patron": "SothebyBot",
+        "amount": 700,
+        "timestamp": "2026-08-30"
+      },
+      {
+        "patron": "Miles_M",
+        "amount": 850,
+        "timestamp": "2026-09-01"
+      }
     ]
   },
   "walle-ink": {
@@ -16,8 +28,16 @@
     "highest_bid": 900,
     "leading_patron": "CyberCurator",
     "bids": [
-      { "patron": "PixelWhale", "amount": 650, "timestamp": "2026-08-29" },
-      { "patron": "CyberCurator", "amount": 900, "timestamp": "2026-09-02" }
+      {
+        "patron": "PixelWhale",
+        "amount": 650,
+        "timestamp": "2026-08-29"
+      },
+      {
+        "patron": "CyberCurator",
+        "amount": 900,
+        "timestamp": "2026-09-02"
+      }
     ]
   },
   "walle-color": {
@@ -26,7 +46,305 @@
     "highest_bid": 750,
     "leading_patron": "EvaCollector",
     "bids": [
-      { "patron": "EvaCollector", "amount": 750, "timestamp": "2026-09-01" }
+      {
+        "patron": "EvaCollector",
+        "amount": 750,
+        "timestamp": "2026-09-01"
+      }
     ]
+  },
+  "hornet-ink": {
+    "title": "Hornet: Needle & Thread",
+    "starting_bid": 450,
+    "highest_bid": 450,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "grimm-ink": {
+    "title": "Troupe Master Grimm",
+    "starting_bid": 650,
+    "highest_bid": 650,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "pure-vessel-ink": {
+    "title": "Pure Vessel",
+    "starting_bid": 550,
+    "highest_bid": 550,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "master-chief": {
+    "title": "Master Chief: Spartan-117",
+    "starting_bid": 850,
+    "highest_bid": 850,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "love-you-3000": {
+    "title": "I Love You 3000",
+    "starting_bid": 700,
+    "highest_bid": 700,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "anubis": {
+    "title": "Anubis: Jackal Deity",
+    "starting_bid": 550,
+    "highest_bid": 550,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "fawkes": {
+    "title": "Fawkes: Rebirth in Flames",
+    "starting_bid": 750,
+    "highest_bid": 750,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "krishna": {
+    "title": "Krishna: The Divine Flutist",
+    "starting_bid": 800,
+    "highest_bid": 800,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "mike-wazowski": {
+    "title": "Mike Wazowski",
+    "starting_bid": 400,
+    "highest_bid": 400,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "op81-vegas": {
+    "title": "Oscar Piastri #81: Las Vegas GP",
+    "starting_bid": 800,
+    "highest_bid": 800,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "highway-to-hell": {
+    "title": "Highway to Hell",
+    "starting_bid": 600,
+    "highest_bid": 600,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "melt": {
+    "title": "Melt: Heavy Metal",
+    "starting_bid": 450,
+    "highest_bid": 450,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "skelly": {
+    "title": "Skelly: Geometric Osteology",
+    "starting_bid": 550,
+    "highest_bid": 550,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "mars-bar": {
+    "title": "Mars: Caramel & Nougat",
+    "starting_bid": 500,
+    "highest_bid": 500,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "rainy-city": {
+    "title": "Rainy City Solitude",
+    "starting_bid": 550,
+    "highest_bid": 550,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "mountain-pagoda": {
+    "title": "Mountain Pagoda (Tera)",
+    "starting_bid": 750,
+    "highest_bid": 750,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "neon-japan": {
+    "title": "Neon Japan",
+    "starting_bid": 400,
+    "highest_bid": 400,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "bw-japan": {
+    "title": "Shibuya Crossing (Monochrome)",
+    "starting_bid": 350,
+    "highest_bid": 350,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "details-hong-kong": {
+    "title": "Hong Kong: Urban Details",
+    "starting_bid": 450,
+    "highest_bid": 450,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "manga-hong-kong": {
+    "title": "Manga Hong Kong",
+    "starting_bid": 420,
+    "highest_bid": 420,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "lantern": {
+    "title": "Luminous Festival Lantern",
+    "starting_bid": 380,
+    "highest_bid": 380,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "ethereal": {
+    "title": "Ethereal Horizon",
+    "starting_bid": 360,
+    "highest_bid": 360,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "hope": {
+    "title": "Glimmer of Hope",
+    "starting_bid": 340,
+    "highest_bid": 340,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "unlit": {
+    "title": "Unlit Twilight",
+    "starting_bid": 320,
+    "highest_bid": 320,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "idunno": {
+    "title": "Spectral Wanderer",
+    "starting_bid": 350,
+    "highest_bid": 350,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "gaveup": {
+    "title": "Midnight Haze",
+    "starting_bid": 320,
+    "highest_bid": 320,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "jaws": {
+    "title": "Great White: Jaws",
+    "starting_bid": 450,
+    "highest_bid": 450,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "shark": {
+    "title": "Ocean Apex: Shark",
+    "starting_bid": 380,
+    "highest_bid": 380,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "hammerhead": {
+    "title": "Hammerhead Patrol",
+    "starting_bid": 400,
+    "highest_bid": 400,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "whale": {
+    "title": "Leviathan: Blue Whale",
+    "starting_bid": 480,
+    "highest_bid": 480,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "whale-tale": {
+    "title": "Whale Tail Breach",
+    "starting_bid": 420,
+    "highest_bid": 420,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "dolphin": {
+    "title": "Dolphin Flight",
+    "starting_bid": 360,
+    "highest_bid": 360,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "found-nemo": {
+    "title": "Anemone Haven: Clownfish",
+    "starting_bid": 340,
+    "highest_bid": 340,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "turtle": {
+    "title": "Pacific Sea Turtle",
+    "starting_bid": 380,
+    "highest_bid": 380,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "pish": {
+    "title": "Tropical Reef Pish",
+    "starting_bid": 300,
+    "highest_bid": 300,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "bear-v1": {
+    "title": "Grizzly Monarch I",
+    "starting_bid": 400,
+    "highest_bid": 400,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "bear-v2": {
+    "title": "Grizzly Monarch II",
+    "starting_bid": 420,
+    "highest_bid": 420,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "toucan": {
+    "title": "Rainforest Toucan",
+    "starting_bid": 390,
+    "highest_bid": 390,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "seagulls-leh": {
+    "title": "Seagulls Over Pangong Tso",
+    "starting_bid": 350,
+    "highest_bid": 350,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "blender-ghost": {
+    "title": "Ghost: The Little Knight",
+    "starting_bid": 700,
+    "highest_bid": 700,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "blender-hornet": {
+    "title": "Hornet: Silksong Protector",
+    "starting_bid": 750,
+    "highest_bid": 750,
+    "leading_patron": "House Lot",
+    "bids": []
+  },
+  "blender-sherma": {
+    "title": "Sherma the Pilgrim",
+    "starting_bid": 680,
+    "highest_bid": 680,
+    "leading_patron": "House Lot",
+    "bids": []
   }
 }

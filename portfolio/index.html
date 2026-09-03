@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museum Gallery | init</title>
-  <link rel="stylesheet" href="/init/assets/main-Caj-uKhy.css">
+  <link rel="stylesheet" href="/init/assets/main-DttQlh0j.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col">
@@ -68,6 +68,9 @@
         </button>
         <button id="view-mode-catalog" class="btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item">
           Catalog Index
+        </button>
+        <button id="view-mode-ledger" class="btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item text-amber-300">
+          Auction Ledger
         </button>
       </div>
 
@@ -1718,6 +1721,67 @@
     </div>
   </div>
 
+  <!-- VIEW 3: Auction Ledger & Live Bidding Board -->
+  <div id="ledger-view" class="hidden space-y-6">
+    <!-- Top Summary Metrics Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="bg-base-200/80 border border-white/10 rounded-2xl p-4 shadow-lg flex flex-col">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-base-content/60">Exhibition Lots</span>
+        <span class="font-mono font-extrabold text-2xl text-white mt-1">45</span>
+        <span class="text-[10px] text-emerald-400 mt-0.5">Physical • Digital • 3D</span>
+      </div>
+      <div class="bg-base-200/80 border border-white/10 rounded-2xl p-4 shadow-lg flex flex-col">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-base-content/60">Total Ledger Volume</span>
+        <span id="ledger-total-volume" class="font-mono font-extrabold text-2xl text-amber-400 mt-1">-- TKN</span>
+        <span class="text-[10px] opacity-60 mt-0.5">Cumulative Leading Offers</span>
+      </div>
+      <div class="bg-base-200/80 border border-white/10 rounded-2xl p-4 shadow-lg flex flex-col">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-base-content/60">Your Active Bids</span>
+        <span id="ledger-my-bids-count" class="font-mono font-extrabold text-2xl text-primary mt-1">0 Lots</span>
+        <span id="ledger-my-total-offered" class="text-[10px] text-primary/80 mt-0.5">0 TKN Committed</span>
+      </div>
+      <div class="bg-base-200/80 border border-white/10 rounded-2xl p-4 shadow-lg flex flex-col">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-base-content/60">Your Patron Credit</span>
+        <span id="ledger-patron-balance" class="font-mono font-extrabold text-2xl text-emerald-300 mt-1">1,240 TKN</span>
+        <span class="text-[10px] text-emerald-400 mt-0.5">Available for Silent Bids</span>
+      </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-base-200/50 p-3 rounded-2xl border border-white/10">
+      <div class="flex flex-wrap items-center gap-2">
+        <button class="ledger-filter-btn btn btn-xs btn-primary" data-filter="all">All Lots (45)</button>
+        <button class="ledger-filter-btn btn btn-xs btn-outline border-amber-500/40 text-amber-300" data-filter="physical">Physical (19)</button>
+        <button class="ledger-filter-btn btn btn-xs btn-outline border-sky-500/40 text-sky-300" data-filter="digital">Digital (14)</button>
+        <button class="ledger-filter-btn btn btn-xs btn-outline border-orange-500/40 text-orange-300" data-filter="blender">3D Blender (12)</button>
+        <button class="ledger-filter-btn btn btn-xs btn-outline border-emerald-500/40 text-emerald-300" data-filter="mine">★ My Offers (<span id="ledger-filter-mine-count">0</span>)</button>
+      </div>
+      <div class="text-xs font-mono text-base-content/60">
+        House of Hades • Official Auction Ledger
+      </div>
+    </div>
+
+    <!-- Responsive Ledger Table -->
+    <div class="overflow-x-auto bg-base-200/80 rounded-2xl border border-white/10 shadow-2xl">
+      <table class="table table-zebra table-sm sm:table-md w-full" id="ledger-table">
+        <thead class="bg-base-300/60 text-white font-mono text-xs uppercase tracking-wider">
+          <tr>
+            <th class="w-16">Lot</th>
+            <th>Artwork</th>
+            <th>Realm</th>
+            <th class="text-right">Opening Bid</th>
+            <th class="text-right">Leading Offer</th>
+            <th>Leading Patron</th>
+            <th class="text-center w-28">Action</th>
+          </tr>
+        </thead>
+        <tbody id="ledger-table-body">
+          <!-- Populated dynamically from ledgerData -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <!-- Inspection & Silent Bidding Modal -->
@@ -1817,6 +1881,35 @@
 
           <!-- Feedback message -->
           <div id="bid-message" class="hidden text-xs text-center py-2 rounded-lg font-medium"></div>
+
+          <!-- Official Patron Bid Slip Card (Shown after successful bid) -->
+          <div id="patron-bid-slip-card" class="hidden bg-black/70 border border-primary/50 rounded-xl p-3 text-xs space-y-2.5 mt-2 shadow-xl">
+            <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+              <span class="font-mono text-primary font-bold text-[11px] flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                <span>OFFICIAL PATRON BID SLIP</span>
+              </span>
+              <span id="slip-hash" class="font-mono text-[10px] text-white/50">#HD-8201</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div>
+                <span class="opacity-60 block text-[9px] uppercase">Recorded Offer:</span>
+                <span id="slip-amount" class="text-amber-300 font-bold">1,050 TKN</span>
+              </div>
+              <div>
+                <span class="opacity-60 block text-[9px] uppercase">Patron Alias:</span>
+                <span id="slip-patron" class="text-white font-bold">@Aditi</span>
+              </div>
+            </div>
+            <div class="flex gap-2 pt-1">
+              <button id="slip-copy-btn" class="btn btn-xs btn-outline btn-primary flex-1">
+                Copy Slip Text
+              </button>
+              <a id="slip-email-btn" href="#" class="btn btn-xs btn-primary flex-1">
+                Email Offer to Artist
+              </a>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1973,7 +2066,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-CT4AxOqm.js"></script>
+  <script type="module" src="/init/assets/main-CDjdMtUq.js"></script>
 </body>
 
 </html>
