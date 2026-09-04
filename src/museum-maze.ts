@@ -1695,46 +1695,96 @@ export function initMuseumMaze() {
     }
   }
 
+  const NPOINT_BIDS_URL = "https://api.npoint.io/8dcab2cb18f42e65e5b8";
+
+  type NpointStore = Record<string, Record<string, { amount: number; time?: string }>>;
+  let npointStore: NpointStore = {};
+
+  function applyNpointStoreToLedger(store: NpointStore) {
+    const artBidsMap: Record<string, Array<{ patron: string; amount: number; timestamp: string }>> = {};
+
+    for (const [user, userBids] of Object.entries(store)) {
+      if (!userBids || typeof userBids !== "object") continue;
+      for (const [artKey, bidInfo] of Object.entries(userBids)) {
+        if (!bidInfo || typeof bidInfo.amount !== "number") continue;
+        let targetArtId = artKey;
+        const foundArt = artworks.find(
+          (a) =>
+            a.id === artKey ||
+            a.id.startsWith(artKey) ||
+            artKey.startsWith(a.id) ||
+            a.id.replace(/-(ink|color)$/, "") === artKey.replace(/-(ink|color)$/, "")
+        );
+        if (foundArt) {
+          targetArtId = foundArt.id;
+        }
+
+        if (!artBidsMap[targetArtId]) {
+          artBidsMap[targetArtId] = [];
+        }
+        artBidsMap[targetArtId].push({
+          patron: user,
+          amount: bidInfo.amount,
+          timestamp: bidInfo.time || "",
+        });
+      }
+    }
+
+    for (const art of artworks) {
+      const bids = artBidsMap[art.id] || [];
+      bids.sort((a, b) => b.amount - a.amount);
+
+      const startBid = art.starting_bid || 450;
+      const highestBid = bids.length > 0 ? bids[0].amount : startBid;
+      const leadPatron = bids.length > 0 ? bids[0].patron : "House Lot";
+
+      ledgerData[art.id] = {
+        title: art.title,
+        starting_bid: startBid,
+        highest_bid: highestBid,
+        leading_patron: leadPatron,
+        bids: bids,
+      };
+    }
+
+    updateCatalogBids();
+    renderLedgerTable();
+  }
+
   async function loadBidsData() {
+    try {
+      const res = await fetch(`${NPOINT_BIDS_URL}?_t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data === "object") {
+          npointStore = data;
+          localStorage.setItem("museum_npoint_cache", JSON.stringify(npointStore));
+          applyNpointStoreToLedger(npointStore);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not fetch live bids from npoint, falling back", e);
+    }
+
+    const cached = localStorage.getItem("museum_npoint_cache");
+    if (cached) {
+      try {
+        npointStore = JSON.parse(cached);
+        applyNpointStoreToLedger(npointStore);
+        return;
+      } catch (e) {}
+    }
+
     try {
       const bidsUrl = baseUrl ? `${baseUrl}/data/bids.json` : "/data/bids.json";
       const res = await fetch(bidsUrl);
       if (res.ok) {
-        const data = await res.json();
-        ledgerData = data;
-        if (savedLedger) {
-          try {
-            const parsed = JSON.parse(savedLedger);
-            ledgerData = { ...ledgerData, ...parsed };
-          } catch (e) {}
-        }
+        ledgerData = await res.json();
         updateCatalogBids();
+        renderLedgerTable();
       }
-    } catch (e) {
-      ledgerData = {
-        torii: {
-          title: "Torii Gate at Twilight",
-          starting_bid: 500,
-          highest_bid: 850,
-          leading_patron: "Miles_M",
-          bids: [{ patron: "Miles_M", amount: 850, timestamp: "2026-09-01" }],
-        },
-        "walle-ink": {
-          title: "WALL-E: Urban Solitude",
-          starting_bid: 600,
-          highest_bid: 900,
-          leading_patron: "CyberCurator",
-          bids: [{ patron: "CyberCurator", amount: 900, timestamp: "2026-09-02" }],
-        },
-        "walle-color": {
-          title: "WALL-E: Solar Awakening",
-          starting_bid: 450,
-          highest_bid: 750,
-          leading_patron: "EvaCollector",
-          bids: [{ patron: "EvaCollector", amount: 750, timestamp: "2026-09-01" }],
-        },
-      };
-    }
+    } catch (e) {}
   }
   loadBidsData();
 
@@ -2002,15 +2052,25 @@ export function initMuseumMaze() {
 
   const submitBidBtn = document.getElementById("submit-bid-btn");
   if (submitBidBtn) {
-    submitBidBtn.addEventListener("click", () => {
+    submitBidBtn.addEventListener("click", async () => {
       if (!activeModalArtId) return;
 
       const patronInput = document.getElementById("bid-patron-name") as HTMLInputElement | null;
       const amountInput = document.getElementById("bid-amount-input") as HTMLInputElement | null;
       const messageEl = document.getElementById("bid-message");
 
-      const patron = patronInput?.value.trim() || "Anonymous Patron";
+      const patron = patronInput?.value.trim() || "";
       const amount = parseInt(amountInput?.value || "0", 10);
+
+      if (!patron) {
+        if (messageEl) {
+          messageEl.className =
+            "text-xs text-center py-2 rounded-lg bg-error/20 text-error border border-error/30";
+          messageEl.textContent = "Please enter your username!";
+          messageEl.classList.remove("hidden");
+        }
+        return;
+      }
 
       currentPatronName = patron;
       localStorage.setItem("museum_patron_name", patron);
@@ -2021,7 +2081,7 @@ export function initMuseumMaze() {
       if (amount <= ledger.highest_bid) {
         messageEl.className =
           "text-xs text-center py-2 rounded-lg bg-error/20 text-error border border-error/30";
-        messageEl.textContent = `Offer must exceed top recorded offer of ${ledger.highest_bid.toLocaleString()} TKN!`;
+        messageEl.textContent = `Bid must exceed current top bid of ${ledger.highest_bid.toLocaleString()} TKN!`;
         messageEl.classList.remove("hidden");
         return;
       }
@@ -2029,7 +2089,7 @@ export function initMuseumMaze() {
       if (amount > patronBalance) {
         messageEl.className =
           "text-xs text-center py-2 rounded-lg bg-warning/20 text-warning border border-warning/30";
-        messageEl.textContent = `Insufficient patron credit (${patronBalance.toLocaleString()} TKN available).`;
+        messageEl.textContent = `Insufficient patron tokens (${patronBalance.toLocaleString()} TKN available).`;
         messageEl.classList.remove("hidden");
         return;
       }
@@ -2037,24 +2097,45 @@ export function initMuseumMaze() {
       patronBalance -= 50;
       updateHudBalance();
 
-      ledger.highest_bid = amount;
-      ledger.leading_patron = patron;
-      ledger.bids.push({
-        patron: patron,
-        amount: amount,
-        timestamp: new Date().toISOString().split("T")[0],
-      });
+      const now = new Date();
+      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 
-      localStorage.setItem("museum_bids_ledger", JSON.stringify(ledgerData));
+      // Optimistic in-memory update
+      if (!npointStore[patron]) {
+        npointStore[patron] = {};
+      }
+      npointStore[patron][activeModalArtId] = {
+        amount: amount,
+        time: timeStr,
+      };
+      localStorage.setItem("museum_npoint_cache", JSON.stringify(npointStore));
+      applyNpointStoreToLedger(npointStore);
 
       const highBidEl = document.getElementById("modal-highest-bid");
       const leadingPatronEl = document.getElementById("modal-leading-patron");
       if (highBidEl) highBidEl.textContent = `${amount.toLocaleString()} TKN`;
       if (leadingPatronEl) leadingPatronEl.textContent = `@${patron}`;
 
+      // Refresh modal bid history
+      const historyContainer = document.getElementById("modal-bid-history");
+      if (historyContainer) {
+        historyContainer.innerHTML = "";
+        const bids = ledgerData[activeModalArtId]?.bids || [];
+        bids.forEach((b) => {
+          const row = document.createElement("div");
+          row.className = "flex items-center justify-between py-1.5 border-b border-white/5";
+          row.innerHTML = `
+            <span class="font-bold text-primary">@${b.patron}</span>
+            <span class="opacity-80 font-mono">${b.amount.toLocaleString()} TKN</span>
+            <span class="text-[10px] opacity-40">${b.timestamp}</span>
+          `;
+          historyContainer.appendChild(row);
+        });
+      }
+
       messageEl.className =
         "text-xs text-center py-2 rounded-lg bg-success/20 text-success border border-success/30 font-semibold";
-      messageEl.textContent = "Offer registered! You are now the premier patron for this piece!";
+      messageEl.textContent = "Bid registered live! You are now the lead bidder for this piece!";
       messageEl.classList.remove("hidden");
 
       // Generate & Display Official Patron Bid Slip Card
@@ -2075,22 +2156,21 @@ export function initMuseumMaze() {
       if (slipPatron) slipPatron.textContent = `@${patron}`;
 
       if (slipEmailBtn && art) {
-        const mailSubject = encodeURIComponent(`[Auction Offer] Lot #${lotNum} - ${art.title}`);
+        const mailSubject = encodeURIComponent(`[Auction Bid] Lot #${lotNum} - ${art.title}`);
         const mailBody = encodeURIComponent(
-          `Hello Aditi,\n\nI have placed an official gallery offer for "${art.title}" (Lot #${lotNum}).\n\n` +
-          `• Offer Amount: ${amount.toLocaleString()} TKN\n` +
-          `• Patron Alias: @${patron}\n` +
+          `Hello Aditi,\n\nI have placed an official gallery bid for "${art.title}" (Lot #${lotNum}).\n\n` +
+          `• Bid Amount: ${amount.toLocaleString()} TKN\n` +
+          `• Username: @${patron}\n` +
           `• Verification Hash: #${hash}\n` +
           `• Medium: ${art.medium}\n` +
-          `• Date: ${new Date().toLocaleDateString()}\n\n` +
-          `Please record my bid in the official museum ledger and notify me of settlement!\n\n` +
+          `• Date: ${timeStr}\n\n` +
           `Best regards,\n${patron}`
         );
         slipEmailBtn.href = `mailto:aditi061806@gmail.com?subject=${mailSubject}&body=${mailBody}`;
       }
 
       if (slipCopyBtn && art) {
-        const slipText = `[OFFICIAL PATRON BID SLIP]\nArtwork: "${art.title}" (Lot #${lotNum})\nOffer: ${amount.toLocaleString()} TKN\nPatron: @${patron}\nVerification: #${hash}\nDate: ${new Date().toISOString().split("T")[0]}`;
+        const slipText = `[OFFICIAL PATRON BID SLIP]\nArtwork: "${art.title}" (Lot #${lotNum})\nBid: ${amount.toLocaleString()} TKN\nUsername: @${patron}\nVerification: #${hash}\nDate: ${timeStr}`;
         slipCopyBtn.onclick = () => {
           navigator.clipboard.writeText(slipText).then(() => {
             const originalText = slipCopyBtn.textContent;
@@ -2106,7 +2186,32 @@ export function initMuseumMaze() {
 
       updateCatalogBids();
       playChime();
-      showToast(`Offer Registered! ${amount.toLocaleString()} TKN on Lot #${lotNum}`, "bid");
+      showToast(`Bid Registered! ${amount.toLocaleString()} TKN on Lot #${lotNum}`, "bid");
+
+      // Asynchronously persist to npoint.io
+      try {
+        let remoteStore: NpointStore = { ...npointStore };
+        try {
+          const fetchRes = await fetch(`${NPOINT_BIDS_URL}?_t=${Date.now()}`);
+          if (fetchRes.ok) {
+            const remoteData = await fetchRes.json();
+            if (remoteData && typeof remoteData === "object") {
+              remoteStore = { ...remoteData, ...remoteStore };
+            }
+          }
+        } catch (_) {}
+
+        if (!remoteStore[patron]) remoteStore[patron] = {};
+        remoteStore[patron][activeModalArtId] = { amount, time: timeStr };
+
+        await fetch(NPOINT_BIDS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(remoteStore),
+        });
+      } catch (err) {
+        console.error("Error updating live bids on npoint.io:", err);
+      }
     });
   }
 
