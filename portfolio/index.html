@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museum Gallery | init</title>
-  <link rel="stylesheet" href="/init/assets/main-BJgsziWP.css">
+  <link rel="stylesheet" href="/init/assets/main-CyB1RcqC.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col">
@@ -115,6 +115,10 @@
             </div>
             <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
               Token Balance
+            </div>
+            <div class="text-[10px] font-mono text-slate-400 mt-1 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Patron: <span id="hud-patron-name" class="text-emerald-300 font-bold">Unregistered</span></span>
             </div>
           </div>
         </div>
@@ -1920,12 +1924,18 @@
           <!-- Patron Identity & Amount Inputs -->
           <div class="grid grid-cols-2 gap-2">
             <div class="form-control">
-              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Username</span></label>
-              <input id="bid-patron-name" type="text" placeholder="e.g. alex" class="input input-sm input-bordered bg-black/40 text-xs" />
+              <label class="label py-0.5 flex items-center justify-between">
+                <span class="label-text text-[10px] font-bold text-white/90">Username <span class="text-error font-bold">*</span></span>
+                <span class="text-[9px] text-error font-bold tracking-wider uppercase">Required</span>
+              </label>
+              <input id="bid-patron-name" type="text" required placeholder="Choose a username..." class="input input-sm input-bordered bg-black/40 text-xs focus:border-primary transition-all" />
             </div>
             <div class="form-control">
-              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Bid Amount (TKN)</span></label>
-              <input id="bid-amount-input" type="number" step="50" class="input input-sm input-bordered bg-black/40 text-xs font-mono font-bold text-amber-400" />
+              <label class="label py-0.5 flex items-center justify-between">
+                <span class="label-text text-[10px] font-bold text-white/90">Bid Amount (TKN) <span class="text-error font-bold">*</span></span>
+                <span class="text-[9px] text-amber-400/80 font-mono">Min +50</span>
+              </label>
+              <input id="bid-amount-input" type="number" step="50" required class="input input-sm input-bordered bg-black/40 text-xs font-mono font-bold text-amber-400" />
             </div>
           </div>
 
@@ -2128,7 +2138,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-Bcg9IMDf.js"></script>
+  <script type="module" src="/init/assets/main-DJMbN8lB.js"></script>
 </body>
 
 </html>
