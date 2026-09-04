@@ -935,12 +935,37 @@ def main():
         )
         if page_data is None or html_content is None:
             return
+
+        # Load collections so pages with listings (e.g. blog, tags) always have access to posts
+        collections = defaultdict(list)
+        for root, _, files in os.walk(CONTENT_DIR):
+            for filename in files:
+                if filename.endswith(".md"):
+                    f_path = os.path.join(root, filename)
+                    pd, _ = parse_file(f_path, pygments_theme, site_config.get("markdown"))
+                    if pd and str(pd.get("draft")).lower() not in ("true", "1", "yes"):
+                        l = pd.get("layout")
+                        if l:
+                            collections[l].append(pd)
+
+        for layout_name, items in collections.items():
+            if any(x.get("date") for x in items):
+                items.sort(
+                    key=lambda x: safe_parse_date(x.get("date")) or datetime.min,
+                    reverse=True,
+                )
+            elif any(x.get("order") is not None for x in items):
+                items.sort(key=lambda x: x.get("order", 999))
+
+        context_data = {k.replace("-", "_") + "s": v for k, v in collections.items()}
+
         render_page(
             page_data,
             html_content,
             site_config,
             templates,
             image_manifest=image_manifest,
+            **context_data
         )
     else:
         print("Running a full build...")

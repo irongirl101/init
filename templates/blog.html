@@ -11,18 +11,46 @@
     <div class="divider"></div>
     {% endif %}
 
-    <div class="space-y-8 mt-">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8 grid-flow-dense">
     {% for post in posts %}
-        <div class="card bg-base-200 shadow-xl">
-            <a href="{{ site.base_url }}{{ post.url }}/">
-            <div class="card-body">
-                <h2 class="card-title">
+        {% set mod = loop.index0 % 7 %}
+        {% if mod == 0 %}
+            {% set span_class = "md:col-span-2 min-h-[220px]" %}
+            {% set body_class = "p-8" %}
+            {% set title_class = "text-2xl md:text-3xl" %}
+        {% elif mod == 1 %}
+            {% set span_class = "col-span-1 min-h-[160px]" %}
+            {% set body_class = "p-5" %}
+            {% set title_class = "text-lg md:text-xl" %}
+        {% elif mod == 2 %}
+            {% set span_class = "col-span-1 min-h-[200px]" %}
+            {% set body_class = "p-6" %}
+            {% set title_class = "text-xl" %}
+        {% elif mod == 3 %}
+            {% set span_class = "col-span-1 min-h-[140px]" %}
+            {% set body_class = "p-5" %}
+            {% set title_class = "text-lg" %}
+        {% elif mod == 4 %}
+            {% set span_class = "col-span-1 min-h-[180px]" %}
+            {% set body_class = "p-6" %}
+            {% set title_class = "text-xl" %}
+        {% elif mod == 5 %}
+            {% set span_class = "col-span-1 min-h-[150px]" %}
+            {% set body_class = "p-5" %}
+            {% set title_class = "text-lg md:text-xl" %}
+        {% else %}
+            {% set span_class = "md:col-span-2 min-h-[210px]" %}
+            {% set body_class = "p-8" %}
+            {% set title_class = "text-2xl md:text-3xl" %}
+        {% endif %}
+        <a href="{{ site.base_url }}{{ post.url }}/" class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-1 {{ span_class }}">
+            <div class="card-body flex flex-col justify-between h-full {{ body_class }}">
+                <h2 class="card-title {{ title_class }}">
                     {{ post.title }}
                 </h2>
-                <p class="text-sm opacity-70">Published: {{ post.date }}</p>
+                <p class="text-sm opacity-70 mt-4 grow-0">Published: {{ post.date }}</p>
             </div>
-            </a>
-        </div>
+        </a>
     {% endfor %}
     </div>
 {% endblock %}

@@ -181,7 +181,7 @@ const py_build_plugin = (baseUrl = '') => {
           const generatedDirs = ['blog', 'posts', 'tags', 'portfolio'];
           const generatedFiles = ['index.html', 'sitemap.xml'];
 
-          // Move directories from root to dist
+          // Copy directories from root to dist
           for (const dir of generatedDirs) {
             const src = path.join(__dirname, dir);
             const dst = path.join(__dirname, 'dist', dir);
@@ -189,17 +189,16 @@ const py_build_plugin = (baseUrl = '') => {
               if (fs.existsSync(dst)) {
                 fs.rmSync(dst, { recursive: true });
               }
-              fs.renameSync(src, dst);
+              fs.cpSync(src, dst, { recursive: true });
             }
           }
 
-          // Move files from root to dist
+          // Copy files from root to dist
           for (const file of generatedFiles) {
             const src = path.join(__dirname, file);
             const dst = path.join(__dirname, 'dist', file);
             if (fs.existsSync(src)) {
               fs.copyFileSync(src, dst);
-              fs.unlinkSync(src);
             }
           }
 
@@ -293,15 +292,6 @@ const py_build_plugin = (baseUrl = '') => {
         } catch (e) {
           console.error('Failed to move files to dist:', e);
         }
-      } else {
-        // During dev mode, clean up
-        console.log('Cleaning up root directory...');
-        try {
-          const output = execSync(`"${pythonExecutable}" src/main.py --clean`);
-          console.log(output.toString().trim());
-        } catch (e) {
-          console.error('Failed to cleanup:', e);
-        }
       }
     },
     configureServer(server) {
@@ -362,7 +352,7 @@ const py_build_plugin = (baseUrl = '') => {
 
         if (filePath.includes('/content/') || filePath.includes('/templates/')) {
           if (event === 'change') {
-            const buildTarget = filePath.includes('/templates/') ? null : filePath;
+            const buildTarget = (filePath.includes('/templates/') || filePath.includes('/content/posts/')) ? null : filePath;
             build(buildTarget);
           } else if (event === 'add' || event === 'unlink') {
             build();
