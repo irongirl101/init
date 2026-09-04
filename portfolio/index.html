@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museum Gallery | init</title>
-  <link rel="stylesheet" href="/init/assets/main-D6P11cv9.css">
+  <link rel="stylesheet" href="/init/assets/main-BJgsziWP.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col">
@@ -39,9 +39,19 @@
   #res-canvas {
     display: none !important;
   }
+  .catalog-card {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 420px;
+  }
 </style>
 
 <div id="portfolio-root" class="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 space-y-6" style="padding-top: 6.5rem; padding-bottom: 2rem;">
+
+  <!-- Floating Action Toast (Top-Right) -->
+  <div id="museum-toast" class="fixed top-20 right-4 sm:right-8 z-50 pointer-events-none transition-all duration-300 opacity-0 translate-y-2 flex items-center gap-2.5 bg-[#0c1a15]/95 border border-amber-500/60 backdrop-blur-xl px-4 py-2.5 rounded-xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] text-white text-xs font-mono font-semibold">
+    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+    <span id="museum-toast-text">Token Collected!</span>
+  </div>
 
   <!-- Gallery Exhibition Header -->
   <div class="flex flex-wrap items-end justify-between gap-4 border-b border-base-content/10 pb-5">
@@ -54,7 +64,7 @@
         The Gallery. 
       </h1>
       <p class="text-xs sm:text-sm opacity-70 mt-1 max-w-xl font-light">
-        Original works exhibition by me XD. Explore the halls of Elysium, Tartarus, and Asphodel, rest upon imperial velvet divans, and submit bids. Best runs when fully loaded. Also, do not throw a brush.
+        Original works exhibition by me XD. Explore the halls of Elysium, Tartarus, and Asphodel, rest upon imperial velvet chaises, and submit bids. Best runs when fully loaded and when scrolled down (will implement this). Also, do not throw a brush.
       </p>
     </div>
 
@@ -94,9 +104,11 @@
       <div class="bg-[#12161a]/90 backdrop-blur-xl p-3.5 rounded-2xl border border-white/15 shadow-2xl flex flex-col gap-3 min-w-[190px]">
         <!-- Token Balance Header -->
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 flex items-center justify-center text-black font-mono font-extrabold text-xs shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-            TKN
-          </div>
+          <img src="/init/assets/images/hades_coin.png"
+               alt="Stygian Obol"
+               data-no-process="true"
+               class="w-10 h-10 object-contain drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] select-none pointer-events-none"
+               onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/init/assets/images/hades_coin.png';}else{this.src='./assets/images/hades_coin.png';}" />
           <div>
             <div class="font-mono font-bold text-base text-white tracking-wide leading-none">
               <span id="patron-display-balance">1,240</span> <span class="text-amber-400 text-xs font-semibold">TKN</span>
@@ -115,6 +127,12 @@
           </div>
         </div>
 
+        <!-- Radar Legend -->
+        <div class="flex items-center justify-between text-[10px] font-mono px-1">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span><span class="text-cyan-300 font-bold">Urns of Wealth</span></span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span><span class="text-slate-300">You</span></span>
+        </div>
+
         <!-- Current Exhibition Wing Indicator -->
         <div id="current-wing-pill" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-black/70 border border-white/10 text-[11px] font-medium tracking-wide">
           <span id="current-wing-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -126,13 +144,13 @@
     <!-- Navigation Helper Legend (Desktop) -->
     <div class="absolute bottom-4 left-4 z-20 pointer-events-none hidden md:flex items-center gap-2 text-xs bg-black/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 text-white/80 shadow-lg">
       <span class="badge badge-xs badge-primary font-mono">NAV</span>
-      <span>Use <kbd class="kbd kbd-xs">W</kbd><kbd class="kbd kbd-xs">A</kbd><kbd class="kbd kbd-xs">S</kbd><kbd class="kbd kbd-xs">D</kbd> to walk • Click floor to pathfind • Walk to art or divans and press <kbd class="kbd kbd-xs">E</kbd> to inspect or sit</span>
+      <span>Use <kbd class="kbd kbd-xs">W</kbd><kbd class="kbd kbd-xs">A</kbd><kbd class="kbd kbd-xs">S</kbd><kbd class="kbd kbd-xs">D</kbd> to walk • Click floor to pathfind • Walk to art or chaises and press <kbd class="kbd kbd-xs">E</kbd> to inspect or sit</span>
     </div>
 
     <!-- Main Architectural Museum Canvas -->
     <canvas id="museum-canvas" class="w-full block cursor-crosshair"></canvas>
 
-    <!-- Floating Proximity Prompt (Triggered when standing near a wall painting or divan) -->
+    <!-- Floating Proximity Prompt (Triggered when standing near a wall painting or chaise) -->
     <div id="proximity-prompt" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300 opacity-0 translate-y-4 scale-95 flex items-center gap-3 bg-black/90 backdrop-blur-xl px-5 py-3 rounded-2xl border border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.35)]">
       <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
       <div class="text-left">
@@ -188,9 +206,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="catalog-cards-container">
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('torii')">
-          <img src="/init/assets/images/portfolio/physical/torii.jpg" loading="lazy" decoding="async" data-art-id="torii" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/torii.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/torii.jpg';}" alt="Torii Gate" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/torii-640.webp" loading="lazy" decoding="async" data-art-id="torii" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/torii.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/torii.jpg';}" alt="Torii Gate" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -215,16 +234,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="torii">500 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('torii')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('walle-ink')">
-          <img src="/init/assets/images/portfolio/physical/Wall-E-V2.jpg" loading="lazy" decoding="async" data-art-id="walle-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Wall-E-V2.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Wall-E-V2.jpg';}" alt="WALL-E: INKed" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Wall-E-V2-640.webp" loading="lazy" decoding="async" data-art-id="walle-ink" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Wall-E-V2.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Wall-E-V2.jpg';}" alt="WALL-E: INKed" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -249,16 +269,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="walle-ink">600 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('walle-ink')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('walle-color')">
-          <img src="/init/assets/images/portfolio/physical/Wall-E-v1.jpeg" loading="lazy" decoding="async" data-art-id="walle-color" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Wall-E-v1.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Wall-E-v1.jpeg';}" alt="WALL-E" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Wall-E-v1-640.webp" loading="lazy" decoding="async" data-art-id="walle-color" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Wall-E-v1.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Wall-E-v1.jpeg';}" alt="WALL-E" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -283,16 +304,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="walle-color">450 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('walle-color')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('hornet-ink')">
-          <img src="/init/assets/images/portfolio/physical/hornet.jpg" loading="lazy" decoding="async" data-art-id="hornet-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/hornet.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/hornet.jpg';}" alt="Hornet: INKed" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/hornet-640.webp" loading="lazy" decoding="async" data-art-id="hornet-ink" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/hornet.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/hornet.jpg';}" alt="Hornet: INKed" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -317,16 +339,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="hornet-ink">450 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('hornet-ink')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('grimm-ink')">
-          <img src="/init/assets/images/portfolio/physical/grimm.jpg" loading="lazy" decoding="async" data-art-id="grimm-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/grimm.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/grimm.jpg';}" alt="Grimm: INKed" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/grimm-640.webp" loading="lazy" decoding="async" data-art-id="grimm-ink" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/grimm.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/grimm.jpg';}" alt="Grimm: INKed" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -351,16 +374,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="grimm-ink">650 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('grimm-ink')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('pure-vessel-ink')">
-          <img src="/init/assets/images/portfolio/physical/purevessel.jpg" loading="lazy" decoding="async" data-art-id="pure-vessel-ink" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/purevessel.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/purevessel.jpg';}" alt="Pure Vessel: INKed" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/purevessel-640.webp" loading="lazy" decoding="async" data-art-id="pure-vessel-ink" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/purevessel.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/purevessel.jpg';}" alt="Pure Vessel: INKed" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -375,7 +399,7 @@
         <div class="card-body p-5">
           <h3 class="card-title text-lg font-bold font-serif">Pure Vessel: INKed</h3>
           <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
-          <p class="text-xs opacity-70 line-clamp-2 mt-1">no cost, too great.</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">no cost too great.</p>
           
           <div class="divider my-2"></div>
           
@@ -385,16 +409,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="pure-vessel-ink">550 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('pure-vessel-ink')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('master-chief')">
-          <img src="/init/assets/images/portfolio/physical/masterchief.jpg" loading="lazy" decoding="async" data-art-id="master-chief" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/masterchief.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/masterchief.jpg';}" alt="Master Chief:INKed" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/masterchief-640.webp" loading="lazy" decoding="async" data-art-id="master-chief" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/masterchief.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/masterchief.jpg';}" alt="Master Chief: INKed" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -407,7 +432,7 @@
           </div>
         </figure>
         <div class="card-body p-5">
-          <h3 class="card-title text-lg font-bold font-serif">Master Chief:INKed</h3>
+          <h3 class="card-title text-lg font-bold font-serif">Master Chief: INKed</h3>
           <p class="text-xs text-primary font-medium">High-Density Crosshatch Ink on Paper</p>
           <p class="text-xs opacity-70 line-clamp-2 mt-1">you told me, that there would not be any cameras.</p>
           
@@ -419,16 +444,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="master-chief">850 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('master-chief')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('love-you-3000')">
-          <img src="/init/assets/images/portfolio/physical/love-you-3000.jpg" loading="lazy" decoding="async" data-art-id="love-you-3000" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/love-you-3000.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/love-you-3000.jpg';}" alt="I Love You 3000." class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/love-you-3000-640.webp" loading="lazy" decoding="async" data-art-id="love-you-3000" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/love-you-3000.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/love-you-3000.jpg';}" alt="I Love You 3000." class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2020</span>
@@ -453,16 +479,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="love-you-3000">700 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('love-you-3000')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('anubis')">
-          <img src="/init/assets/images/portfolio/physical/Anubis.jpeg" loading="lazy" decoding="async" data-art-id="anubis" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Anubis.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Anubis.jpeg';}" alt="Anubis: INked" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Anubis-640.webp" loading="lazy" decoding="async" data-art-id="anubis" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Anubis.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Anubis.jpeg';}" alt="Anubis: INked" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -487,16 +514,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="anubis">550 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('anubis')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('fawkes')">
-          <img src="/init/assets/images/portfolio/physical/Fawkes.jpg" loading="lazy" decoding="async" data-art-id="fawkes" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Fawkes.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Fawkes.jpg';}" alt="Fawkes" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Fawkes-640.webp" loading="lazy" decoding="async" data-art-id="fawkes" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Fawkes.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Fawkes.jpg';}" alt="Fawkes" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2021</span>
@@ -511,7 +539,7 @@
         <div class="card-body p-5">
           <h3 class="card-title text-lg font-bold font-serif">Fawkes</h3>
           <p class="text-xs text-primary font-medium">Acrylic on Canvas</p>
-          <p class="text-xs opacity-70 line-clamp-2 mt-1">'Fawkes, is a Pheonix Harry.', said Dumbledore, calmly.</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">'Fawkes is a Pheonix Harry.', said Dumbledore, calmly.</p>
           
           <div class="divider my-2"></div>
           
@@ -521,16 +549,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="fawkes">750 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('fawkes')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('krishna')">
-          <img src="/init/assets/images/portfolio/physical/krishna.jpg" loading="lazy" decoding="async" data-art-id="krishna" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/krishna.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/krishna.jpg';}" alt="Krishna" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/krishna-640.webp" loading="lazy" decoding="async" data-art-id="krishna" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/krishna.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/krishna.jpg';}" alt="Krishna" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2021</span>
@@ -555,16 +584,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="krishna">800 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('krishna')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('mike-wazowski')">
-          <img src="/init/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg" loading="lazy" decoding="async" data-art-id="mike-wazowski" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg';}" alt="MiKe WaZoWsKi" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/MIKE-WAZOWSKI-640.webp" loading="lazy" decoding="async" data-art-id="mike-wazowski" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg';}" alt="MiKe WaZoWsKi" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -589,16 +619,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="mike-wazowski">400 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('mike-wazowski')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('op81-vegas')">
-          <img src="/init/assets/images/portfolio/physical/OP81.jpg" loading="lazy" decoding="async" data-art-id="op81-vegas" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/OP81.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/OP81.jpg';}" alt="Oscar Piastri #81: Las Vegas GP" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/OP81-640.webp" loading="lazy" decoding="async" data-art-id="op81-vegas" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/OP81.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/OP81.jpg';}" alt="Oscar Piastri #81: Las Vegas GP" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -613,7 +644,7 @@
         <div class="card-body p-5">
           <h3 class="card-title text-lg font-bold font-serif">Oscar Piastri #81: Las Vegas GP</h3>
           <p class="text-xs text-primary font-medium">Pen & Ink on Paper</p>
-          <p class="text-xs opacity-70 line-clamp-2 mt-1">'Ferrari will invent mirros one day, I hope.'</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">'Ferrari will invent mirrors one day, I hope.'</p>
           
           <div class="divider my-2"></div>
           
@@ -623,16 +654,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="op81-vegas">800 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('op81-vegas')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('highway-to-hell')">
-          <img src="/init/assets/images/portfolio/physical/Highway-to-hell.jpg" loading="lazy" decoding="async" data-art-id="highway-to-hell" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Highway-to-hell.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Highway-to-hell.jpg';}" alt="Highway to Hell" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Highway-to-hell-640.webp" loading="lazy" decoding="async" data-art-id="highway-to-hell" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Highway-to-hell.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Highway-to-hell.jpg';}" alt="Highway to Hell" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -657,16 +689,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="highway-to-hell">600 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('highway-to-hell')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('melt')">
-          <img src="/init/assets/images/portfolio/physical/Melt.jpeg" loading="lazy" decoding="async" data-art-id="melt" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Melt.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Melt.jpeg';}" alt="Gallium" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Melt-640.webp" loading="lazy" decoding="async" data-art-id="melt" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Melt.jpeg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Melt.jpeg';}" alt="Gallium" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2022</span>
@@ -691,16 +724,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="melt">450 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('melt')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('skelly')">
-          <img src="/init/assets/images/portfolio/physical/Skelly.jpg" loading="lazy" decoding="async" data-art-id="skelly" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Skelly.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Skelly.jpg';}" alt="Skelly: INKed" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Skelly-640.webp" loading="lazy" decoding="async" data-art-id="skelly" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Skelly.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Skelly.jpg';}" alt="Skelly: INKed" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2022</span>
@@ -725,16 +759,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="skelly">550 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('skelly')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('mars-bar')">
-          <img src="/init/assets/images/portfolio/physical/mmars.jpg" loading="lazy" decoding="async" data-art-id="mars-bar" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/mmars.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/mmars.jpg';}" alt="Mars" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/mmars-640.webp" loading="lazy" decoding="async" data-art-id="mars-bar" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/mmars.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/mmars.jpg';}" alt="Mars" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2022</span>
@@ -759,16 +794,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="mars-bar">500 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('mars-bar')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('rainy-city')">
-          <img src="/init/assets/images/portfolio/physical/Unknown.jpg" loading="lazy" decoding="async" data-art-id="rainy-city" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/Unknown.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/Unknown.jpg';}" alt="unknown." class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/Unknown-640.webp" loading="lazy" decoding="async" data-art-id="rainy-city" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/Unknown.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/Unknown.jpg';}" alt="unknown." class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -793,16 +829,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="rainy-city">550 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('rainy-city')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="physical">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('mountain-pagoda')">
-          <img src="/init/assets/images/portfolio/physical/tera.jpg" loading="lazy" decoding="async" data-art-id="mountain-pagoda" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/physical/tera.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/physical/tera.jpg';}" alt="Tera" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/physical/tera-640.webp" loading="lazy" decoding="async" data-art-id="mountain-pagoda" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/physical/tera.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/physical/tera.jpg';}" alt="Tera" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -827,16 +864,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="mountain-pagoda">750 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('mountain-pagoda')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('neon-japan')">
-          <img src="/init/assets/images/portfolio/digital/Neon-Japan.jpg" loading="lazy" decoding="async" data-art-id="neon-japan" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/Neon-Japan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/Neon-Japan.jpg';}" alt="Neon Japan: Part 1" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/Neon-Japan-640.webp" loading="lazy" decoding="async" data-art-id="neon-japan" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/Neon-Japan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/Neon-Japan.jpg';}" alt="Neon Japan: Part 1" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -861,16 +899,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="neon-japan">400 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('neon-japan')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('bw-japan')">
-          <img src="/init/assets/images/portfolio/digital/BandW-Japan.jpg" loading="lazy" decoding="async" data-art-id="bw-japan" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/BandW-Japan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/BandW-Japan.jpg';}" alt="Neon Japan: Part 2" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/BandW-Japan-640.webp" loading="lazy" decoding="async" data-art-id="bw-japan" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/BandW-Japan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/BandW-Japan.jpg';}" alt="Neon Japan: Part 2" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -885,7 +924,7 @@
         <div class="card-body p-5">
           <h3 class="card-title text-lg font-bold font-serif">Neon Japan: Part 2</h3>
           <p class="text-xs text-primary font-medium">Digital Ink & Tonal Study</p>
-          <p class="text-xs opacity-70 line-clamp-2 mt-1">The b&w; version of Neon Japan</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">The black and white version of Neon Japan</p>
           
           <div class="divider my-2"></div>
           
@@ -895,16 +934,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="bw-japan">350 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('bw-japan')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('details-hong-kong')">
-          <img src="/init/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg" loading="lazy" decoding="async" data-art-id="details-hong-kong" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg';}" alt="Hong Kong - DETAILS." class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/DETAILS-Hong-Kong-640.webp" loading="lazy" decoding="async" data-art-id="details-hong-kong" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg';}" alt="Hong Kong - DETAILS." class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -929,16 +969,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="details-hong-kong">450 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('details-hong-kong')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('manga-hong-kong')">
-          <img src="/init/assets/images/portfolio/digital/Manga-Hong-Kong.jpg" loading="lazy" decoding="async" data-art-id="manga-hong-kong" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/Manga-Hong-Kong.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/Manga-Hong-Kong.jpg';}" alt="Hong Kong, but Manga." class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/Manga-Hong-Kong-640.webp" loading="lazy" decoding="async" data-art-id="manga-hong-kong" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/Manga-Hong-Kong.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/Manga-Hong-Kong.jpg';}" alt="Hong Kong, but Manga." class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -963,16 +1004,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="manga-hong-kong">420 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('manga-hong-kong')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('lantern')">
-          <img src="/init/assets/images/portfolio/digital/Lantern.jpg" loading="lazy" decoding="async" data-art-id="lantern" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/Lantern.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/Lantern.jpg';}" alt="Lantern" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/Lantern-640.webp" loading="lazy" decoding="async" data-art-id="lantern" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/Lantern.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/Lantern.jpg';}" alt="Lantern" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -997,16 +1039,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="lantern">380 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('lantern')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('ethereal')">
-          <img src="/init/assets/images/portfolio/digital/ethereal.jpg" loading="lazy" decoding="async" data-art-id="ethereal" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/ethereal.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/ethereal.jpg';}" alt="Ethereal" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/ethereal-640.webp" loading="lazy" decoding="async" data-art-id="ethereal" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/ethereal.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/ethereal.jpg';}" alt="Ethereal" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1031,16 +1074,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="ethereal">360 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('ethereal')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('hope')">
-          <img src="/init/assets/images/portfolio/digital/hope.jpg" loading="lazy" decoding="async" data-art-id="hope" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/hope.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/hope.jpg';}" alt="hope" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/hope-640.webp" loading="lazy" decoding="async" data-art-id="hope" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/hope.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/hope.jpg';}" alt="hope" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1065,16 +1109,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="hope">340 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('hope')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('unlit')">
-          <img src="/init/assets/images/portfolio/digital/unlit.jpg" loading="lazy" decoding="async" data-art-id="unlit" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/unlit.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/unlit.jpg';}" alt="Unlit at 10 PM" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/unlit-640.webp" loading="lazy" decoding="async" data-art-id="unlit" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/unlit.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/unlit.jpg';}" alt="Unlit at 10 PM" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1089,7 +1134,7 @@
         <div class="card-body p-5">
           <h3 class="card-title text-lg font-bold font-serif">Unlit at 10 PM</h3>
           <p class="text-xs text-primary font-medium">Digital Mood Study</p>
-          <p class="text-xs opacity-70 line-clamp-2 mt-1">lit,unlit.</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">lit, unlit.</p>
           
           <div class="divider my-2"></div>
           
@@ -1099,16 +1144,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="unlit">320 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('unlit')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('idunno')">
-          <img src="/init/assets/images/portfolio/digital/idunno.jpg" loading="lazy" decoding="async" data-art-id="idunno" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/idunno.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/idunno.jpg';}" alt="waiting" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/idunno-640.webp" loading="lazy" decoding="async" data-art-id="idunno" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/idunno.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/idunno.jpg';}" alt="waiting" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1133,16 +1179,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="idunno">350 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('idunno')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('gaveup')">
-          <img src="/init/assets/images/portfolio/digital/gaveup.jpg" loading="lazy" decoding="async" data-art-id="gaveup" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/gaveup.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/gaveup.jpg';}" alt="contemplation" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/gaveup-640.webp" loading="lazy" decoding="async" data-art-id="gaveup" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/gaveup.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/gaveup.jpg';}" alt="contemplation" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1167,16 +1214,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="gaveup">320 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('gaveup')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('jaws')">
-          <img src="/init/assets/images/portfolio/digital/JAWS.jpg" loading="lazy" decoding="async" data-art-id="jaws" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/JAWS.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/JAWS.jpg';}" alt="Jaws" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/JAWS-640.webp" loading="lazy" decoding="async" data-art-id="jaws" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/JAWS.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/JAWS.jpg';}" alt="Jaws" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1201,16 +1249,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="jaws">450 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('jaws')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('shark')">
-          <img src="/init/assets/images/portfolio/digital/SHARK.jpg" loading="lazy" decoding="async" data-art-id="shark" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/SHARK.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/SHARK.jpg';}" alt="Shark" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/SHARK-640.webp" loading="lazy" decoding="async" data-art-id="shark" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/SHARK.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/SHARK.jpg';}" alt="Shark" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1235,16 +1284,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="shark">380 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('shark')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('hammerhead')">
-          <img src="/init/assets/images/portfolio/digital/hammer.jpg" loading="lazy" decoding="async" data-art-id="hammerhead" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/hammer.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/hammer.jpg';}" alt="Hammerhead" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/hammer-640.webp" loading="lazy" decoding="async" data-art-id="hammerhead" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/hammer.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/hammer.jpg';}" alt="Hammerhead" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1269,16 +1319,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="hammerhead">400 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('hammerhead')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('whale')">
-          <img src="/init/assets/images/portfolio/digital/WHALE.jpg" loading="lazy" decoding="async" data-art-id="whale" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/WHALE.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/WHALE.jpg';}" alt="Leviathan" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/WHALE-640.webp" loading="lazy" decoding="async" data-art-id="whale" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/WHALE.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/WHALE.jpg';}" alt="Leviathan" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1303,16 +1354,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="whale">480 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('whale')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('whale-tale')">
-          <img src="/init/assets/images/portfolio/digital/whale-tale.jpg" loading="lazy" decoding="async" data-art-id="whale-tale" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/whale-tale.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/whale-tale.jpg';}" alt="Whale Tail Breach" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/whale-tale-640.webp" loading="lazy" decoding="async" data-art-id="whale-tale" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/whale-tale.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/whale-tale.jpg';}" alt="Whale Tail Breach" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1337,16 +1389,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="whale-tale">420 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('whale-tale')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('dolphin')">
-          <img src="/init/assets/images/portfolio/digital/dolpin.jpg" loading="lazy" decoding="async" data-art-id="dolphin" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/dolpin.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/dolpin.jpg';}" alt="Dolpin" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/dolpin-640.webp" loading="lazy" decoding="async" data-art-id="dolphin" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/dolpin.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/dolpin.jpg';}" alt="Dolpin" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1371,16 +1424,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="dolphin">360 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('dolphin')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('found-nemo')">
-          <img src="/init/assets/images/portfolio/digital/i-found-nemo.jpg" loading="lazy" decoding="async" data-art-id="found-nemo" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/i-found-nemo.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/i-found-nemo.jpg';}" alt="i found nemo" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/i-found-nemo-640.webp" loading="lazy" decoding="async" data-art-id="found-nemo" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/i-found-nemo.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/i-found-nemo.jpg';}" alt="i found nemo" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1405,16 +1459,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="found-nemo">340 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('found-nemo')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('turtle')">
-          <img src="/init/assets/images/portfolio/digital/turlte.jpg" loading="lazy" decoding="async" data-art-id="turtle" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/turlte.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/turlte.jpg';}" alt="Sea Turtle" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/turlte-640.webp" loading="lazy" decoding="async" data-art-id="turtle" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/turlte.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/turlte.jpg';}" alt="Sea Turtle" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1439,16 +1494,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="turtle">380 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('turtle')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('pish')">
-          <img src="/init/assets/images/portfolio/digital/pish.jpg" loading="lazy" decoding="async" data-art-id="pish" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/pish.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/pish.jpg';}" alt="Pish" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/pish-640.webp" loading="lazy" decoding="async" data-art-id="pish" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/pish.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/pish.jpg';}" alt="Pish" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1473,16 +1529,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="pish">300 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('pish')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('bear-v1')">
-          <img src="/init/assets/images/portfolio/digital/bear-V1.jpg" loading="lazy" decoding="async" data-art-id="bear-v1" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/bear-V1.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/bear-V1.jpg';}" alt="tebby dare I" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/bear-V1-640.webp" loading="lazy" decoding="async" data-art-id="bear-v1" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/bear-V1.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/bear-V1.jpg';}" alt="tebby dare I" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1507,16 +1564,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="bear-v1">400 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('bear-v1')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('bear-v2')">
-          <img src="/init/assets/images/portfolio/digital/BEAR-V2.jpg" loading="lazy" decoding="async" data-art-id="bear-v2" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/BEAR-V2.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/BEAR-V2.jpg';}" alt="tebby dare II" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/BEAR-V2-640.webp" loading="lazy" decoding="async" data-art-id="bear-v2" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/BEAR-V2.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/BEAR-V2.jpg';}" alt="tebby dare II" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1541,16 +1599,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="bear-v2">420 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('bear-v2')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('toucan')">
-          <img src="/init/assets/images/portfolio/digital/toucan.jpg" loading="lazy" decoding="async" data-art-id="toucan" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/toucan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/toucan.jpg';}" alt="Toucan" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/toucan-640.webp" loading="lazy" decoding="async" data-art-id="toucan" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/toucan.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/toucan.jpg';}" alt="Toucan" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1575,16 +1634,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="toucan">390 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('toucan')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="digital">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('seagulls-leh')">
-          <img src="/init/assets/images/portfolio/digital/seagulls-from-leh.jpg" loading="lazy" decoding="async" data-art-id="seagulls-leh" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/digital/seagulls-from-leh.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/digital/seagulls-from-leh.jpg';}" alt="Leh" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/digital/seagulls-from-leh-640.webp" loading="lazy" decoding="async" data-art-id="seagulls-leh" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/digital/seagulls-from-leh.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/digital/seagulls-from-leh.jpg';}" alt="Leh" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1609,16 +1669,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="seagulls-leh">350 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('seagulls-leh')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="blender">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('blender-ghost')">
-          <img src="/init/assets/images/portfolio/blender/ghost.png" loading="lazy" decoding="async" data-art-id="blender-ghost" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/blender/ghost.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/blender/ghost.png';}" alt="Ghost" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/blender/ghost-640.webp" loading="lazy" decoding="async" data-art-id="blender-ghost" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/blender/ghost.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/blender/ghost.png';}" alt="Ghost" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1643,16 +1704,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="blender-ghost">700 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('blender-ghost')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="blender">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('blender-hornet')">
-          <img src="/init/assets/images/portfolio/blender/hornet-3d.png" loading="lazy" decoding="async" data-art-id="blender-hornet" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/blender/hornet-3d.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/blender/hornet-3d.png';}" alt="Hornet" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/blender/hornet-3d-640.webp" loading="lazy" decoding="async" data-art-id="blender-hornet" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/blender/hornet-3d.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/blender/hornet-3d.png';}" alt="Hornet" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1677,16 +1739,17 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="blender-hornet">750 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('blender-hornet')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
       </div>
       
       
+      
       <div class="card catalog-card bg-base-200/80 border border-white/10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group" data-category="blender">
-        <figure class="relative overflow-hidden bg-black/40 cursor-pointer w-full block" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;" onclick="window.openInspectionModal('blender-sherma')">
-          <img src="/init/assets/images/portfolio/blender/sherma.jpg" loading="lazy" decoding="async" data-art-id="blender-sherma" onerror="if(!this.dataset.retry1){this.dataset.retry1='1';this.src='../assets/images/portfolio/blender/sherma.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='/assets/images/portfolio/blender/sherma.jpg';}" alt="Sherma" class="w-full h-full object-cover block group-hover:scale-105 transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" />
+        <figure class="relative overflow-hidden bg-black/40 w-full block select-none" style="aspect-ratio: 4/5; width: 100%; min-height: 320px;">
+          <img src="/init/assets/images-processed/portfolio/blender/sherma-640.webp" loading="lazy" decoding="async" data-art-id="blender-sherma" onerror="if(!this.dataset.retried){this.dataset.retried='1';this.src='/init/assets/images/portfolio/blender/sherma.jpg';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='../assets/images/portfolio/blender/sherma.jpg';}" alt="Sherma" class="w-full h-full object-cover block pointer-events-none select-none transition-transform duration-500" style="aspect-ratio: 4/5; width: 100%; height: 100%; object-fit: cover;" oncontextmenu="return false;" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
           <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white">
             <span class="badge badge-sm badge-neutral border border-white/20">2024</span>
@@ -1701,7 +1764,7 @@
         <div class="card-body p-5">
           <h3 class="card-title text-lg font-bold font-serif">Sherma</h3>
           <p class="text-xs text-primary font-medium">Blender 3D Render / Cycles</p>
-          <p class="text-xs opacity-70 line-clamp-2 mt-1"><sings>.</p>
+          <p class="text-xs opacity-70 line-clamp-2 mt-1">*sings*.</p>
           
           <div class="divider my-2"></div>
           
@@ -1711,7 +1774,7 @@
               <span class="font-mono font-bold text-sm text-accent catalog-lead-bid" data-art-id="blender-sherma">680 TKN</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="window.openInspectionModal('blender-sherma')">
-              Inspect & Bid
+              Inspect & Bid [E]
             </button>
           </div>
         </div>
@@ -1806,7 +1869,7 @@
       <!-- Left Column: Artwork Exhibition Preview (7 cols) -->
       <div class="lg:col-span-7 p-6 bg-black/60 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-white/10 relative group">
         <div class="relative max-h-[480px] w-full flex items-center justify-center p-2 rounded-xl bg-black/40 shadow-inner">
-          <img id="modal-image" src="" alt="Artwork View" class="max-h-[460px] max-w-full object-contain rounded shadow-2xl border border-white/10" />
+          <img id="modal-image" src="" alt="Artwork View" class="max-h-[460px] max-w-full object-contain rounded shadow-2xl border border-white/10 pointer-events-none select-none" oncontextmenu="return false;" draggable="false" />
         </div>
         <div class="w-full mt-4 flex flex-wrap items-center justify-between text-xs opacity-75 font-mono">
           <span id="modal-medium">Medium</span>
@@ -2056,7 +2119,7 @@
 
 <!-- Artwork data injected safely for the JS engine -->
 <script type="application/json" id="museum-artworks-data" data-base-url="/init">
-  [{"category": "physical", "description": "I wonder if we ever think of each other, at the same time.", "dimensions": "A4 / Crosshatch \u0026 Stipple Study", "id": "torii", "image": "/assets/images/portfolio/physical/torii.jpg", "medium": "Micron Pen \u0026 Ink on Paper", "starting_bid": 500, "title": "Torii Gate", "year": "2024"}, {"category": "physical", "description": "Wall-E - Ta-dah!", "dimensions": "A4 / Detailed Alleyway Study", "id": "walle-ink", "image": "/assets/images/portfolio/physical/Wall-E-V2.jpg", "medium": "Fine-Line Ink \u0026 Hatching on Paper", "starting_bid": 600, "title": "WALL-E: INKed", "year": "2024"}, {"category": "physical", "description": "EVAAAAAAA!!!!", "dimensions": "A4 / Color Study", "id": "walle-color", "image": "/assets/images/portfolio/physical/Wall-E-v1.jpeg", "medium": "Colored Pencil", "starting_bid": 450, "title": "WALL-E", "year": "2024"}, {"category": "physical", "description": "HEGALE. GITGUD! GERANA. SHAWWWWWW!", "dimensions": "A4 / Line Art \u0026 Splatter", "id": "hornet-ink", "image": "/assets/images/portfolio/physical/hornet.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 450, "title": "Hornet: INKed", "year": "2024"}, {"category": "physical", "description": "Dance with me, my friend. The crowd awaits.", "dimensions": "A4 / Crosshatch Study", "id": "grimm-ink", "image": "/assets/images/portfolio/physical/grimm.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 650, "title": "Grimm: INKed", "year": "2024"}, {"category": "physical", "description": "no cost, too great.", "dimensions": "A4 / Ink Illustration", "id": "pure-vessel-ink", "image": "/assets/images/portfolio/physical/purevessel.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Pure Vessel: INKed", "year": "2024"}, {"category": "physical", "description": "you told me, that there would not be any cameras.", "dimensions": "A4 / Chiaroscuro Study", "id": "master-chief", "image": "/assets/images/portfolio/physical/masterchief.jpg", "medium": "High-Density Crosshatch Ink on Paper", "starting_bid": 850, "title": "Master Chief:INKed", "year": "2024"}, {"category": "physical", "description": "I Love You 3000.", "dimensions": "A4 / Split-Portrait Study", "id": "love-you-3000", "image": "/assets/images/portfolio/physical/love-you-3000.jpg", "medium": "Graphite \u0026 Charcoal on Paper", "starting_bid": 700, "title": "I Love You 3000.", "year": "2020"}, {"category": "physical", "description": "I am nor good, nor evil, simply I am.", "dimensions": "A4 / Symbolic Ink Drawing", "id": "anubis", "image": "/assets/images/portfolio/physical/Anubis.jpeg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Anubis: INked", "year": "2024"}, {"category": "physical", "description": "\u0027Fawkes, is a Pheonix Harry.\u0027, said Dumbledore, calmly.", "dimensions": "A4 / Textured Impasto", "id": "fawkes", "image": "/assets/images/portfolio/physical/Fawkes.jpg", "medium": "Acrylic on Canvas", "starting_bid": 750, "title": "Fawkes", "year": "2021"}, {"category": "physical", "description": ":prayge:", "dimensions": "Canvas / Traditional Portrait", "id": "krishna", "image": "/assets/images/portfolio/physical/krishna.jpg", "medium": "Acrylic on Stretched Canvas", "starting_bid": 800, "title": "Krishna", "year": "2021"}, {"category": "physical", "description": "ror", "dimensions": "A4 / Colored Pencil Illustration", "id": "mike-wazowski", "image": "/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg", "medium": "Colored Pencil on Paper", "starting_bid": 400, "title": "MiKe WaZoWsKi", "year": "2024"}, {"category": "physical", "description": "\u0027Ferrari will invent mirros one day, I hope.\u0027", "dimensions": "A4 / High-Speed Ink Composition", "id": "op81-vegas", "image": "/assets/images/portfolio/physical/OP81.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 800, "title": "Oscar Piastri #81: Las Vegas GP", "year": "2024"}, {"category": "physical", "description": "No stop signs, speed limit, Nobody\u0027s gonna slow me down", "dimensions": "A4 / Structural Perspective", "id": "highway-to-hell", "image": "/assets/images/portfolio/physical/Highway-to-hell.jpg", "medium": "Acrylic \u0026 Mixed Media on Canvas", "starting_bid": 600, "title": "Highway to Hell", "year": "2024"}, {"category": "physical", "description": "\u0027spread your wings and fly away\u0027", "dimensions": "A4 / Ink Rendering", "id": "melt", "image": "/assets/images/portfolio/physical/Melt.jpeg", "medium": "Gloss Ink \u0026 Wash on Paper", "starting_bid": 450, "title": "Gallium", "year": "2022"}, {"category": "physical", "description": "please have mercy on me, boyo", "dimensions": "A4 / Geometric Diamond Study", "id": "skelly", "image": "/assets/images/portfolio/physical/Skelly.jpg", "medium": "Stippling \u0026 Low-Poly Ink on Paper", "starting_bid": 550, "title": "Skelly: INKed", "year": "2022"}, {"category": "physical", "description": "Mars is the fourth planet from the Sun. It is also known as the \u0027Red Planet\u0027, for its ora- nvm. Its a chocolate bar.", "dimensions": "A4 / Hyperrealist Study", "id": "mars-bar", "image": "/assets/images/portfolio/physical/mmars.jpg", "medium": "Colored Pencil on Paper", "starting_bid": 500, "title": "Mars", "year": "2022"}, {"category": "physical", "description": "a smol charcoal study", "dimensions": "A4 / Atmospheric Charcoal Study", "id": "rainy-city", "image": "/assets/images/portfolio/physical/Unknown.jpg", "medium": "Charcoal \u0026 Powder on Paper", "starting_bid": 550, "title": "unknown.", "year": "2024"}, {"category": "physical", "description": "its pagoda, not pakoda", "dimensions": "A4 / Architectural Ink Study", "id": "mountain-pagoda", "image": "/assets/images/portfolio/physical/tera.jpg", "medium": "Pen \u0026 Ink Crosshatching", "starting_bid": 750, "title": "Tera", "year": "2024"}, {"category": "digital", "description": "Drawn entirely color blind, then converted to colors.", "dimensions": "High-Res Digital Canvas", "id": "neon-japan", "image": "/assets/images/portfolio/digital/Neon-Japan.jpg", "medium": "Digital Painting / Procreate", "starting_bid": 400, "title": "Neon Japan: Part 1", "year": "2024"}, {"category": "digital", "description": "The b\u0026w version of Neon Japan", "dimensions": "High-Res Digital Canvas", "id": "bw-japan", "image": "/assets/images/portfolio/digital/BandW-Japan.jpg", "medium": "Digital Ink \u0026 Tonal Study", "starting_bid": 350, "title": "Neon Japan: Part 2", "year": "2024"}, {"category": "digital", "description": "its not king kong.", "dimensions": "High-Res Digital Canvas", "id": "details-hong-kong", "image": "/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg", "medium": "Digital Illustration", "starting_bid": 450, "title": "Hong Kong - DETAILS.", "year": "2024"}, {"category": "digital", "description": "Manga version of the colored version :)", "dimensions": "High-Res Digital Canvas", "id": "manga-hong-kong", "image": "/assets/images/portfolio/digital/Manga-Hong-Kong.jpg", "medium": "Digital Comic \u0026 Manga Art", "starting_bid": 420, "title": "Hong Kong, but Manga.", "year": "2024"}, {"category": "digital", "description": "make a wish.", "dimensions": "High-Res Digital Canvas", "id": "lantern", "image": "/assets/images/portfolio/digital/Lantern.jpg", "medium": "Digital Concept Art", "starting_bid": 380, "title": "Lantern", "year": "2024"}, {"category": "digital", "description": "ethereal", "dimensions": "High-Res Digital Canvas", "id": "ethereal", "image": "/assets/images/portfolio/digital/ethereal.jpg", "medium": "Digital Matte Painting", "starting_bid": 360, "title": "Ethereal", "year": "2024"}, {"category": "digital", "description": "always have hope.", "dimensions": "High-Res Digital Canvas", "id": "hope", "image": "/assets/images/portfolio/digital/hope.jpg", "medium": "Digital Painting", "starting_bid": 340, "title": "hope", "year": "2024"}, {"category": "digital", "description": "lit,unlit.", "dimensions": "High-Res Digital Canvas", "id": "unlit", "image": "/assets/images/portfolio/digital/unlit.jpg", "medium": "Digital Mood Study", "starting_bid": 320, "title": "Unlit at 10 PM", "year": "2024"}, {"category": "digital", "description": "dont know.", "dimensions": "High-Res Digital Canvas", "id": "idunno", "image": "/assets/images/portfolio/digital/idunno.jpg", "medium": "Digital Character Study", "starting_bid": 350, "title": "waiting", "year": "2024"}, {"category": "digital", "description": "gaveup", "dimensions": "High-Res Digital Canvas", "id": "gaveup", "image": "/assets/images/portfolio/digital/gaveup.jpg", "medium": "Digital Color Study", "starting_bid": 320, "title": "contemplation", "year": "2024"}, {"category": "digital", "description": "you\u0027re gonna need a bigger boat.", "dimensions": "High-Res Digital Canvas", "id": "jaws", "image": "/assets/images/portfolio/digital/JAWS.jpg", "medium": "Digital Marine Illustration", "starting_bid": 450, "title": "Jaws", "year": "2024"}, {"category": "digital", "description": "HE ATE THE LIGHT", "dimensions": "High-Res Digital Canvas", "id": "shark", "image": "/assets/images/portfolio/digital/SHARK.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Shark", "year": "2024"}, {"category": "digital", "description": "bang bang", "dimensions": "High-Res Digital Canvas", "id": "hammerhead", "image": "/assets/images/portfolio/digital/hammer.jpg", "medium": "Digital Marine Study", "starting_bid": 400, "title": "Hammerhead", "year": "2024"}, {"category": "digital", "description": "wowhoewho", "dimensions": "High-Res Digital Canvas", "id": "whale", "image": "/assets/images/portfolio/digital/WHALE.jpg", "medium": "Digital Oceanography Art", "starting_bid": 480, "title": "Leviathan", "year": "2024"}, {"category": "digital", "description": "a tale of the whale.", "dimensions": "High-Res Digital Canvas", "id": "whale-tale", "image": "/assets/images/portfolio/digital/whale-tale.jpg", "medium": "Digital Painting", "starting_bid": 420, "title": "Whale Tail Breach", "year": "2024"}, {"category": "digital", "description": "whistleee", "dimensions": "High-Res Digital Canvas", "id": "dolphin", "image": "/assets/images/portfolio/digital/dolpin.jpg", "medium": "Digital Marine Art", "starting_bid": 360, "title": "Dolpin", "year": "2024"}, {"category": "digital", "description": "nemo, has been found.", "dimensions": "High-Res Digital Canvas", "id": "found-nemo", "image": "/assets/images/portfolio/digital/i-found-nemo.jpg", "medium": "Digital Marine Illustration", "starting_bid": 340, "title": "i found nemo", "year": "2024"}, {"category": "digital", "description": "mah shtudents", "dimensions": "High-Res Digital Canvas", "id": "turtle", "image": "/assets/images/portfolio/digital/turlte.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Sea Turtle", "year": "2024"}, {"category": "digital", "description": "peesh", "dimensions": "High-Res Digital Canvas", "id": "pish", "image": "/assets/images/portfolio/digital/pish.jpg", "medium": "Digital Character Illustration", "starting_bid": 300, "title": "Pish", "year": "2024"}, {"category": "digital", "description": "tebbie dareeee", "dimensions": "High-Res Digital Canvas", "id": "bear-v1", "image": "/assets/images/portfolio/digital/bear-V1.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 400, "title": "tebby dare I", "year": "2024"}, {"category": "digital", "description": "Frontal gaze of a grizzly bear capturing fur texture, raw power, and wilderness calm.", "dimensions": "tebbie dareeee", "id": "bear-v2", "image": "/assets/images/portfolio/digital/BEAR-V2.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 420, "title": "tebby dare II", "year": "2024"}, {"category": "digital", "description": "SQUAWK, SQUAWKETY, SQUAWK, SQUAWK!!! ", "dimensions": "High-Res Digital Canvas", "id": "toucan", "image": "/assets/images/portfolio/digital/toucan.jpg", "medium": "Digital Wildlife Art", "starting_bid": 390, "title": "Toucan", "year": "2024"}, {"category": "digital", "description": "Seagulls in leh, reference picture -- @suraj", "dimensions": "High-Res Digital Canvas", "id": "seagulls-leh", "image": "/assets/images/portfolio/digital/seagulls-from-leh.jpg", "medium": "Digital Wildlife Study", "starting_bid": 350, "title": "Leh", "year": "2024"}, {"category": "blender", "description": "No mind to think", "dimensions": "High-Poly 3D Render", "id": "blender-ghost", "image": "/assets/images/portfolio/blender/ghost.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 700, "title": "Ghost", "year": "2024"}, {"category": "blender", "description": "HEGALE. GITGUD! GERANA. SHAWWWWWW!", "dimensions": "High-Poly 3D Render", "id": "blender-hornet", "image": "/assets/images/portfolio/blender/hornet-3d.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 750, "title": "Hornet", "year": "2024"}, {"category": "blender", "description": "\u003csings\u003e.", "dimensions": "High-Poly 3D Render", "id": "blender-sherma", "image": "/assets/images/portfolio/blender/sherma.jpg", "medium": "Blender 3D Render / Cycles", "starting_bid": 680, "title": "Sherma", "year": "2024"}]
+  [{"category": "physical", "description": "I wonder if we ever think of each other, at the same time.", "dimensions": "A4 / Crosshatch \u0026 Stipple Study", "id": "torii", "image": "/assets/images/portfolio/physical/torii.jpg", "medium": "Micron Pen \u0026 Ink on Paper", "starting_bid": 500, "title": "Torii Gate", "year": "2024"}, {"category": "physical", "description": "Wall-E - Ta-dah!", "dimensions": "A4 / Detailed Alleyway Study", "id": "walle-ink", "image": "/assets/images/portfolio/physical/Wall-E-V2.jpg", "medium": "Fine-Line Ink \u0026 Hatching on Paper", "starting_bid": 600, "title": "WALL-E: INKed", "year": "2024"}, {"category": "physical", "description": "EVAAAAAAA!!!!", "dimensions": "A4 / Color Study", "id": "walle-color", "image": "/assets/images/portfolio/physical/Wall-E-v1.jpeg", "medium": "Colored Pencil", "starting_bid": 450, "title": "WALL-E", "year": "2024"}, {"category": "physical", "description": "HEGALE. GITGUD! GERANA. SHAWWWWWW!", "dimensions": "A4 / Line Art \u0026 Splatter", "id": "hornet-ink", "image": "/assets/images/portfolio/physical/hornet.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 450, "title": "Hornet: INKed", "year": "2024"}, {"category": "physical", "description": "Dance with me, my friend. The crowd awaits.", "dimensions": "A4 / Crosshatch Study", "id": "grimm-ink", "image": "/assets/images/portfolio/physical/grimm.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 650, "title": "Grimm: INKed", "year": "2024"}, {"category": "physical", "description": "no cost too great.", "dimensions": "A4 / Ink Illustration", "id": "pure-vessel-ink", "image": "/assets/images/portfolio/physical/purevessel.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Pure Vessel: INKed", "year": "2024"}, {"category": "physical", "description": "you told me, that there would not be any cameras.", "dimensions": "A4 / Chiaroscuro Study", "id": "master-chief", "image": "/assets/images/portfolio/physical/masterchief.jpg", "medium": "High-Density Crosshatch Ink on Paper", "starting_bid": 850, "title": "Master Chief: INKed", "year": "2024"}, {"category": "physical", "description": "I Love You 3000.", "dimensions": "A4 / Split-Portrait Study", "id": "love-you-3000", "image": "/assets/images/portfolio/physical/love-you-3000.jpg", "medium": "Graphite \u0026 Charcoal on Paper", "starting_bid": 700, "title": "I Love You 3000.", "year": "2020"}, {"category": "physical", "description": "I am nor good, nor evil, simply I am.", "dimensions": "A4 / Symbolic Ink Drawing", "id": "anubis", "image": "/assets/images/portfolio/physical/Anubis.jpeg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Anubis: INked", "year": "2024"}, {"category": "physical", "description": "\u0027Fawkes is a Pheonix Harry.\u0027, said Dumbledore, calmly.", "dimensions": "A4 / Textured Impasto", "id": "fawkes", "image": "/assets/images/portfolio/physical/Fawkes.jpg", "medium": "Acrylic on Canvas", "starting_bid": 750, "title": "Fawkes", "year": "2021"}, {"category": "physical", "description": ":prayge:", "dimensions": "Canvas / Traditional Portrait", "id": "krishna", "image": "/assets/images/portfolio/physical/krishna.jpg", "medium": "Acrylic on Stretched Canvas", "starting_bid": 800, "title": "Krishna", "year": "2021"}, {"category": "physical", "description": "ror", "dimensions": "A4 / Colored Pencil Illustration", "id": "mike-wazowski", "image": "/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg", "medium": "Colored Pencil on Paper", "starting_bid": 400, "title": "MiKe WaZoWsKi", "year": "2024"}, {"category": "physical", "description": "\u0027Ferrari will invent mirrors one day, I hope.\u0027", "dimensions": "A4 / High-Speed Ink Composition", "id": "op81-vegas", "image": "/assets/images/portfolio/physical/OP81.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 800, "title": "Oscar Piastri #81: Las Vegas GP", "year": "2024"}, {"category": "physical", "description": "No stop signs, speed limit, Nobody\u0027s gonna slow me down", "dimensions": "A4 / Structural Perspective", "id": "highway-to-hell", "image": "/assets/images/portfolio/physical/Highway-to-hell.jpg", "medium": "Acrylic \u0026 Mixed Media on Canvas", "starting_bid": 600, "title": "Highway to Hell", "year": "2024"}, {"category": "physical", "description": "\u0027spread your wings and fly away\u0027", "dimensions": "A4 / Ink Rendering", "id": "melt", "image": "/assets/images/portfolio/physical/Melt.jpeg", "medium": "Gloss Ink \u0026 Wash on Paper", "starting_bid": 450, "title": "Gallium", "year": "2022"}, {"category": "physical", "description": "please have mercy on me, boyo", "dimensions": "A4 / Geometric Diamond Study", "id": "skelly", "image": "/assets/images/portfolio/physical/Skelly.jpg", "medium": "Stippling \u0026 Low-Poly Ink on Paper", "starting_bid": 550, "title": "Skelly: INKed", "year": "2022"}, {"category": "physical", "description": "Mars is the fourth planet from the Sun. It is also known as the \u0027Red Planet\u0027, for its ora- nvm. Its a chocolate bar.", "dimensions": "A4 / Hyperrealist Study", "id": "mars-bar", "image": "/assets/images/portfolio/physical/mmars.jpg", "medium": "Colored Pencil on Paper", "starting_bid": 500, "title": "Mars", "year": "2022"}, {"category": "physical", "description": "a smol charcoal study", "dimensions": "A4 / Atmospheric Charcoal Study", "id": "rainy-city", "image": "/assets/images/portfolio/physical/Unknown.jpg", "medium": "Charcoal \u0026 Powder on Paper", "starting_bid": 550, "title": "unknown.", "year": "2024"}, {"category": "physical", "description": "its pagoda, not pakoda", "dimensions": "A4 / Architectural Ink Study", "id": "mountain-pagoda", "image": "/assets/images/portfolio/physical/tera.jpg", "medium": "Pen \u0026 Ink Crosshatching", "starting_bid": 750, "title": "Tera", "year": "2024"}, {"category": "digital", "description": "Drawn entirely color blind, then converted to colors.", "dimensions": "High-Res Digital Canvas", "id": "neon-japan", "image": "/assets/images/portfolio/digital/Neon-Japan.jpg", "medium": "Digital Painting / Procreate", "starting_bid": 400, "title": "Neon Japan: Part 1", "year": "2024"}, {"category": "digital", "description": "The black and white version of Neon Japan", "dimensions": "High-Res Digital Canvas", "id": "bw-japan", "image": "/assets/images/portfolio/digital/BandW-Japan.jpg", "medium": "Digital Ink \u0026 Tonal Study", "starting_bid": 350, "title": "Neon Japan: Part 2", "year": "2024"}, {"category": "digital", "description": "its not king kong.", "dimensions": "High-Res Digital Canvas", "id": "details-hong-kong", "image": "/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg", "medium": "Digital Illustration", "starting_bid": 450, "title": "Hong Kong - DETAILS.", "year": "2024"}, {"category": "digital", "description": "Manga version of the colored version :)", "dimensions": "High-Res Digital Canvas", "id": "manga-hong-kong", "image": "/assets/images/portfolio/digital/Manga-Hong-Kong.jpg", "medium": "Digital Comic \u0026 Manga Art", "starting_bid": 420, "title": "Hong Kong, but Manga.", "year": "2024"}, {"category": "digital", "description": "make a wish.", "dimensions": "High-Res Digital Canvas", "id": "lantern", "image": "/assets/images/portfolio/digital/Lantern.jpg", "medium": "Digital Concept Art", "starting_bid": 380, "title": "Lantern", "year": "2024"}, {"category": "digital", "description": "ethereal", "dimensions": "High-Res Digital Canvas", "id": "ethereal", "image": "/assets/images/portfolio/digital/ethereal.jpg", "medium": "Digital Matte Painting", "starting_bid": 360, "title": "Ethereal", "year": "2024"}, {"category": "digital", "description": "always have hope.", "dimensions": "High-Res Digital Canvas", "id": "hope", "image": "/assets/images/portfolio/digital/hope.jpg", "medium": "Digital Painting", "starting_bid": 340, "title": "hope", "year": "2024"}, {"category": "digital", "description": "lit, unlit.", "dimensions": "High-Res Digital Canvas", "id": "unlit", "image": "/assets/images/portfolio/digital/unlit.jpg", "medium": "Digital Mood Study", "starting_bid": 320, "title": "Unlit at 10 PM", "year": "2024"}, {"category": "digital", "description": "dont know.", "dimensions": "High-Res Digital Canvas", "id": "idunno", "image": "/assets/images/portfolio/digital/idunno.jpg", "medium": "Digital Character Study", "starting_bid": 350, "title": "waiting", "year": "2024"}, {"category": "digital", "description": "gaveup", "dimensions": "High-Res Digital Canvas", "id": "gaveup", "image": "/assets/images/portfolio/digital/gaveup.jpg", "medium": "Digital Color Study", "starting_bid": 320, "title": "contemplation", "year": "2024"}, {"category": "digital", "description": "you\u0027re gonna need a bigger boat.", "dimensions": "High-Res Digital Canvas", "id": "jaws", "image": "/assets/images/portfolio/digital/JAWS.jpg", "medium": "Digital Marine Illustration", "starting_bid": 450, "title": "Jaws", "year": "2024"}, {"category": "digital", "description": "HE ATE THE LIGHT", "dimensions": "High-Res Digital Canvas", "id": "shark", "image": "/assets/images/portfolio/digital/SHARK.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Shark", "year": "2024"}, {"category": "digital", "description": "bang bang", "dimensions": "High-Res Digital Canvas", "id": "hammerhead", "image": "/assets/images/portfolio/digital/hammer.jpg", "medium": "Digital Marine Study", "starting_bid": 400, "title": "Hammerhead", "year": "2024"}, {"category": "digital", "description": "wowhoewho", "dimensions": "High-Res Digital Canvas", "id": "whale", "image": "/assets/images/portfolio/digital/WHALE.jpg", "medium": "Digital Oceanography Art", "starting_bid": 480, "title": "Leviathan", "year": "2024"}, {"category": "digital", "description": "a tale of the whale.", "dimensions": "High-Res Digital Canvas", "id": "whale-tale", "image": "/assets/images/portfolio/digital/whale-tale.jpg", "medium": "Digital Painting", "starting_bid": 420, "title": "Whale Tail Breach", "year": "2024"}, {"category": "digital", "description": "whistleee", "dimensions": "High-Res Digital Canvas", "id": "dolphin", "image": "/assets/images/portfolio/digital/dolpin.jpg", "medium": "Digital Marine Art", "starting_bid": 360, "title": "Dolpin", "year": "2024"}, {"category": "digital", "description": "nemo, has been found.", "dimensions": "High-Res Digital Canvas", "id": "found-nemo", "image": "/assets/images/portfolio/digital/i-found-nemo.jpg", "medium": "Digital Marine Illustration", "starting_bid": 340, "title": "i found nemo", "year": "2024"}, {"category": "digital", "description": "mah shtudents", "dimensions": "High-Res Digital Canvas", "id": "turtle", "image": "/assets/images/portfolio/digital/turlte.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Sea Turtle", "year": "2024"}, {"category": "digital", "description": "peesh", "dimensions": "High-Res Digital Canvas", "id": "pish", "image": "/assets/images/portfolio/digital/pish.jpg", "medium": "Digital Character Illustration", "starting_bid": 300, "title": "Pish", "year": "2024"}, {"category": "digital", "description": "tebbie dareeee", "dimensions": "High-Res Digital Canvas", "id": "bear-v1", "image": "/assets/images/portfolio/digital/bear-V1.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 400, "title": "tebby dare I", "year": "2024"}, {"category": "digital", "description": "Frontal gaze of a grizzly bear capturing fur texture, raw power, and wilderness calm.", "dimensions": "tebbie dareeee", "id": "bear-v2", "image": "/assets/images/portfolio/digital/BEAR-V2.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 420, "title": "tebby dare II", "year": "2024"}, {"category": "digital", "description": "SQUAWK, SQUAWKETY, SQUAWK, SQUAWK!!! ", "dimensions": "High-Res Digital Canvas", "id": "toucan", "image": "/assets/images/portfolio/digital/toucan.jpg", "medium": "Digital Wildlife Art", "starting_bid": 390, "title": "Toucan", "year": "2024"}, {"category": "digital", "description": "Seagulls in leh, reference picture -- @suraj", "dimensions": "High-Res Digital Canvas", "id": "seagulls-leh", "image": "/assets/images/portfolio/digital/seagulls-from-leh.jpg", "medium": "Digital Wildlife Study", "starting_bid": 350, "title": "Leh", "year": "2024"}, {"category": "blender", "description": "No mind to think", "dimensions": "High-Poly 3D Render", "id": "blender-ghost", "image": "/assets/images/portfolio/blender/ghost.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 700, "title": "Ghost", "year": "2024"}, {"category": "blender", "description": "HEGALE. GITGUD! GERANA. SHAWWWWWW!", "dimensions": "High-Poly 3D Render", "id": "blender-hornet", "image": "/assets/images/portfolio/blender/hornet-3d.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 750, "title": "Hornet", "year": "2024"}, {"category": "blender", "description": "*sings*.", "dimensions": "High-Poly 3D Render", "id": "blender-sherma", "image": "/assets/images/portfolio/blender/sherma.jpg", "medium": "Blender 3D Render / Cycles", "starting_bid": 680, "title": "Sherma", "year": "2024"}]
 </script>
 
 
@@ -2065,7 +2128,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-C4uUx4vC.js"></script>
+  <script type="module" src="/init/assets/main-VTTwi8fH.js"></script>
 </body>
 
 </html>
