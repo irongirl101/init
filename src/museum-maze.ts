@@ -829,6 +829,202 @@ export function initMuseumMaze() {
 
   randomizeChairs(MAP, mountedPaintings);
 
+  // --- Precomputed Coordinate Grid & Wall Rendering Metadata (Zero-Allocation Loop) ---
+  const isoGrid: { x: number; y: number }[][] = [];
+  for (let r = 0; r < ROWS; r++) {
+    isoGrid[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      isoGrid[r][c] = toIso(c, r);
+    }
+  }
+
+  interface WallMeta {
+    wallH: number;
+    shadowCutH: number;
+    hasSEFloor: boolean;
+    hasSWFloor: boolean;
+    hasNEFloor: boolean;
+    hasNWFloor: boolean;
+    fillSE1: string;
+    fillSE2: string;
+    baseboardColor: string;
+    baseboardHighlight: string;
+    fillSW1: string;
+    fillSW2: string;
+    baseboardSWColor: string;
+    baseboardSWHighlight: string;
+    topFill: string;
+  }
+
+  const isWallCell = (col: number, row: number) => {
+    if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
+    return MAP[row][col] === 1 || MAP[row][col] === 2;
+  };
+
+  const wallMetaGrid: (WallMeta | null)[][] = [];
+  for (let r = 0; r < ROWS; r++) {
+    wallMetaGrid[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      const cellType = MAP[r][c];
+      if (cellType !== 1 && cellType !== 2) {
+        wallMetaGrid[r][c] = null;
+        continue;
+      }
+      const isGreen = cellType === 2;
+      const wallH = getWallHeight(r, c);
+      const shadowCutH = wallH * 0.35;
+      const zone = getTileZone(c, r);
+
+      wallMetaGrid[r][c] = {
+        wallH,
+        shadowCutH,
+        hasSEFloor: !isWallCell(c + 1, r),
+        hasSWFloor: !isWallCell(c, r + 1),
+        hasNEFloor: !isWallCell(c, r - 1),
+        hasNWFloor: !isWallCell(c - 1, r),
+        fillSE1: isGreen ? "#163e30" : zone === "digital" ? "#3a2d45" : zone === "blender" ? "#422e20" : zone === "nexus" ? "#382430" : "#1f4738",
+        fillSE2: isGreen ? "#0f2c22" : zone === "digital" ? "#281e31" : zone === "blender" ? "#2d1f16" : zone === "nexus" ? "#271822" : "#153327",
+        baseboardColor: isGreen ? "#040e0a" : zone === "digital" ? "#500720" : zone === "blender" ? "#451a03" : zone === "nexus" ? "#540625" : "#064e3b",
+        baseboardHighlight: isGreen ? "#34d399" : zone === "digital" ? "#f43f5e" : zone === "blender" ? "#fb923c" : "#fbbf24",
+        fillSW1: isGreen ? "#123327" : zone === "digital" ? "#2f2238" : zone === "blender" ? "#352318" : zone === "nexus" ? "#2d1c27" : "#183b2d",
+        fillSW2: isGreen ? "#0b2119" : zone === "digital" ? "#1d1424" : zone === "blender" ? "#22150e" : zone === "nexus" ? "#1d101a" : "#10271d",
+        baseboardSWColor: isGreen ? "#030a07" : zone === "digital" ? "#3b0717" : zone === "blender" ? "#351403" : zone === "nexus" ? "#3d061c" : "#04372a",
+        baseboardSWHighlight: isGreen ? "rgba(52, 211, 153, 0.70)" : zone === "digital" ? "#e11d48" : zone === "blender" ? "#f97316" : "#f59e0b",
+        topFill: isGreen ? "#1f5642" : zone === "digital" ? "#4e3a5c" : zone === "blender" ? "#553a27" : zone === "nexus" ? "#4a3141" : "#295b47",
+      };
+    }
+  }
+
+  // --- Pre-rendered Cached Floor Canvas (Performance: Eliminates 1,280+ canvas path operations per frame) ---
+  const cachedFloorCanvas = document.createElement("canvas");
+  let isFloorCached = false;
+  const FLOOR_ORIGIN_X = 850;
+  const FLOOR_ORIGIN_Y = 60;
+  const FLOOR_CACHE_W = 1700;
+  const FLOOR_CACHE_H = 920;
+
+  function buildFloorCache() {
+    cachedFloorCanvas.width = FLOOR_CACHE_W;
+    cachedFloorCanvas.height = FLOOR_CACHE_H;
+    const fctx = cachedFloorCanvas.getContext("2d");
+    if (!fctx) return;
+
+    fctx.save();
+    fctx.translate(FLOOR_ORIGIN_X, FLOOR_ORIGIN_Y);
+
+    // 1. Draw all multi-wing parquet floor tiles
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (MAP[r][c] === 0 || MAP[r][c] === 3) {
+          const pt = isoGrid[r][c];
+          const zone = getTileZone(c, r);
+
+          fctx.beginPath();
+          fctx.moveTo(pt.x, pt.y);
+          fctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
+          fctx.lineTo(pt.x, pt.y + TILE_H);
+          fctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
+          fctx.closePath();
+
+          const isAlt = (r + c) % 2 === 0;
+
+          if (zone === "digital") {
+            fctx.fillStyle = isAlt ? "#120f14" : "#0a070c";
+          } else if (zone === "blender") {
+            fctx.fillStyle = isAlt ? "#17100b" : "#0d0805";
+          } else if (zone === "nexus") {
+            fctx.fillStyle = isAlt ? "#14080b" : "#090406";
+          } else {
+            fctx.fillStyle = isAlt ? "#091711" : "#050e0a";
+          }
+          fctx.fill();
+
+          if (zone === "digital") {
+            fctx.strokeStyle = "rgba(225, 29, 72, 0.28)";
+          } else if (zone === "blender") {
+            fctx.strokeStyle = "rgba(245, 158, 11, 0.25)";
+          } else if (zone === "nexus") {
+            fctx.strokeStyle = "rgba(251, 191, 36, 0.24)";
+          } else {
+            fctx.strokeStyle = "rgba(52, 211, 153, 0.22)";
+          }
+          fctx.lineWidth = 0.8;
+          fctx.stroke();
+
+          // Underworld Greek geometric interior engraving
+          fctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
+          fctx.lineWidth = 0.6;
+          fctx.beginPath();
+          fctx.moveTo(pt.x - TILE_W / 4, pt.y + TILE_H / 4);
+          fctx.lineTo(pt.x, pt.y + TILE_H / 2);
+          fctx.lineTo(pt.x + TILE_W / 4, pt.y + (3 * TILE_H) / 4);
+          fctx.moveTo(pt.x, pt.y);
+          fctx.lineTo(pt.x + TILE_W / 4, pt.y + TILE_H / 4);
+          fctx.lineTo(pt.x, pt.y + TILE_H / 2);
+          fctx.stroke();
+
+          // Realm ambient gloss sheen
+          if (zone === "digital") {
+            fctx.strokeStyle = "rgba(244, 63, 94, 0.10)";
+          } else if (zone === "blender") {
+            fctx.strokeStyle = "rgba(251, 191, 36, 0.10)";
+          } else if (zone === "nexus") {
+            fctx.strokeStyle = "rgba(244, 63, 94, 0.12)";
+          } else {
+            fctx.strokeStyle = "rgba(52, 211, 153, 0.10)";
+          }
+          fctx.lineWidth = 1;
+          fctx.beginPath();
+          fctx.moveTo(pt.x - TILE_W / 3, pt.y + TILE_H / 3);
+          fctx.lineTo(pt.x + TILE_W / 3, pt.y + (2 * TILE_H) / 3);
+          fctx.stroke();
+        }
+      }
+    }
+
+    // 2. Pre-bake all base art spotlights directly onto the floor
+    mountedPaintings.forEach((piece) => {
+      const spot = fctx.createRadialGradient(
+        piece.spotX,
+        piece.spotY + TILE_H / 2,
+        3,
+        piece.spotX,
+        piece.spotY + TILE_H / 2,
+        38
+      );
+
+      if (piece.category === "digital") {
+        spot.addColorStop(0, "rgba(56, 189, 248, 0.32)");
+        spot.addColorStop(0.5, "rgba(14, 165, 233, 0.12)");
+        spot.addColorStop(1, "rgba(14, 165, 233, 0)");
+      } else if (piece.category === "blender") {
+        spot.addColorStop(0, "rgba(249, 115, 22, 0.36)");
+        spot.addColorStop(0.5, "rgba(234, 88, 12, 0.12)");
+        spot.addColorStop(1, "rgba(234, 88, 12, 0)");
+      } else {
+        spot.addColorStop(0, "rgba(251, 191, 36, 0.26)");
+        spot.addColorStop(0.5, "rgba(245, 158, 11, 0.09)");
+        spot.addColorStop(1, "rgba(245, 158, 11, 0)");
+      }
+
+      fctx.fillStyle = spot;
+      fctx.beginPath();
+      fctx.ellipse(
+        piece.spotX,
+        piece.spotY + TILE_H / 2,
+        36,
+        18,
+        0,
+        0,
+        Math.PI * 2
+      );
+      fctx.fill();
+    });
+
+    fctx.restore();
+    isFloorCached = true;
+  }
+
   // --- Underworld Atmosphere & Particles (Hades Theme) ---
   interface UnderworldParticle {
     x: number;
@@ -850,7 +1046,7 @@ export function initMuseumMaze() {
   }
 
   const underworldMotes: UnderworldParticle[] = [];
-  for (let i = 0; i < 48; i++) {
+  for (let i = 0; i < 24; i++) {
     underworldMotes.push({
       x: (Math.random() - 0.5) * 1600,
       y: (Math.random() - 0.5) * 1200,
@@ -1637,6 +1833,7 @@ export function initMuseumMaze() {
   }
 
   // --- View Mode Toggle ---
+  let currentViewMode: "maze" | "catalog" | "ledger" = "maze";
   const mazeViewEl = document.getElementById("museum-view");
   const catalogViewEl = document.getElementById("catalog-view");
   const ledgerViewEl = document.getElementById("ledger-view");
@@ -1645,6 +1842,7 @@ export function initMuseumMaze() {
   const btnLedger = document.getElementById("view-mode-ledger");
 
   function setViewMode(mode: "maze" | "catalog" | "ledger") {
+    currentViewMode = mode;
     if (mazeViewEl) mazeViewEl.classList.toggle("hidden", mode !== "maze");
     if (catalogViewEl) catalogViewEl.classList.toggle("hidden", mode !== "catalog");
     if (ledgerViewEl) ledgerViewEl.classList.toggle("hidden", mode !== "ledger");
@@ -1734,6 +1932,12 @@ export function initMuseumMaze() {
 
   // --- Main Animation Loop ---
   function animate() {
+    // Performance: Sleep animation loop completely when user is viewing Catalog or Ledger
+    if (currentViewMode !== "maze") {
+      requestAnimationFrame(animate);
+      return;
+    }
+
     // 1. Natural Intuitive WASD Movement (Screen-Space & Corridor Aligned)
     // Converts keyboard inputs directly to screen directions so:
     // W = moves straight UP on screen
@@ -2153,89 +2357,11 @@ export function initMuseumMaze() {
     const minIsoY = camera.y - halfH - cullMargin;
     const maxIsoY = camera.y + halfH + cullMargin;
 
-    // --- Pass 1: Multi-Wing Themed French Herringbone Parquet Floors ---
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        if (MAP[r][c] === 0 || MAP[r][c] === 3) {
-          const pt = toIso(c, r);
-          // Frustum Cull: Skip offscreen floor tiles
-          if (pt.x < minIsoX || pt.x > maxIsoX || pt.y < minIsoY || pt.y > maxIsoY) {
-            continue;
-          }
-          const zone = getTileZone(c, r);
-
-          ctx.beginPath();
-          ctx.moveTo(pt.x, pt.y);
-          ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
-          ctx.lineTo(pt.x, pt.y + TILE_H);
-          ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
-          ctx.closePath();
-
-          const isAlt = (r + c) % 2 === 0;
-
-          // Distinct floor color scheme per Underworld realm
-          if (zone === "digital") {
-            // Tartarus: dark obsidian slate with raw charcoal texture
-            ctx.fillStyle = isAlt ? "#120f14" : "#0a070c";
-          } else if (zone === "blender") {
-            // Asphodel: volcanic dark basalt with warm magma understone
-            ctx.fillStyle = isAlt ? "#17100b" : "#0d0805";
-          } else if (zone === "nexus") {
-            // House of Hades: imperial polished black marble
-            ctx.fillStyle = isAlt ? "#14080b" : "#090406";
-          } else {
-            // Elysium: celestial verdant jade-veined dark stone
-            ctx.fillStyle = isAlt ? "#091711" : "#050e0a";
-          }
-          ctx.fill();
-
-          // Underworld realm tile grout & inlay lines
-          if (zone === "digital") {
-            // Tartarus: glowing infernal crimson ember seams
-            ctx.strokeStyle = "rgba(225, 29, 72, 0.28)";
-          } else if (zone === "blender") {
-            // Asphodel: molten gold & amber seams
-            ctx.strokeStyle = "rgba(245, 158, 11, 0.25)";
-          } else if (zone === "nexus") {
-            // House of Hades: Stygian gold geometric inlays
-            ctx.strokeStyle = "rgba(251, 191, 36, 0.24)";
-          } else {
-            // Elysium: celestial emerald & pale gold seams
-            ctx.strokeStyle = "rgba(52, 211, 153, 0.22)";
-          }
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-
-          // Underworld Greek geometric interior engraving
-          ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
-          ctx.lineWidth = 0.6;
-          ctx.beginPath();
-          ctx.moveTo(pt.x - TILE_W / 4, pt.y + TILE_H / 4);
-          ctx.lineTo(pt.x, pt.y + TILE_H / 2);
-          ctx.lineTo(pt.x + TILE_W / 4, pt.y + (3 * TILE_H) / 4);
-          ctx.moveTo(pt.x, pt.y);
-          ctx.lineTo(pt.x + TILE_W / 4, pt.y + TILE_H / 4);
-          ctx.lineTo(pt.x, pt.y + TILE_H / 2);
-          ctx.stroke();
-
-          // Realm ambient gloss sheen
-          if (zone === "digital") {
-            ctx.strokeStyle = "rgba(244, 63, 94, 0.10)";
-          } else if (zone === "blender") {
-            ctx.strokeStyle = "rgba(251, 191, 36, 0.10)";
-          } else if (zone === "nexus") {
-            ctx.strokeStyle = "rgba(244, 63, 94, 0.12)";
-          } else {
-            ctx.strokeStyle = "rgba(52, 211, 153, 0.10)";
-          }
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(pt.x - TILE_W / 3, pt.y + TILE_H / 3);
-          ctx.lineTo(pt.x + TILE_W / 3, pt.y + (2 * TILE_H) / 3);
-          ctx.stroke();
-        }
-      }
+    // --- Pass 1: Multi-Wing Themed Parquet Floors & Base Spotlights (Cached Blit) ---
+    if (!isFloorCached) {
+      buildFloorCache();
     }
+    ctx.drawImage(cachedFloorCanvas, -FLOOR_ORIGIN_X, -FLOOR_ORIGIN_Y);
 
     // --- Pass 1.5: Zagreus Burning Footstep Embers (Fast Non-Allocating) ---
     for (let i = footstepEmbers.length - 1; i >= 0; i--) {
@@ -2245,63 +2371,48 @@ export function initMuseumMaze() {
         footstepEmbers.splice(i, 1);
         continue;
       }
-      const alpha = e.life;
-      ctx.fillStyle = `rgba(249, 115, 22, ${alpha * 0.75})`;
+      ctx.fillStyle = `rgba(249, 115, 22, ${e.life * 0.75})`;
       ctx.beginPath();
       ctx.ellipse(e.isoX, e.isoY, e.size * 2, e.size, 0, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // --- Pass 2: Directional Art Spotlights on Floor (Colored by Wing) ---
-    mountedPaintings.forEach((piece) => {
-      // Frustum Cull: Skip spotlights outside viewport using pre-calculated coordinates
-      if (
-        piece.spotX < minIsoX - 70 ||
-        piece.spotX > maxIsoX + 70 ||
-        piece.spotY < minIsoY - 70 ||
-        piece.spotY > maxIsoY + 70
-      ) {
-        return;
-      }
-
-      const isNear = near?.artId === piece.artId;
-
+    // --- Pass 2: Active Dynamic Art Spotlight (Single active spotlight when near artwork) ---
+    if (near && near.artId) {
       const spot = ctx.createRadialGradient(
-        piece.spotX,
-        piece.spotY + TILE_H / 2,
+        near.spotX,
+        near.spotY + TILE_H / 2,
         3,
-        piece.spotX,
-        piece.spotY + TILE_H / 2,
-        isNear ? 54 : 38
+        near.spotX,
+        near.spotY + TILE_H / 2,
+        54
       );
-
-      if (piece.category === "digital") {
-        spot.addColorStop(0, isNear ? "rgba(56, 189, 248, 0.60)" : "rgba(56, 189, 248, 0.32)");
-        spot.addColorStop(0.5, isNear ? "rgba(14, 165, 233, 0.24)" : "rgba(14, 165, 233, 0.12)");
+      if (near.category === "digital") {
+        spot.addColorStop(0, "rgba(56, 189, 248, 0.60)");
+        spot.addColorStop(0.5, "rgba(14, 165, 233, 0.24)");
         spot.addColorStop(1, "rgba(14, 165, 233, 0)");
-      } else if (piece.category === "blender") {
-        spot.addColorStop(0, isNear ? "rgba(249, 115, 22, 0.65)" : "rgba(249, 115, 22, 0.36)");
-        spot.addColorStop(0.5, isNear ? "rgba(234, 88, 12, 0.26)" : "rgba(234, 88, 12, 0.12)");
+      } else if (near.category === "blender") {
+        spot.addColorStop(0, "rgba(249, 115, 22, 0.65)");
+        spot.addColorStop(0.5, "rgba(234, 88, 12, 0.26)");
         spot.addColorStop(1, "rgba(234, 88, 12, 0)");
       } else {
-        spot.addColorStop(0, isNear ? "rgba(254, 240, 138, 0.48)" : "rgba(251, 191, 36, 0.26)");
-        spot.addColorStop(0.5, isNear ? "rgba(245, 158, 11, 0.20)" : "rgba(245, 158, 11, 0.09)");
+        spot.addColorStop(0, "rgba(254, 240, 138, 0.48)");
+        spot.addColorStop(0.5, "rgba(245, 158, 11, 0.20)");
         spot.addColorStop(1, "rgba(245, 158, 11, 0)");
       }
-
       ctx.fillStyle = spot;
       ctx.beginPath();
       ctx.ellipse(
-        piece.spotX,
-        piece.spotY + TILE_H / 2,
-        isNear ? 50 : 36,
-        isNear ? 25 : 18,
+        near.spotX,
+        near.spotY + TILE_H / 2,
+        50,
+        25,
         0,
         0,
         Math.PI * 2
       );
       ctx.fill();
-    });
+    }
 
     // --- Pass 3: Continuous Seamless Walls, Artworks, Benches & Visitor ---
     const maxDiag = COLS + ROWS;
@@ -2314,9 +2425,13 @@ export function initMuseumMaze() {
 
         const cellType = MAP[r][c];
         const isPlayerTile = diag === playerDepth && Math.floor(player.col) === c;
-        const pt = toIso(c, r);
 
-        // Frustum Cull: Skip off-screen walls & benches (account for 150px vertical wall height)
+        // Skip empty floor tiles unless visitor is on this tile
+        if (cellType === 0 && !isPlayerTile) continue;
+
+        const pt = isoGrid[r][c];
+
+        // Frustum Cull: Skip off-screen walls & benches
         if (
           !isPlayerTile &&
           (pt.x < minIsoX || pt.x > maxIsoX || pt.y < minIsoY - 170 || pt.y > maxIsoY + 50)
@@ -2326,19 +2441,9 @@ export function initMuseumMaze() {
 
         // A. Continuous Architectural Walls
         if (cellType === 1 || cellType === 2) {
-          const isGreen = cellType === 2;
-          const wallH = getWallHeight(r, c);
-          const zone = getTileZone(c, r);
-
-          const isWall = (col: number, row: number) => {
-            if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return false;
-            return MAP[row][col] === 1 || MAP[row][col] === 2;
-          };
-
-          const hasSEFloor = !isWall(c + 1, r);
-          const hasSWFloor = !isWall(c, r + 1);
-          const hasNEFloor = !isWall(c, r - 1);
-          const hasNWFloor = !isWall(c - 1, r);
+          const wm = wallMetaGrid[r][c];
+          if (!wm) continue;
+          const { wallH, shadowCutH, hasSEFloor, hasSWFloor, hasNEFloor, hasNWFloor } = wm;
 
           // Soft Ambient Wall Drop Shadow on Wood Floor
           ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
@@ -2351,11 +2456,9 @@ export function initMuseumMaze() {
 
           // 1. South-East Facing Wall Face (Down-Right face)
           if (hasSEFloor) {
-            // Master Outer Black Ink Contour
             ctx.strokeStyle = "#000000";
             ctx.lineWidth = 2.0;
 
-            // Step A: Full Wall Silhouette
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
@@ -2363,39 +2466,19 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
             ctx.closePath();
 
-            // Cel-Shading Band 1: Upper Saturated Midtone
-            ctx.fillStyle = isGreen
-              ? "#163e30"
-              : zone === "digital"
-              ? "#3a2d45"
-              : zone === "blender"
-              ? "#422e20"
-              : zone === "nexus"
-              ? "#382430"
-              : "#1f4738";
+            ctx.fillStyle = wm.fillSE1;
             ctx.fill();
             ctx.stroke();
 
-            // Cel-Shading Band 2: Lower Stepped Dark Shadow Facet (35% height)
-            const shadowCutH = wallH * 0.35;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
             ctx.lineTo(pt.x, pt.y + TILE_H - shadowCutH);
             ctx.closePath();
-            ctx.fillStyle = isGreen
-              ? "#0f2c22"
-              : zone === "digital"
-              ? "#281e31"
-              : zone === "blender"
-              ? "#2d1f16"
-              : zone === "nexus"
-              ? "#271822"
-              : "#153327";
+            ctx.fillStyle = wm.fillSE2;
             ctx.fill();
 
-            // Crisp comic ink shadow division line
             ctx.strokeStyle = "rgba(0, 0, 0, 0.75)";
             ctx.lineWidth = 1.0;
             ctx.beginPath();
@@ -2403,16 +2486,7 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
             ctx.stroke();
 
-            // Cel-Shaded Baseboard Trim (8px tall) with black ink border
-            ctx.fillStyle = isGreen
-              ? "#040e0a"
-              : zone === "digital"
-              ? "#500720"
-              : zone === "blender"
-              ? "#451a03"
-              : zone === "nexus"
-              ? "#540625"
-              : "#064e3b";
+            ctx.fillStyle = wm.baseboardColor;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2);
@@ -2424,21 +2498,13 @@ export function initMuseumMaze() {
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // Baseboard Bevel Cel Highlight
-            ctx.strokeStyle = isGreen
-              ? "#34d399"
-              : zone === "digital"
-              ? "#f43f5e"
-              : zone === "blender"
-              ? "#fb923c"
-              : "#fbbf24";
+            ctx.strokeStyle = wm.baseboardHighlight;
             ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - 8);
             ctx.lineTo(pt.x + TILE_W / 2, pt.y + TILE_H / 2 - 8);
             ctx.stroke();
 
-            // Crown Stygian Gold Cel Pinstripe
             ctx.strokeStyle = "#fbbf24";
             ctx.lineWidth = 1.4;
             ctx.beginPath();
@@ -2449,11 +2515,9 @@ export function initMuseumMaze() {
 
           // 2. South-West Facing Wall Face (Down-Left face, Shadowed)
           if (hasSWFloor) {
-            // Master Outer Black Ink Contour
             ctx.strokeStyle = "#000000";
             ctx.lineWidth = 2.0;
 
-            // Step A: Full Wall Silhouette
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
@@ -2461,39 +2525,19 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
             ctx.closePath();
 
-            // Cel-Shading: Deeper Contrast Shadow Face
-            ctx.fillStyle = isGreen
-              ? "#123327"
-              : zone === "digital"
-              ? "#2f2238"
-              : zone === "blender"
-              ? "#352318"
-              : zone === "nexus"
-              ? "#2d1c27"
-              : "#183b2d";
+            ctx.fillStyle = wm.fillSW1;
             ctx.fill();
             ctx.stroke();
 
-            // Cel-Shading Lower Core Shadow Facet (35% height)
-            const shadowCutH = wallH * 0.35;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
             ctx.lineTo(pt.x, pt.y + TILE_H - shadowCutH);
             ctx.closePath();
-            ctx.fillStyle = isGreen
-              ? "#0b2119"
-              : zone === "digital"
-              ? "#1d1424"
-              : zone === "blender"
-              ? "#22150e"
-              : zone === "nexus"
-              ? "#1d101a"
-              : "#10271d";
+            ctx.fillStyle = wm.fillSW2;
             ctx.fill();
 
-            // Crisp comic shadow division line
             ctx.strokeStyle = "rgba(0, 0, 0, 0.75)";
             ctx.lineWidth = 1.0;
             ctx.beginPath();
@@ -2501,16 +2545,7 @@ export function initMuseumMaze() {
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - shadowCutH);
             ctx.stroke();
 
-            // Cel-Shaded Baseboard Trim (8px tall)
-            ctx.fillStyle = isGreen
-              ? "#030a07"
-              : zone === "digital"
-              ? "#3b0717"
-              : zone === "blender"
-              ? "#351403"
-              : zone === "nexus"
-              ? "#3d061c"
-              : "#04372a";
+            ctx.fillStyle = wm.baseboardSWColor;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2);
@@ -2522,21 +2557,13 @@ export function initMuseumMaze() {
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // Baseboard Bevel Cel Highlight
-            ctx.strokeStyle = isGreen
-              ? "rgba(52, 211, 153, 0.70)"
-              : zone === "digital"
-              ? "#e11d48"
-              : zone === "blender"
-              ? "#f97316"
-              : "#f59e0b";
+            ctx.strokeStyle = wm.baseboardSWHighlight;
             ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(pt.x, pt.y + TILE_H - 8);
             ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - 8);
             ctx.stroke();
 
-            // Crown Stygian Gold Cel Pinstripe
             ctx.strokeStyle = "#fbbf24";
             ctx.lineWidth = 1.4;
             ctx.beginPath();
@@ -2552,23 +2579,13 @@ export function initMuseumMaze() {
           ctx.lineTo(pt.x, pt.y + TILE_H - wallH);
           ctx.lineTo(pt.x - TILE_W / 2, pt.y + TILE_H / 2 - wallH);
           ctx.closePath();
-          ctx.fillStyle = isGreen
-            ? "#1f5642"
-            : zone === "digital"
-            ? "#4e3a5c"
-            : zone === "blender"
-            ? "#553a27"
-            : zone === "nexus"
-            ? "#4a3141"
-            : "#295b47";
+          ctx.fillStyle = wm.topFill;
           ctx.fill();
 
-          // Outer Heavy Comic Ink Stroke
           ctx.strokeStyle = "#000000";
           ctx.lineWidth = 2.0;
           ctx.stroke();
 
-          // Inner Stygian Gold Facet Stroke
           ctx.strokeStyle = "#fbbf24";
           ctx.lineWidth = 1.0;
           ctx.beginPath();
@@ -3042,29 +3059,28 @@ export function initMuseumMaze() {
 
     ctx.restore();
 
-    // --- Pass 3.5: Floating Underworld Embers & Soul Motes (Hades Atmospheric Magic) ---
-    underworldMotes.forEach((m) => {
+    // --- Pass 3.5: Floating Underworld Embers & Soul Motes (Fast Batched Draw) ---
+    const hw = canvas.width / 2;
+    const hh = canvas.height / 2;
+    ctx.fillStyle = "rgba(251, 191, 36, 0.45)";
+    ctx.beginPath();
+    for (let i = 0; i < underworldMotes.length; i++) {
+      const m = underworldMotes[i];
       m.y += m.vy;
       m.x += m.vx + Math.sin(m.wobble) * 0.35;
       m.wobble += 0.035;
 
-      if (m.y < -canvas.height / 2 - 60) m.y = canvas.height / 2 + 60;
-      if (m.y > canvas.height / 2 + 60) m.y = -canvas.height / 2 - 60;
-      if (m.x < -canvas.width / 2 - 60) m.x = canvas.width / 2 + 60;
-      if (m.x > canvas.width / 2 + 60) m.x = -canvas.width / 2 - 60;
+      if (m.y < -hh - 60) m.y = hh + 60;
+      if (m.y > hh + 60) m.y = -hh - 60;
+      if (m.x < -hw - 60) m.x = hw + 60;
+      if (m.x > hw + 60) m.x = -hw - 60;
 
-      const alpha = m.alpha * (0.55 + Math.sin(m.wobble * 2) * 0.45);
-      if (m.type === "ember") {
-        ctx.fillStyle = `rgba(244, 63, 94, ${alpha})`;
-      } else if (m.type === "gold") {
-        ctx.fillStyle = `rgba(251, 191, 36, ${alpha})`;
-      } else {
-        ctx.fillStyle = `rgba(52, 211, 153, ${alpha * 0.8})`;
-      }
-      ctx.beginPath();
-      ctx.arc(m.x + canvas.width / 2, m.y + canvas.height / 2, m.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
+      const px = m.x + hw;
+      const py = m.y + hh;
+      ctx.moveTo(px + m.size, py);
+      ctx.arc(px, py, m.size, 0, Math.PI * 2);
+    }
+    ctx.fill();
 
     // --- Pass 4: Atmospheric Cinema Vignette (Zero-Allocation Cached Gradient) ---
     if (cachedVigGrad) {
@@ -3101,101 +3117,4 @@ export function initMuseumMaze() {
   }
 
   animate();
-
-  // --- Faint Background Underworld Ashes Animation ---
-  function initUnderworldBackgroundAshes() {
-    const bgCanvas = document.getElementById("underworld-bg-ashes") as HTMLCanvasElement | null;
-    if (!bgCanvas) return;
-    const bgCtx = bgCanvas.getContext("2d");
-    if (!bgCtx) return;
-
-    function resizeBg() {
-      if (!bgCanvas) return;
-      bgCanvas.width = window.innerWidth;
-      bgCanvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resizeBg);
-    resizeBg();
-
-    interface AshMote {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      alpha: number;
-      baseAlpha: number;
-      wobble: number;
-      wobbleSpeed: number;
-      color: string;
-    }
-
-    const motes: AshMote[] = [];
-    const MOTE_COUNT = 75;
-
-    const colors = [
-      "rgba(180, 180, 190,", // faint charcoal cinder ash
-      "rgba(244, 63, 94,",   // faint rose / crimson ember
-      "rgba(239, 68, 68,",   // underworld fire ember
-      "rgba(251, 191, 36,",  // Stygian gold speck
-    ];
-
-    for (let i = 0; i < MOTE_COUNT; i++) {
-      const baseA = 0.10 + Math.random() * 0.20;
-      motes.push({
-        x: Math.random() * (bgCanvas.width || 1200),
-        y: Math.random() * (bgCanvas.height || 800),
-        vx: (Math.random() - 0.48) * 0.30,
-        vy: -(0.20 + Math.random() * 0.50), // slow upward drift
-        size: 0.8 + Math.random() * 1.6,
-        alpha: baseA,
-        baseAlpha: baseA,
-        wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: 0.008 + Math.random() * 0.018,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      });
-    }
-
-    function renderBgAshes() {
-      if (!bgCanvas || !bgCtx) return;
-
-      // Performance: When user is exploring the 3D maze, the canvas covers the full viewport.
-      // Skipping background ashes during maze view saves significant GPU resources.
-      const mazeEl = document.getElementById("museum-view");
-      if (mazeEl && !mazeEl.classList.contains("hidden")) {
-        requestAnimationFrame(renderBgAshes);
-        return;
-      }
-
-      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-
-      const w = bgCanvas.width;
-      const h = bgCanvas.height;
-
-      for (const m of motes) {
-        m.wobble += m.wobbleSpeed;
-        m.x += m.vx + Math.sin(m.wobble) * 0.30;
-        m.y += m.vy;
-        m.alpha = m.baseAlpha * (0.65 + 0.35 * Math.sin(m.wobble * 2));
-
-        if (m.y < -10) {
-          m.y = h + 10;
-          m.x = Math.random() * w;
-        }
-        if (m.x < -10) m.x = w + 10;
-        if (m.x > w + 10) m.x = -10;
-
-        bgCtx.fillStyle = `${m.color} ${m.alpha})`;
-        bgCtx.beginPath();
-        bgCtx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
-        bgCtx.fill();
-      }
-
-      requestAnimationFrame(renderBgAshes);
-    }
-
-    requestAnimationFrame(renderBgAshes);
-  }
-
-  initUnderworldBackgroundAshes();
 }

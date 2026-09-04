@@ -333,6 +333,20 @@ function renderSpiderWeb(opacity: number): void {
 }
 
 function animate(): void {
+  // Check if we are on the Art Portfolio page (user wants ONLY portfolio page to be black)
+  const isPortfolioPage = !!document.getElementById("portfolio-root") || !!document.getElementById("museum-view");
+
+  if (isPortfolioPage) {
+    document.body.style.backgroundColor = "#000000";
+    if (canvas) canvas.style.display = "none";
+    const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
+    if (glassNavbar) {
+      glassNavbar.style.setProperty("--navbar-bg-rgb", "0, 0, 0");
+    }
+    // Performance: Completely terminate topography animation loop on portfolio page to free 100% CPU/GPU resources
+    return;
+  }
+
   ctx.clearRect(0, 0, width, height);
 
   // Background organic slow evolution
@@ -344,35 +358,20 @@ function animate(): void {
   updateSpideyFactor();
   currentSpideyFactor += (targetSpideyFactor - currentSpideyFactor) * 0.07;
 
-  // Check if we are on the Art Portfolio page (user wants ONLY portfolio page to be black)
-  const isPortfolioPage = !!document.getElementById("portfolio-root") || !!document.getElementById("museum-view");
+  if (canvas && canvas.style.display === "none") canvas.style.display = "block";
+  // Interpolate body background color based on spidey active level for regular pages
+  const targetR = 8;
+  const targetG = 9;
+  const targetB = 17;
+  const r = Math.round(startR * (1 - currentSpideyFactor) + targetR * currentSpideyFactor);
+  const g = Math.round(startG * (1 - currentSpideyFactor) + targetG * currentSpideyFactor);
+  const b = Math.round(startB * (1 - currentSpideyFactor) + targetB * currentSpideyFactor);
 
-  if (isPortfolioPage) {
-    document.body.style.backgroundColor = "#000000";
-    if (canvas) canvas.style.display = "none";
-    const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
-    if (glassNavbar) {
-      glassNavbar.style.setProperty("--navbar-bg-rgb", "0, 0, 0");
-    }
-    // Performance: Pause heavy Perlin noise grid calculation and hidden canvas draws on portfolio page
-    requestAnimationFrame(animate);
-    return;
-  } else {
-    if (canvas && canvas.style.display === "none") canvas.style.display = "block";
-    // Interpolate body background color based on spidey active level for regular pages
-    const targetR = 8;
-    const targetG = 9;
-    const targetB = 17;
-    const r = Math.round(startR * (1 - currentSpideyFactor) + targetR * currentSpideyFactor);
-    const g = Math.round(startG * (1 - currentSpideyFactor) + targetG * currentSpideyFactor);
-    const b = Math.round(startB * (1 - currentSpideyFactor) + targetB * currentSpideyFactor);
-
-    document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-    
-    const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
-    if (glassNavbar) {
-      glassNavbar.style.setProperty("--navbar-bg-rgb", `${r}, ${g}, ${b}`);
-    }
+  document.body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+  
+  const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
+  if (glassNavbar) {
+    glassNavbar.style.setProperty("--navbar-bg-rgb", `${r}, ${g}, ${b}`);
   }
 
   // Check if mouse is within timelineSection bounds
