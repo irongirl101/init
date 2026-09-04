@@ -96,6 +96,10 @@ export function initMuseumMaze() {
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
     osc.start(now);
     osc.stop(now + 0.65);
   }
@@ -114,6 +118,10 @@ export function initMuseumMaze() {
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
     osc.start(now);
     osc.stop(now + 0.06);
   }
@@ -530,19 +538,19 @@ export function initMuseumMaze() {
     [2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2], // 3: Salon Viewing Aisle & Division Spines
     [2, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 2], // 4: Drawing Salon, Masterpiece Island & Color Salon
     [2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2], // 5: Salon Floor
-    [2, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 6: South Salon Archways
+    [2, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2], // 6: South Salon Archways (corners opened)
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 7: Mid Concourse Walkway
     [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 8: Wing Portal Colonnades
     [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 9: Cyber & 3D Entry Corridors
-    [2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 10: Gallery Headers
-    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 11: Display Alcove Corridors
+    [2, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2], // 10: Gallery Headers (corners opened)
+    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 11: Display Alcove Corridors (East wall opened)
     [2, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 2], // 12: Digital & 3D Floor
-    [2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 2], // 13: Central Rotunda Upper Floor
-    [2, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 2], // 14: Central Rotunda Lower Floor
-    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 15: Cross Promenade Portals
+    [2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2], // 13: Central Rotunda Upper Floor (East wall opened)
+    [2, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2], // 14: Central Rotunda Lower Floor (East wall opened)
+    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 15: Cross Promenade Portals (East wall opened)
     [2, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 2], // 16: South Wing Floor
-    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 2], // 17: Lower Cyber & 3D Corridors
-    [2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 2], // 18: Pavilion End Portals
+    [2, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 17: Lower Cyber & 3D Corridors (East wall opened)
+    [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2], // 18: Pavilion End Portals (All bottom corners opened)
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 19: Grand Foyer Promenade
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], // 20: Grand Entrance Foyer (Spawn at 10.5, 20.5)
     [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], // 21: South Perimeter Wall
@@ -654,6 +662,7 @@ export function initMuseumMaze() {
     }
 
     const img = new Image();
+    img.decoding = "async";
     const cleanImg = art.image.startsWith("/") ? art.image.slice(1) : art.image;
     const isGhPages = window.location.pathname.startsWith("/init");
     const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
@@ -741,14 +750,14 @@ export function initMuseumMaze() {
     }
   });
 
-  // List of active divans for O(1) distance scanning
+  // List of active chaises for O(1) distance scanning
   const placedBenches: Array<{ col: number; row: number }> = [];
 
-  // --- Dynamic Chair/Divan Randomization Across Underworld Salons ---
+  // --- Dynamic Chair/Chaise Randomization Across Underworld Salons ---
   // Constraints:
   // 1. More random: dynamically scans all eligible floor tiles across all wings and shuffles on each visit.
   // 2. Distance: strictly AT LEAST 2 squares away from ANY art piece mount and its viewing tile.
-  // 3. Hallways: requires floorNeighbors >= 2 so divans never block corridors.
+  // 3. Hallways: requires floorNeighbors >= 2 so chaises never block corridors.
   // 4. Spread: maintains >= 2.8 units distance between chairs to distribute them across the whole estate.
   function randomizeChairs(grid: number[][], paintings: MountedPainting[]) {
     // Clear any pre-existing chairs
@@ -811,7 +820,7 @@ export function initMuseumMaze() {
       [eligibleTiles[i], eligibleTiles[j]] = [eligibleTiles[j], eligibleTiles[i]];
     }
 
-    // Place 9 well-spaced divans across the museum
+    // Place 9 well-spaced chaises across the museum
     placedBenches.length = 0;
     const placedChairs: [number, number][] = [];
     for (const [c, r] of eligibleTiles) {
@@ -1064,6 +1073,8 @@ export function initMuseumMaze() {
   // --- Pre-rendered Cached Minimap Canvas (Performance: Eliminates 2,100+ fillRects per frame) ---
   const cachedMinimap = document.createElement("canvas");
   let isMinimapCached = false;
+  let minimapCellW = 160 / COLS;
+  let minimapCellH = 160 / ROWS;
 
   function buildMinimapCache() {
     if (!minimapCanvas) return;
@@ -1076,8 +1087,10 @@ export function initMuseumMaze() {
 
     const mw = targetW;
     const mh = targetH;
-    const cellW = mw / COLS;
-    const cellH = mh / ROWS;
+    minimapCellW = mw / COLS;
+    minimapCellH = mh / ROWS;
+    const cellW = minimapCellW;
+    const cellH = minimapCellH;
 
     // Dark blueprint backdrop
     cctx.fillStyle = "#070c10";
@@ -1127,7 +1140,7 @@ export function initMuseumMaze() {
     vy: 0,
     targetCol: null as number | null,
     targetRow: null as number | null,
-    radius: 0.28, // Robust collision radius: 3x frame step size, completely preventing tunnel clipping
+    radius: 0.20, // Calibrated collision radius: allows effortless cornering and prevents wedging
     maxSpeed: 0.14, // Increased speed for swift, responsive navigation through the museum
     accel: 0.045,
     friction: 0.78,
@@ -1135,6 +1148,7 @@ export function initMuseumMaze() {
     distMoved: 0,
     isSitting: false,
     seatedBench: null as { col: number; row: number } | null,
+    sitTicks: 0,
   };
 
   function getNearbyBench(pc: number, pr: number, maxDist = 1.4): { col: number; row: number } | null {
@@ -1157,6 +1171,7 @@ export function initMuseumMaze() {
     const b = player.seatedBench;
     player.isSitting = false;
     player.seatedBench = null;
+    player.sitTicks = 0;
 
     if (b) {
       // Find nearest adjacent walkable floor tile to step onto cleanly
@@ -1256,13 +1271,14 @@ export function initMuseumMaze() {
     keys[c] = false;
   });
 
-  // Camera coordinates
+  // Camera coordinates (Spawn centered directly on player)
+  const initialPlayerIso = toIso(player.col, player.row);
   const camera = {
-    x: 0,
-    y: 0,
+    x: initialPlayerIso.x,
+    y: initialPlayerIso.y,
   };
 
-  function isWalkable(c: number, r: number, radius = 0.28): boolean {
+  function isWalkable(c: number, r: number, radius = 0.20): boolean {
     const minC = Math.floor(c - radius);
     const maxC = Math.floor(c + radius);
     const minR = Math.floor(r - radius);
@@ -1326,15 +1342,7 @@ export function initMuseumMaze() {
       standUp();
     }
 
-    // Direct click on painting?
-    for (const piece of mountedPaintings) {
-      if (Math.hypot(gridPos.col - piece.col, gridPos.row - piece.row) < 1.8) {
-        openInspectionModal(piece.artId);
-        return;
-      }
-    }
-
-    // Direct click on Underworld velvet divan / bench?
+    // Direct click on Underworld velvet chaise / bench?
     const clickC = Math.floor(gridPos.col);
     const clickR = Math.floor(gridPos.row);
     if (clickR >= 0 && clickR < ROWS && clickC >= 0 && clickC < COLS && MAP[clickR][clickC] === 3) {
@@ -1358,9 +1366,32 @@ export function initMuseumMaze() {
       }
     }
 
-    if (isWalkable(gridPos.col, gridPos.row, 0.2)) {
+    if (isWalkable(gridPos.col, gridPos.row, 0.15)) {
       player.targetCol = gridPos.col;
       player.targetRow = gridPos.row;
+    } else {
+      // If clicked point hit an elevated wall face or perimeter base, resolve to closest walkable floor tile
+      let bestDist = 999;
+      let bestC: number | null = null;
+      let bestR: number | null = null;
+      for (let dr = -1.5; dr <= 1.5; dr += 0.5) {
+        for (let dc = -1.5; dc <= 1.5; dc += 0.5) {
+          const testC = gridPos.col + dc;
+          const testR = gridPos.row + dr;
+          if (isWalkable(testC, testR, 0.15)) {
+            const d = dc * dc + dr * dr;
+            if (d < bestDist) {
+              bestDist = d;
+              bestC = testC;
+              bestR = testR;
+            }
+          }
+        }
+      }
+      if (bestC !== null && bestR !== null) {
+        player.targetCol = bestC;
+        player.targetRow = bestR;
+      }
     }
   });
 
@@ -1420,9 +1451,249 @@ export function initMuseumMaze() {
   function updateHudBalance() {
     const balEl = document.getElementById("patron-display-balance");
     if (balEl) balEl.textContent = patronBalance.toLocaleString();
+    const ledgerBalEl = document.getElementById("ledger-patron-balance");
+    if (ledgerBalEl) ledgerBalEl.textContent = `${patronBalance.toLocaleString()} TKN`;
     localStorage.setItem("museum_patron_balance", patronBalance.toString());
   }
   updateHudBalance();
+
+  // --- Museum Action Toast Notification (CSS-accelerated) ---
+  let toastTimeout: number | null = null;
+  function showToast(message: string, type: "obol" | "chaise" | "bid" = "obol") {
+    const toastEl = document.getElementById("museum-toast");
+    const textEl = document.getElementById("museum-toast-text");
+    if (!toastEl || !textEl) return;
+
+    textEl.textContent = message;
+    toastEl.classList.remove("opacity-0", "translate-y-2");
+    toastEl.classList.add("opacity-100", "translate-y-0");
+
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = window.setTimeout(() => {
+      toastEl.classList.remove("opacity-100", "translate-y-0");
+      toastEl.classList.add("opacity-0", "translate-y-2");
+    }, 2400);
+  }
+
+  // --- Underworld Stygian Obol Coin Pickups (Option 4 Gamified Economy) ---
+  interface StygianObol {
+    id: string;
+    name: string;
+    col: number;
+    row: number;
+    value: number;
+    collected: boolean;
+    phase: number;
+    isoX: number;
+    isoY: number;
+  }
+
+  const savedCollectedObols: string[] = (() => {
+    try {
+      const raw = localStorage.getItem("museum_collected_obols");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  })();
+
+  // --- Dynamic Urn of Wealth ("Thick Gold Pot") Randomization Along Walls ---
+  // Constraints:
+  // 1. Strictly on walkable floor tiles (grid === 0).
+  // 2. Never on the same place as anything else (no walls, no chaises/chairs, no painting viewing tiles, no spawn point).
+  // 3. Tucked strictly against walls/corners.
+  // 4. More randomized across all wings with minimum spacing between urns.
+  function randomizeUrnsOfWealth(
+    grid: number[][],
+    paintings: MountedPainting[],
+    benches: Array<{ col: number; row: number }>
+  ): StygianObol[] {
+    const candidateTiles: Array<{
+      col: number;
+      row: number;
+      zone: WingZone;
+      offC: number;
+      offR: number;
+    }> = [];
+
+    for (let r = 1; r < ROWS - 1; r++) {
+      for (let c = 1; c < COLS - 1; c++) {
+        if (grid[r][c] !== 0) continue;
+        // Never on player spawn or entrance foyer doorway
+        if ((c === 10 || c === 11) && (r === 20 || r === 19)) continue;
+
+        // Never on chaise/bench
+        if (benches.some((b) => b.col === c && b.row === r)) continue;
+
+        // Never on painting mount or viewing tile
+        let nearPainting = false;
+        for (let pi = 0; pi < paintings.length; pi++) {
+          const p = paintings[pi];
+          if (Math.hypot(c - p.col, r - p.row) < 1.3) {
+            nearPainting = true;
+            break;
+          }
+          const vc = p.face === "SE" ? p.col + 1 : p.col;
+          const vr = p.face === "SW" ? p.row + 1 : p.row;
+          if (Math.hypot(c - vc, r - vr) < 1.3) {
+            nearPainting = true;
+            break;
+          }
+        }
+        if (nearPainting) continue;
+
+        // Must be adjacent to at least one wall
+        const wallN = r > 0 && grid[r - 1][c] >= 1 && grid[r - 1][c] !== 3;
+        const wallS = r < ROWS - 1 && grid[r + 1][c] >= 1 && grid[r + 1][c] !== 3;
+        const wallW = c > 0 && grid[r][c - 1] >= 1 && grid[r][c - 1] !== 3;
+        const wallE = c < COLS - 1 && grid[r][c + 1] >= 1 && grid[r][c + 1] !== 3;
+
+        if (!wallN && !wallS && !wallW && !wallE) continue;
+
+        // Calculate offset to tuck urn snugly against the wall/corner
+        let offC = 0.5;
+        let offR = 0.5;
+        if (wallN && wallW) {
+          offC = 0.28;
+          offR = 0.28;
+        } else if (wallN && wallE) {
+          offC = 0.72;
+          offR = 0.28;
+        } else if (wallS && wallW) {
+          offC = 0.28;
+          offR = 0.72;
+        } else if (wallS && wallE) {
+          offC = 0.72;
+          offR = 0.72;
+        } else if (wallN) {
+          offR = 0.25;
+        } else if (wallS) {
+          offR = 0.75;
+        } else if (wallW) {
+          offC = 0.25;
+        } else if (wallE) {
+          offC = 0.75;
+        }
+
+        candidateTiles.push({
+          col: c,
+          row: r,
+          zone: getTileZone(c, r),
+          offC,
+          offR,
+        });
+      }
+    }
+
+    // Shuffle candidates
+    for (let i = candidateTiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [candidateTiles[i], candidateTiles[j]] = [candidateTiles[j], candidateTiles[i]];
+    }
+
+    // Group candidates by zone to guarantee balanced distribution across all wings
+    const byZone: Record<WingZone, typeof candidateTiles> = {
+      physical: [],
+      digital: [],
+      blender: [],
+      nexus: [],
+    };
+    candidateTiles.forEach((tile) => byZone[tile.zone].push(tile));
+
+    const chosen: typeof candidateTiles = [];
+    const targetPerZone: Record<WingZone, number> = {
+      physical: 6,
+      digital: 6,
+      blender: 5,
+      nexus: 5,
+    };
+
+    // Pick well-spaced urns from each zone
+    (Object.keys(targetPerZone) as WingZone[]).forEach((zone) => {
+      let count = 0;
+      for (let ci = 0; ci < byZone[zone].length; ci++) {
+        const cand = byZone[zone][ci];
+        if (count >= targetPerZone[zone]) break;
+        const tooClose = chosen.some(
+          (sc) => Math.hypot(sc.col - cand.col, sc.row - cand.row) < 2.4
+        );
+        if (!tooClose) {
+          chosen.push(cand);
+          count++;
+        }
+      }
+    });
+
+    const wingNames: Record<WingZone, string> = {
+      physical: "Elysium Salon",
+      digital: "Tartarus Studio",
+      blender: "Asphodel Pavilion",
+      nexus: "House of Hades",
+    };
+
+    const values = [75, 80, 90, 100, 120, 150];
+
+    return chosen.map((t, idx) => {
+      const finalCol = t.col + t.offC;
+      const finalRow = t.row + t.offR;
+      const pt = toIso(finalCol, finalRow);
+      const val = values[idx % values.length];
+      const id = `urn_${t.col}_${t.row}`;
+
+      return {
+        id,
+        name: `Urn of Wealth • ${wingNames[t.zone]}`,
+        col: finalCol,
+        row: finalRow,
+        value: val,
+        collected: savedCollectedObols.includes(id),
+        phase: idx * 0.72,
+        isoX: pt.x,
+        isoY: pt.y,
+      };
+    });
+  }
+
+  const obols: StygianObol[] = randomizeUrnsOfWealth(MAP, mountedPaintings, placedBenches);
+
+  // Precomputed 2D lookup for Pass 3 depth sorting (Zero allocation during render)
+  const obolGrid: (StygianObol | null)[][] = Array.from({ length: ROWS }, () =>
+    Array.from({ length: COLS }, () => null)
+  );
+  obols.forEach((o) => {
+    const r = Math.floor(o.row);
+    const c = Math.floor(o.col);
+    if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+      obolGrid[r][c] = o;
+    }
+  });
+
+  let uncollectedObols = obols.filter((o) => !o.collected);
+
+  function collectObol(ob: StygianObol) {
+    if (ob.collected) return;
+    ob.collected = true;
+    uncollectedObols = obols.filter((o) => !o.collected);
+
+    const collectedIds = obols.filter((o) => o.collected).map((o) => o.id);
+    localStorage.setItem("museum_collected_obols", JSON.stringify(collectedIds));
+
+    patronBalance += ob.value;
+    updateHudBalance();
+    playChime();
+    showToast(`+${ob.value} TKN Claimed • ${ob.name}`, "obol");
+
+    // Golden celebration sparks & shattered pottery shard embers
+    for (let k = 0; k < 14; k++) {
+      footstepEmbers.push({
+        isoX: ob.isoX + (Math.random() - 0.5) * 18,
+        isoY: ob.isoY + TILE_H / 2 - 12 + (Math.random() - 0.5) * 14,
+        life: 1.0,
+        maxLife: 42,
+        size: 2.2 + Math.random() * 1.8,
+      });
+    }
+  }
 
   async function loadBidsData() {
     try {
@@ -1635,9 +1906,15 @@ export function initMuseumMaze() {
       const cleanImg = art.image.startsWith("/") ? art.image.slice(1) : art.image;
       const isGhPages = window.location.pathname.startsWith("/init");
       const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
-      imageEl.src = `${prefix}${cleanImg}`;
+      const baseName = cleanImg.replace(/^.*\//, "").replace(/\.[^/.]+$/, "");
+      const webpSubPath = cleanImg.replace(/^assets\/images\/portfolio\//, "assets/images-processed/portfolio/").replace(/\/[^/]+$/, "");
+      const webp1280 = `${prefix}${webpSubPath}/${baseName}-1280.webp`;
+      imageEl.src = webp1280;
       imageEl.onerror = () => {
-        imageEl.src = `../${cleanImg}`;
+        imageEl.src = `${prefix}${cleanImg}`;
+        imageEl.onerror = () => {
+          imageEl.src = `../${cleanImg}`;
+        };
       };
     }
     if (mediumEl) mediumEl.textContent = art.medium;
@@ -1829,6 +2106,7 @@ export function initMuseumMaze() {
 
       updateCatalogBids();
       playChime();
+      showToast(`Offer Registered! ${amount.toLocaleString()} TKN on Lot #${lotNum}`, "bid");
     });
   }
 
@@ -1924,6 +2202,370 @@ export function initMuseumMaze() {
 
   const promptEl = document.getElementById("proximity-prompt");
   const promptTitleEl = document.getElementById("prompt-title");
+  const promptSubtitleEl = document.getElementById("prompt-subtitle");
+  const promptActionBtn = document.getElementById("prompt-action-btn");
+  const promptReservedBadge = document.getElementById("prompt-reserved-badge");
+  const wingNameEl = document.getElementById("current-wing-name");
+  const wingDotEl = document.getElementById("current-wing-dot");
+  let currentRenderedZone = "";
+  let currentPromptKey = "";
+
+  // Page visibility listener: pause render loop & audio when user switches tabs (100% CPU/battery savings)
+  let isPageVisible = !document.hidden;
+  document.addEventListener("visibilitychange", () => {
+    isPageVisible = !document.hidden;
+    if (bgmAudio && isBgmPlaying) {
+      if (document.hidden) {
+        bgmAudio.pause();
+      } else {
+        bgmAudio.play().catch(() => {});
+      }
+    }
+  });
+
+  // --- Render Hades Golden Urn of Wealth ("THICK GOLD POT" from Hades) ---
+  function drawHadesUrnOfWealth(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    time: number,
+    phase: number
+  ) {
+    // 1. Ground Contact Shadow (Resting snug flat against stone base)
+    c.fillStyle = "rgba(0, 0, 0, 0.55)";
+    c.beginPath();
+    c.ellipse(x, y + 2.5, 11, 5, 0, 0, Math.PI * 2);
+    c.fill();
+
+    // 2. Divine Golden Underworld Radiance (Pulsing Ambient Glow)
+    const pulse = 0.22 + Math.sin(time * 2.8 + phase) * 0.08;
+    const aura = c.createRadialGradient(x, y - 13, 2, x, y - 13, 26);
+    aura.addColorStop(0, `rgba(253, 224, 71, ${pulse})`);
+    aura.addColorStop(0.55, `rgba(245, 158, 11, ${pulse * 0.45})`);
+    aura.addColorStop(1, "rgba(245, 158, 11, 0)");
+    c.fillStyle = aura;
+    c.beginPath();
+    c.arc(x, y - 13, 26, 0, Math.PI * 2);
+    c.fill();
+
+    // 3. Flared Golden Pedestal Base
+    c.fillStyle = "#000000";
+    c.beginPath();
+    c.ellipse(x, y + 0.5, 8.5, 3.8, 0, 0, Math.PI * 2);
+    c.fill();
+
+    const baseGrad = c.createLinearGradient(x - 8, y, x + 8, y);
+    baseGrad.addColorStop(0, "#fbbf24");
+    baseGrad.addColorStop(0.5, "#d97706");
+    baseGrad.addColorStop(1, "#78350f");
+    c.fillStyle = baseGrad;
+    c.beginPath();
+    c.ellipse(x, y - 0.5, 7.5, 3.2, 0, 0, Math.PI * 2);
+    c.fill();
+
+    // 4. Curvaceous Voluptuous Amphora Pot Belly ("Thick Gold Pot")
+    c.beginPath();
+    c.moveTo(x - 4.5, y - 1);
+    c.bezierCurveTo(x - 12, y - 7, x - 12.5, y - 16, x - 5.5, y - 22);
+    c.lineTo(x + 5.5, y - 22);
+    c.bezierCurveTo(x + 12.5, y - 16, x + 12, y - 7, x + 4.5, y - 1);
+    c.closePath();
+
+    // Master Hades comic black ink outline
+    c.lineWidth = 2.4;
+    c.strokeStyle = "#000000";
+    c.stroke();
+
+    // Rich Hades radiant gold gradient fill
+    const bodyGrad = c.createLinearGradient(x - 12, y - 12, x + 12, y - 12);
+    bodyGrad.addColorStop(0, "#fef08a");
+    bodyGrad.addColorStop(0.25, "#fde047");
+    bodyGrad.addColorStop(0.65, "#eab308");
+    bodyGrad.addColorStop(0.9, "#b45309");
+    bodyGrad.addColorStop(1, "#451a03");
+    c.fillStyle = bodyGrad;
+    c.fill();
+
+    // Sharp Comic Shading: High-contrast shadow crescent on right flank
+    c.save();
+    c.clip();
+    c.fillStyle = "rgba(0, 0, 0, 0.38)";
+    c.beginPath();
+    c.ellipse(x + 5, y - 12, 7.5, 12, 0, 0, Math.PI * 2);
+    c.fill();
+
+    // Vibrant Specular Highlight Sheen on Left Shoulder
+    c.fillStyle = "rgba(255, 255, 255, 0.65)";
+    c.beginPath();
+    c.ellipse(x - 5.5, y - 15, 2.2, 5.5, -0.25, 0, Math.PI * 2);
+    c.fill();
+    c.restore();
+
+    // 5. Lower Beaded Golden Ring
+    c.strokeStyle = "#000000";
+    c.lineWidth = 1.0;
+    for (let b = -3; b <= 3; b++) {
+      const bx = x + b * 2.8;
+      const by = y - 7 + Math.abs(b) * 0.45;
+      c.fillStyle = "#fef08a";
+      c.beginPath();
+      c.arc(bx, by, 1.4, 0, Math.PI * 2);
+      c.fill();
+      c.stroke();
+    }
+
+    // 6. Upper Beaded Golden Choker Collar
+    for (let b = -2; b <= 2; b++) {
+      const bx = x + b * 2.2;
+      const by = y - 21;
+      c.fillStyle = "#fef08a";
+      c.beginPath();
+      c.arc(bx, by, 1.2, 0, Math.PI * 2);
+      c.fill();
+      c.stroke();
+    }
+
+    // 7. Scalloped Golden Crown (Fluted Jagged Petal Rim)
+    c.fillStyle = "#000000";
+    c.beginPath();
+    c.moveTo(x - 8, y - 22);
+    c.lineTo(x - 8.5, y - 27.5);
+    c.lineTo(x - 5, y - 24.5);
+    c.lineTo(x - 3, y - 28.5);
+    c.lineTo(x, y - 25);
+    c.lineTo(x + 3, y - 28.5);
+    c.lineTo(x + 5, y - 24.5);
+    c.lineTo(x + 8.5, y - 27.5);
+    c.lineTo(x + 8, y - 22);
+    c.closePath();
+    c.lineWidth = 2.0;
+    c.strokeStyle = "#000000";
+    c.stroke();
+
+    const crownGrad = c.createLinearGradient(x - 8, y - 28, x + 8, y - 28);
+    crownGrad.addColorStop(0, "#fde047");
+    crownGrad.addColorStop(0.5, "#facc15");
+    crownGrad.addColorStop(1, "#b45309");
+    c.fillStyle = crownGrad;
+    c.fill();
+
+    // 8. Dark Interior Opening & Overflowing Stygian Gold Coins
+    c.fillStyle = "#1a0f04";
+    c.beginPath();
+    c.ellipse(x, y - 23, 5.5, 2.2, 0, 0, Math.PI * 2);
+    c.fill();
+
+    // Overflowing golden coins inside mouth
+    c.fillStyle = "#fef08a";
+    c.beginPath();
+    c.arc(x - 2, y - 23.5, 1.8, 0, Math.PI * 2);
+    c.arc(x + 2, y - 23.5, 1.8, 0, Math.PI * 2);
+    c.arc(x, y - 24.5, 2.0, 0, Math.PI * 2);
+    c.fill();
+
+    // 9. Rising Magical Sparkles / Wealth Embers
+    const sp1Y = y - 28 - ((time * 18 + phase * 20) % 22);
+    const sp1X = x + Math.sin(time * 3 + phase) * 6;
+    const sp2Y = y - 28 - ((time * 15 + phase * 20 + 11) % 22);
+    const sp2X = x + Math.cos(time * 2.6 + phase) * 5;
+
+    c.fillStyle = "#ffffff";
+    c.beginPath();
+    c.arc(sp1X, sp1Y, 1.5, 0, Math.PI * 2);
+    c.arc(sp2X, sp2Y, 1.2, 0, Math.PI * 2);
+    c.fill();
+
+    c.fillStyle = "rgba(253, 224, 71, 0.8)";
+    c.beginPath();
+    c.arc(sp1X, sp1Y, 2.8, 0, Math.PI * 2);
+    c.arc(sp2X, sp2Y, 2.2, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  // Helper: Draw cel-shaded themed artwork or reserved exhibition display (Hoisted to eliminate GC churn)
+  function drawArtworkCard(piece: MountedPainting, isNear: boolean) {
+    const isDigital = piece.category === "digital";
+    const isBlender = piece.category === "blender";
+
+    // 1. Cel-Shaded Faceted Light Cones (Graphic Polygon Beams with Sharp Edges)
+    ctx.fillStyle = isDigital
+      ? "rgba(56, 189, 248, 0.16)"
+      : isBlender
+      ? "rgba(249, 115, 22, 0.18)"
+      : "rgba(251, 191, 36, 0.16)";
+    ctx.beginPath();
+    ctx.moveTo(-7, -22);
+    ctx.lineTo(7, -22);
+    ctx.lineTo(24, 26);
+    ctx.lineTo(-24, 26);
+    ctx.closePath();
+    ctx.fill();
+
+    // Inner high-intensity core beam facet (classic toon light shaft)
+    ctx.fillStyle = isDigital
+      ? "rgba(224, 242, 254, 0.28)"
+      : isBlender
+      ? "rgba(255, 237, 213, 0.30)"
+      : "rgba(254, 240, 138, 0.28)";
+    ctx.beginPath();
+    ctx.moveTo(-3.5, -22);
+    ctx.lineTo(3.5, -22);
+    ctx.lineTo(13, 26);
+    ctx.lineTo(-13, 26);
+    ctx.closePath();
+    ctx.fill();
+
+    // 2. Hard-Edged Comic Cast Shadow (Zero blur, crisp black offset)
+    ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+    ctx.fillRect(-14, -16, 33, 39);
+
+    // 3. Cel-Shaded Outer Frame & Inset
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(-17.5, -20.5, 35, 41);
+
+    if (isDigital) {
+      ctx.fillStyle = isNear ? "#38bdf8" : "#0284c7";
+      ctx.fillRect(-16, -19, 32, 38);
+      ctx.fillStyle = "#031326";
+      ctx.fillRect(-14.5, -17.5, 29, 35);
+    } else if (isBlender) {
+      ctx.fillStyle = isNear ? "#fb923c" : "#ea580c";
+      ctx.fillRect(-16, -19, 32, 38);
+      ctx.fillStyle = "#1b0b04";
+      ctx.fillRect(-14.5, -17.5, 29, 35);
+    } else {
+      ctx.fillStyle = isNear ? "#fbbf24" : "#d97706";
+      ctx.fillRect(-16, -19, 32, 38);
+      ctx.fillStyle = "#1c1103";
+      ctx.fillRect(-14.5, -17.5, 29, 35);
+    }
+
+    // 4. Artwork Canvas OR Reserved Exhibition Display
+    if (piece.isReservedMount) {
+      if (isDigital) {
+        ctx.fillStyle = "#060911";
+        ctx.fillRect(-12, -15, 24, 30);
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(-12, -15, 24, 30);
+
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(0, -9);
+        ctx.lineTo(8, -1);
+        ctx.lineTo(0, 7);
+        ctx.lineTo(-8, -1);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.fillStyle = "#38bdf8";
+        ctx.font = "bold 4px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("DIGITAL", 0, -1);
+        ctx.font = "3.2px sans-serif";
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillText("STUDIO", 0, 11);
+      } else if (isBlender) {
+        ctx.fillStyle = "#0d0906";
+        ctx.fillRect(-12, -15, 24, 30);
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(-12, -15, 24, 30);
+
+        ctx.strokeStyle = "#f97316";
+        ctx.lineWidth = 1.4;
+        ctx.strokeRect(-6, -8, 12, 12);
+        ctx.beginPath();
+        ctx.moveTo(-6, -8);
+        ctx.lineTo(-2, -12);
+        ctx.lineTo(10, -12);
+        ctx.lineTo(6, -8);
+        ctx.moveTo(10, -12);
+        ctx.lineTo(10, 0);
+        ctx.lineTo(6, 4);
+        ctx.stroke();
+
+        ctx.fillStyle = "#f97316";
+        ctx.font = "bold 4px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("BLENDER", 0, 8);
+        ctx.font = "3.2px sans-serif";
+        ctx.fillStyle = "#a1a1aa";
+        ctx.fillText("3D LAB", 0, 12);
+      }
+    } else {
+      if (piece.imgElement.complete && piece.imgElement.naturalWidth > 0) {
+        ctx.drawImage(piece.imgElement, -12, -15, 24, 30);
+      } else {
+        ctx.fillStyle = isDigital ? "#0f172a" : isBlender ? "#18181b" : "#1e293b";
+        ctx.fillRect(-12, -15, 24, 30);
+      }
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(-12, -15, 24, 30);
+    }
+
+    // 5. Cel-Shaded Overhead Picture Lamp Fixture
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(-11, -26.5, 22, 5.5);
+    if (isDigital) {
+      ctx.fillStyle = "#0284c7";
+      ctx.fillRect(-10, -25.5, 20, 3.5);
+      ctx.fillStyle = isNear ? "#ffffff" : "#38bdf8";
+      ctx.fillRect(-7, -25, 14, 2.0);
+    } else if (isBlender) {
+      ctx.fillStyle = "#c2410c";
+      ctx.fillRect(-10, -25.5, 20, 3.5);
+      ctx.fillStyle = isNear ? "#ffffff" : "#fb923c";
+      ctx.fillRect(-7, -25, 14, 2.0);
+    } else {
+      ctx.fillStyle = "#b45309";
+      ctx.fillRect(-10, -25.5, 20, 3.5);
+      ctx.fillStyle = isNear ? "#ffffff" : "#fbbf24";
+      ctx.fillRect(-7, -25, 14, 2.0);
+    }
+
+    // 6. Cel-Shaded Identification Placard
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(-12, 19, 24, 7.5);
+    if (isDigital) {
+      ctx.fillStyle = "#081525";
+      ctx.fillRect(-11, 20, 22, 5.5);
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 1.0;
+      ctx.strokeRect(-11, 20, 22, 5.5);
+      ctx.fillStyle = "#38bdf8";
+      ctx.font = "bold 4px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(piece.isReservedMount ? "DIGITAL WING" : `LOT #${piece.lotNum}`, 0, 22.5);
+    } else if (isBlender) {
+      ctx.fillStyle = "#150904";
+      ctx.fillRect(-11, 20, 22, 5.5);
+      ctx.strokeStyle = "#ea580c";
+      ctx.lineWidth = 1.0;
+      ctx.strokeRect(-11, 20, 22, 5.5);
+      ctx.fillStyle = "#fb923c";
+      ctx.font = "bold 4px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(piece.isReservedMount ? "BLENDER WING" : `LOT #${piece.lotNum}`, 0, 22.5);
+    } else {
+      ctx.fillStyle = "#150e04";
+      ctx.fillRect(-11, 20, 22, 5.5);
+      ctx.strokeStyle = "#d97706";
+      ctx.lineWidth = 1.0;
+      ctx.strokeRect(-11, 20, 22, 5.5);
+      ctx.fillStyle = "#fbbf24";
+      ctx.font = "bold 4px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`LOT #${piece.lotNum}`, 0, 22.5);
+    }
+  }
 
   // Initial Camera Centering
   const startIso = toIso(player.col, player.row);
@@ -1932,11 +2574,13 @@ export function initMuseumMaze() {
 
   // --- Main Animation Loop ---
   function animate() {
-    // Performance: Sleep animation loop completely when user is viewing Catalog or Ledger
-    if (currentViewMode !== "maze") {
+    // Performance: Sleep animation loop completely when user is viewing Catalog/Ledger or tab is inactive
+    if (currentViewMode !== "maze" || !isPageVisible) {
       requestAnimationFrame(animate);
       return;
     }
+
+    const time = performance.now() * 0.001;
 
     // 1. Natural Intuitive WASD Movement (Screen-Space & Corridor Aligned)
     // Converts keyboard inputs directly to screen directions so:
@@ -2012,12 +2656,16 @@ export function initMuseumMaze() {
     if (!player.isSitting && (Math.abs(player.vx) > 0.001 || Math.abs(player.vy) > 0.001)) {
       player.walkCycle += 0.30;
 
-      // Strict axis-separated collision resolution:
-      // Prevents all wall clipping while allowing smooth sliding along corridors
+      // Strict axis-separated collision resolution with corner sliding deflection
       const nextC = player.col + player.vx;
       if (isWalkable(nextC, player.row, player.radius)) {
         player.col = nextC;
       } else {
+        // Corner slide along row if moving horizontally into a corner
+        if (Math.abs(player.vy) < 0.001) {
+          if (isWalkable(nextC, player.row + 0.06, player.radius)) player.row += 0.025;
+          else if (isWalkable(nextC, player.row - 0.06, player.radius)) player.row -= 0.025;
+        }
         player.vx = 0;
       }
 
@@ -2025,6 +2673,11 @@ export function initMuseumMaze() {
       if (isWalkable(player.col, nextR, player.radius)) {
         player.row = nextR;
       } else {
+        // Corner slide along col if moving vertically into a corner
+        if (Math.abs(player.vx) < 0.001) {
+          if (isWalkable(player.col + 0.06, nextR, player.radius)) player.col += 0.025;
+          else if (isWalkable(player.col - 0.06, nextR, player.radius)) player.col -= 0.025;
+        }
         player.vy = 0;
       }
 
@@ -2040,6 +2693,17 @@ export function initMuseumMaze() {
         });
       }
 
+      // Check collision with uncollected Stygian Urns of Wealth (Zero allocation check)
+      for (let i = 0; i < uncollectedObols.length; i++) {
+        const ob = uncollectedObols[i];
+        const dCol = ob.col - player.col;
+        const dRow = ob.row - player.row;
+        if (dCol * dCol + dRow * dRow < 0.65) {
+          collectObol(ob);
+          break;
+        }
+      }
+
       player.distMoved += Math.hypot(player.vx, player.vy);
       if (player.distMoved > 0.5) {
         player.distMoved = 0;
@@ -2047,16 +2711,29 @@ export function initMuseumMaze() {
       }
     }
 
-    // Restorative soul particles when sitting on divan
-    if (player.isSitting && Math.random() < 0.12) {
-      const pIso = toIso(player.col, player.row);
-      footstepEmbers.push({
-        isoX: pIso.x + (Math.random() - 0.5) * 16,
-        isoY: pIso.y + TILE_H / 2 - 18 - Math.random() * 12,
-        life: 1.0,
-        maxLife: 36,
-        size: 1.6,
-      });
+    // Restorative soul particles & chaise resting bonus
+    if (player.isSitting) {
+      player.sitTicks = (player.sitTicks || 0) + 1;
+      if (player.sitTicks >= 210) {
+        player.sitTicks = 0;
+        patronBalance += 15;
+        updateHudBalance();
+        playChime();
+        showToast("+15 TKN Restored • Velvet Chaise", "chaise");
+      }
+
+      if (Math.random() < 0.12) {
+        const pIso = toIso(player.col, player.row);
+        footstepEmbers.push({
+          isoX: pIso.x + (Math.random() - 0.5) * 16,
+          isoY: pIso.y + TILE_H / 2 - 18 - Math.random() * 12,
+          life: 1.0,
+          maxLife: 36,
+          size: 1.6,
+        });
+      }
+    } else {
+      player.sitTicks = 0;
     }
 
     // 2. Camera smoothly centers on player
@@ -2066,9 +2743,8 @@ export function initMuseumMaze() {
 
     // 3. Artwork & Bench Proximity Check & HUD Wing Indicator Update (House of Hades)
     const currentZone = getTileZone(Math.floor(player.col), Math.floor(player.row));
-    const wingNameEl = document.getElementById("current-wing-name");
-    const wingDotEl = document.getElementById("current-wing-dot");
-    if (wingNameEl && wingDotEl) {
+    if (wingNameEl && wingDotEl && currentZone !== currentRenderedZone) {
+      currentRenderedZone = currentZone;
       if (currentZone === "physical") {
         wingNameEl.textContent = "Elysium Salon (Physical Fine Art)";
         wingDotEl.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
@@ -2086,254 +2762,77 @@ export function initMuseumMaze() {
 
     const near = getNearbyPainting(player.col, player.row, 2.4);
     const nearBench = getNearbyBench(player.col, player.row, 1.4);
-    const promptSubtitleEl = document.getElementById("prompt-subtitle");
-    const promptActionBtn = document.getElementById("prompt-action-btn");
-    const promptReservedBadge = document.getElementById("prompt-reserved-badge");
 
-    if (player.isSitting && promptEl && promptTitleEl) {
-      promptTitleEl.textContent = "Underworld Chaise • House of Hades";
-      if (promptSubtitleEl) {
-        promptSubtitleEl.textContent = "Resting in Royal Repose • Press [E], [WASD] or Click to Stand";
-        promptSubtitleEl.className = "text-[10px] text-amber-400 uppercase font-bold tracking-wider";
-      }
-      if (promptActionBtn) {
-        promptActionBtn.textContent = "Stand Up";
-        promptActionBtn.classList.remove("hidden");
-      }
-      if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
-      promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
-      promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
-    } else if (near && promptEl && promptTitleEl) {
-      if (near.isReservedMount) {
-        promptTitleEl.textContent = `${near.title} (Exhibition Space)`;
+    // Dynamic prompt key generation (eliminates 60 FPS DOM thrashing and layout recalcs)
+    const promptKey = player.isSitting
+      ? `sitting_${Math.ceil((210 - (player.sitTicks || 0)) / 60)}`
+      : near
+      ? `art_${near.artId}`
+      : nearBench
+      ? "bench"
+      : "none";
+
+    if (promptKey !== currentPromptKey) {
+      currentPromptKey = promptKey;
+
+      if (player.isSitting && promptEl && promptTitleEl) {
+        promptTitleEl.textContent = "Imperial Velvet Chaise • House of Hades";
         if (promptSubtitleEl) {
-          promptSubtitleEl.textContent = "Reserved Underworld Plinth • Bidding Unavailable";
-          promptSubtitleEl.className = "text-[10px] text-slate-400 uppercase font-bold tracking-wider";
-        }
-        if (promptActionBtn) promptActionBtn.classList.add("hidden");
-        if (promptReservedBadge) promptReservedBadge.classList.remove("hidden");
-      } else {
-        promptTitleEl.textContent = `${near.title} (Lot #${near.lotNum})`;
-        if (promptSubtitleEl) {
-          promptSubtitleEl.textContent = `${near.wingName || "Underworld Gallery"} • Inspect & Submit Offer`;
+          const secsLeft = Math.ceil((210 - (player.sitTicks || 0)) / 60);
+          promptSubtitleEl.textContent = `Resting (+15 TKN in ${secsLeft}s) • Press [E], [WASD] or Click to Stand`;
           promptSubtitleEl.className = "text-[10px] text-amber-400 uppercase font-bold tracking-wider";
         }
         if (promptActionBtn) {
-          promptActionBtn.textContent = "Inspect";
+          promptActionBtn.textContent = "Stand Up";
           promptActionBtn.classList.remove("hidden");
         }
         if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
-      }
-      promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
-      promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
-    } else if (nearBench && promptEl && promptTitleEl) {
-      promptTitleEl.textContent = "Imperial Velvet Chaise";
-      if (promptSubtitleEl) {
-        promptSubtitleEl.textContent = "House of Hades Lounge • Press [E] or Click to Sit & Contemplate";
-        promptSubtitleEl.className = "text-[10px] text-amber-300 uppercase font-bold tracking-wider";
-      }
-      if (promptActionBtn) {
-        promptActionBtn.textContent = "Sit Down";
-        promptActionBtn.classList.remove("hidden");
-      }
-      if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
-      promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
-      promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
-    } else if (promptEl) {
-      promptEl.classList.add("opacity-0", "translate-y-4", "scale-95");
-      promptEl.classList.remove("opacity-100", "translate-y-0", "scale-100");
-    }
-
-    // Helper: Draw cel-shaded themed artwork or reserved exhibition display
-    function drawArtworkCard(piece: MountedPainting, isNear: boolean) {
-      const isDigital = piece.category === "digital";
-      const isBlender = piece.category === "blender";
-
-      // 1. Cel-Shaded Faceted Light Cones (Graphic Polygon Beams with Sharp Edges)
-      // Outer subtle beam facet
-      ctx.fillStyle = isDigital
-        ? "rgba(56, 189, 248, 0.16)"
-        : isBlender
-        ? "rgba(249, 115, 22, 0.18)"
-        : "rgba(251, 191, 36, 0.16)";
-      ctx.beginPath();
-      ctx.moveTo(-7, -22);
-      ctx.lineTo(7, -22);
-      ctx.lineTo(24, 26);
-      ctx.lineTo(-24, 26);
-      ctx.closePath();
-      ctx.fill();
-
-      // Inner high-intensity core beam facet (classic toon light shaft)
-      ctx.fillStyle = isDigital
-        ? "rgba(224, 242, 254, 0.28)"
-        : isBlender
-        ? "rgba(255, 237, 213, 0.30)"
-        : "rgba(254, 240, 138, 0.28)";
-      ctx.beginPath();
-      ctx.moveTo(-3.5, -22);
-      ctx.lineTo(3.5, -22);
-      ctx.lineTo(13, 26);
-      ctx.lineTo(-13, 26);
-      ctx.closePath();
-      ctx.fill();
-
-      // 2. Hard-Edged Comic Cast Shadow (Zero blur, crisp black offset)
-      ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
-      ctx.fillRect(-14, -16, 33, 39);
-
-      // 3. Cel-Shaded Outer Frame & Inset
-      // Master black ink silhouette boundary
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(-17.5, -20.5, 35, 41);
-
-      if (isDigital) {
-        // Cybernetic Electric Blue Cel Frame
-        ctx.fillStyle = isNear ? "#38bdf8" : "#0284c7";
-        ctx.fillRect(-16, -19, 32, 38);
-        ctx.fillStyle = "#031326";
-        ctx.fillRect(-14.5, -17.5, 29, 35);
-      } else if (isBlender) {
-        // Volcanic Orange Studio Cel Frame
-        ctx.fillStyle = isNear ? "#fb923c" : "#ea580c";
-        ctx.fillRect(-16, -19, 32, 38);
-        ctx.fillStyle = "#1b0b04";
-        ctx.fillRect(-14.5, -17.5, 29, 35);
-      } else {
-        // Gilded Stygian Gold Cel Frame
-        ctx.fillStyle = isNear ? "#fbbf24" : "#d97706";
-        ctx.fillRect(-16, -19, 32, 38);
-        ctx.fillStyle = "#1c1103";
-        ctx.fillRect(-14.5, -17.5, 29, 35);
-      }
-
-      // 4. Artwork Canvas OR Reserved Exhibition Display
-      if (piece.isReservedMount) {
-        if (isDigital) {
-          ctx.fillStyle = "#060911";
-          ctx.fillRect(-12, -15, 24, 30);
-          ctx.strokeStyle = "#000000";
-          ctx.lineWidth = 1.2;
-          ctx.strokeRect(-12, -15, 24, 30);
-
-          // Holographic Cybernetic Diamond Icon
-          ctx.strokeStyle = "#38bdf8";
-          ctx.lineWidth = 1.4;
-          ctx.beginPath();
-          ctx.moveTo(0, -9);
-          ctx.lineTo(8, -1);
-          ctx.lineTo(0, 7);
-          ctx.lineTo(-8, -1);
-          ctx.closePath();
-          ctx.stroke();
-
-          ctx.fillStyle = "#38bdf8";
-          ctx.font = "bold 4px sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("DIGITAL", 0, -1);
-          ctx.font = "3.2px sans-serif";
-          ctx.fillStyle = "#94a3b8";
-          ctx.fillText("STUDIO", 0, 11);
-        } else if (isBlender) {
-          ctx.fillStyle = "#0d0906";
-          ctx.fillRect(-12, -15, 24, 30);
-          ctx.strokeStyle = "#000000";
-          ctx.lineWidth = 1.2;
-          ctx.strokeRect(-12, -15, 24, 30);
-
-          // Stylized 3D Wireframe Cube
-          ctx.strokeStyle = "#f97316";
-          ctx.lineWidth = 1.4;
-          ctx.strokeRect(-6, -8, 12, 12);
-          ctx.beginPath();
-          ctx.moveTo(-6, -8);
-          ctx.lineTo(-2, -12);
-          ctx.lineTo(10, -12);
-          ctx.lineTo(6, -8);
-          ctx.moveTo(10, -12);
-          ctx.lineTo(10, 0);
-          ctx.lineTo(6, 4);
-          ctx.stroke();
-
-          ctx.fillStyle = "#f97316";
-          ctx.font = "bold 4px sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("BLENDER", 0, 8);
-          ctx.font = "3.2px sans-serif";
-          ctx.fillStyle = "#a1a1aa";
-          ctx.fillText("3D LAB", 0, 12);
-        }
-      } else {
-        if (piece.imgElement.complete && piece.imgElement.naturalWidth > 0) {
-          ctx.drawImage(piece.imgElement, -12, -15, 24, 30);
+        promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
+        promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
+      } else if (near && promptEl && promptTitleEl) {
+        if (near.isReservedMount) {
+          promptTitleEl.textContent = `${near.title} (Exhibition Space)`;
+          if (promptSubtitleEl) {
+            promptSubtitleEl.textContent = "Reserved Underworld Plinth • Bidding Unavailable";
+            promptSubtitleEl.className = "text-[10px] text-slate-400 uppercase font-bold tracking-wider";
+          }
+          if (promptActionBtn) promptActionBtn.classList.add("hidden");
+          if (promptReservedBadge) promptReservedBadge.classList.remove("hidden");
         } else {
-          ctx.fillStyle = isDigital ? "#0f172a" : isBlender ? "#18181b" : "#1e293b";
-          ctx.fillRect(-12, -15, 24, 30);
+          promptTitleEl.textContent = `${near.title} (Lot #${near.lotNum})`;
+          if (promptSubtitleEl) {
+            const lead = ledgerData[near.artId];
+            if (lead && lead.highest_bid > 0) {
+              promptSubtitleEl.textContent = `Top Offer: ${lead.highest_bid.toLocaleString()} TKN (@${lead.leading_patron}) • Press [E] to Bid`;
+            } else {
+              promptSubtitleEl.textContent = `${near.wingName || "Underworld Gallery"} • Reserve: ${(lead?.starting_bid || 500).toLocaleString()} TKN • Press [E] to Bid`;
+            }
+            promptSubtitleEl.className = "text-[10px] text-amber-400 uppercase font-bold tracking-wider";
+          }
+          if (promptActionBtn) {
+            promptActionBtn.textContent = "Inspect & Bid [E]";
+            promptActionBtn.classList.remove("hidden");
+          }
+          if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
         }
-        // Crisp black ink border around the painting canvas
-        ctx.strokeStyle = "#000000";
-        ctx.lineWidth = 1.2;
-        ctx.strokeRect(-12, -15, 24, 30);
-      }
-
-      // 5. Cel-Shaded Overhead Picture Lamp Fixture
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(-11, -26.5, 22, 5.5);
-      if (isDigital) {
-        ctx.fillStyle = "#0284c7";
-        ctx.fillRect(-10, -25.5, 20, 3.5);
-        ctx.fillStyle = isNear ? "#ffffff" : "#38bdf8";
-        ctx.fillRect(-7, -25, 14, 2.0);
-      } else if (isBlender) {
-        ctx.fillStyle = "#c2410c";
-        ctx.fillRect(-10, -25.5, 20, 3.5);
-        ctx.fillStyle = isNear ? "#ffffff" : "#fb923c";
-        ctx.fillRect(-7, -25, 14, 2.0);
-      } else {
-        ctx.fillStyle = "#b45309";
-        ctx.fillRect(-10, -25.5, 20, 3.5);
-        ctx.fillStyle = isNear ? "#ffffff" : "#fbbf24";
-        ctx.fillRect(-7, -25, 14, 2.0);
-      }
-
-      // 6. Cel-Shaded Identification Placard
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(-12, 19, 24, 7.5);
-      if (isDigital) {
-        ctx.fillStyle = "#081525";
-        ctx.fillRect(-11, 20, 22, 5.5);
-        ctx.strokeStyle = "#38bdf8";
-        ctx.lineWidth = 1.0;
-        ctx.strokeRect(-11, 20, 22, 5.5);
-        ctx.fillStyle = "#38bdf8";
-        ctx.font = "bold 4px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(piece.isReservedMount ? "DIGITAL WING" : `LOT #${piece.lotNum}`, 0, 22.5);
-      } else if (isBlender) {
-        ctx.fillStyle = "#150904";
-        ctx.fillRect(-11, 20, 22, 5.5);
-        ctx.strokeStyle = "#ea580c";
-        ctx.lineWidth = 1.0;
-        ctx.strokeRect(-11, 20, 22, 5.5);
-        ctx.fillStyle = "#fb923c";
-        ctx.font = "bold 4px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(piece.isReservedMount ? "BLENDER WING" : `LOT #${piece.lotNum}`, 0, 22.5);
-      } else {
-        ctx.fillStyle = "#150e04";
-        ctx.fillRect(-11, 20, 22, 5.5);
-        ctx.strokeStyle = "#d97706";
-        ctx.lineWidth = 1.0;
-        ctx.strokeRect(-11, 20, 22, 5.5);
-        ctx.fillStyle = "#fbbf24";
-        ctx.font = "bold 4px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(`LOT #${piece.lotNum}`, 0, 22.5);
+        promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
+        promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
+      } else if (nearBench && promptEl && promptTitleEl) {
+        promptTitleEl.textContent = "Imperial Velvet Chaise";
+        if (promptSubtitleEl) {
+          promptSubtitleEl.textContent = "Resting Sanctuary • Restores +15 TKN over time • Press [E] to Sit";
+          promptSubtitleEl.className = "text-[10px] text-amber-300 uppercase font-bold tracking-wider";
+        }
+        if (promptActionBtn) {
+          promptActionBtn.textContent = "Rest? [E]";
+          promptActionBtn.classList.remove("hidden");
+        }
+        if (promptReservedBadge) promptReservedBadge.classList.add("hidden");
+        promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
+        promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
+      } else if (promptEl) {
+        promptEl.classList.add("opacity-0", "translate-y-4", "scale-95");
+        promptEl.classList.remove("opacity-100", "translate-y-0", "scale-100");
       }
     }
 
@@ -2425,18 +2924,25 @@ export function initMuseumMaze() {
 
         const cellType = MAP[r][c];
         const isPlayerTile = diag === playerDepth && Math.floor(player.col) === c;
+        const obol = obolGrid[r]?.[c];
+        const hasActiveObol = obol && !obol.collected;
 
-        // Skip empty floor tiles unless visitor is on this tile
-        if (cellType === 0 && !isPlayerTile) continue;
+        // Skip empty floor tiles unless visitor or active obol is on this tile
+        if (cellType === 0 && !isPlayerTile && !hasActiveObol) continue;
 
         const pt = isoGrid[r][c];
 
-        // Frustum Cull: Skip off-screen walls & benches
+        // Frustum Cull: Skip off-screen walls, benches & obols
         if (
           !isPlayerTile &&
           (pt.x < minIsoX || pt.x > maxIsoX || pt.y < minIsoY - 170 || pt.y > maxIsoY + 50)
         ) {
           continue;
+        }
+
+        // 0. Render Hades Golden Urn of Wealth ("THICK GOLD POT" from Hades)
+        if (hasActiveObol && obol) {
+          drawHadesUrnOfWealth(ctx, obol.isoX, obol.isoY + TILE_H / 2, time, obol.phase);
         }
 
         // A. Continuous Architectural Walls
@@ -2631,7 +3137,7 @@ export function initMuseumMaze() {
             ctx.restore();
           }
         } else if (cellType === 3) {
-          // B. House of Hades Imperial Underworld Velvet Divan (Cel-Shaded Comic Style)
+          // B. House of Hades Imperial Underworld Velvet Chaise (Cel-Shaded Comic Style)
           const isPlayerSittingHere = player.isSitting && player.seatedBench?.col === c && player.seatedBench?.row === r;
 
           // 1. Hard-Edged Comic Contact Shadow
@@ -2731,7 +3237,7 @@ export function initMuseumMaze() {
           const pIso = toIso(player.col, player.row);
 
           if (player.isSitting) {
-            // Seated Posture (Zagreus relaxing in royal repose atop the velvet divan)
+            // Seated Posture (Zagreus relaxing in royal repose atop the velvet chaise)
             const sitY = pIso.y + TILE_H / 2 - 14;
 
             // Hard-edged Comic Drop Shadow
@@ -3096,10 +3602,27 @@ export function initMuseumMaze() {
       minimapCtx.clearRect(0, 0, minimapCanvas.width, minimapCanvas.height);
       minimapCtx.drawImage(cachedMinimap, 0, 0);
 
-      const cellW = minimapCanvas.width / COLS;
-      const cellH = minimapCanvas.height / ROWS;
-      const px = (player.col + 0.5) * cellW;
-      const py = (player.row + 0.5) * cellH;
+      const px = player.col * minimapCellW;
+      const py = player.row * minimapCellH;
+
+      // Uncollected Stygian Obol radar pips (Radiant Neon Cyan Diamonds)
+      if (uncollectedObols.length > 0) {
+        for (let i = 0; i < uncollectedObols.length; i++) {
+          const ob = uncollectedObols[i];
+          const ox = ob.col * minimapCellW;
+          const oy = ob.row * minimapCellH;
+          // Outer neon cyan aura
+          minimapCtx.fillStyle = "rgba(34, 211, 238, 0.45)";
+          minimapCtx.beginPath();
+          minimapCtx.arc(ox, oy, 3.6, 0, Math.PI * 2);
+          minimapCtx.fill();
+          // Crisp radiant diamond center
+          minimapCtx.fillStyle = "#22d3ee";
+          minimapCtx.beginPath();
+          minimapCtx.arc(ox, oy, 2.0, 0, Math.PI * 2);
+          minimapCtx.fill();
+        }
+      }
 
       // Visitor pulsing indicator
       minimapCtx.fillStyle = "rgba(251, 191, 36, 0.45)";

@@ -60,12 +60,12 @@ artworks:
     medium: "Pen & Ink on Paper"
     year: "2024"
     dimensions: "A4 / Ink Illustration"
-    description: "no cost, too great."
+    description: "no cost too great."
     image: "/assets/images/portfolio/physical/purevessel.jpg"
     starting_bid: 550
 
   - id: "master-chief"
-    title: "Master Chief:INKed"
+    title: "Master Chief: INKed"
     category: "physical"
     medium: "High-Density Crosshatch Ink on Paper"
     year: "2024"
@@ -100,7 +100,7 @@ artworks:
     medium: "Acrylic on Canvas"
     year: "2021"
     dimensions: "A4 / Textured Impasto"
-    description: "'Fawkes, is a Pheonix Harry.', said Dumbledore, calmly."
+    description: "'Fawkes is a Pheonix Harry.', said Dumbledore, calmly."
     image: "/assets/images/portfolio/physical/Fawkes.jpg"
     starting_bid: 750
 
@@ -130,7 +130,7 @@ artworks:
     medium: "Pen & Ink on Paper"
     year: "2024"
     dimensions: "A4 / High-Speed Ink Composition"
-    description: "'Ferrari will invent mirros one day, I hope.'"
+    description: "'Ferrari will invent mirrors one day, I hope.'"
     image: "/assets/images/portfolio/physical/OP81.jpg"
     starting_bid: 800
 
@@ -211,7 +211,7 @@ artworks:
     medium: "Digital Ink & Tonal Study"
     year: "2024"
     dimensions: "High-Res Digital Canvas"
-    description: "The b&w version of Neon Japan"
+    description: "The black and white version of Neon Japan"
     image: "/assets/images/portfolio/digital/BandW-Japan.jpg"
     starting_bid: 350
 
@@ -271,7 +271,7 @@ artworks:
     medium: "Digital Mood Study"
     year: "2024"
     dimensions: "High-Res Digital Canvas"
-    description: "lit,unlit."
+    description: "lit, unlit."
     image: "/assets/images/portfolio/digital/unlit.jpg"
     starting_bid: 320
 
@@ -452,7 +452,7 @@ artworks:
     medium: "Blender 3D Render / Cycles"
     year: "2024"
     dimensions: "High-Poly 3D Render"
-    description: "<sings>."
+    description: "*sings*."
     image: "/assets/images/portfolio/blender/sherma.jpg"
     starting_bid: 680
 ---

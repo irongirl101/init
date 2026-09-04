@@ -852,6 +852,8 @@ class ImageReplacementParser(HTMLParser):
 
     def _build_replacement(self, attrs):
         attrs_dict = {k.lower(): v for k, v in attrs}
+        if "data-no-process" in attrs_dict or "data-raw" in attrs_dict:
+            return None
         src = attrs_dict.get("src")
         if not src:
             return None

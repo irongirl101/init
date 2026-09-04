@@ -101,7 +101,8 @@ export async function processImages(inputDir, outputDir, siteConfig = {}) {
             continue;
         }
 
-        const origWidth = meta.width || Math.max(...TARGET_WIDTHS);
+        const isRotated = meta.orientation && meta.orientation >= 5 && meta.orientation <= 8;
+        const origWidth = (isRotated ? meta.height : meta.width) || Math.max(...TARGET_WIDTHS);
         const widths = [...new Set(
             TARGET_WIDTHS.filter(w => w <= origWidth).concat([origWidth])
         )].sort((a, b) => a - b);
@@ -144,7 +145,7 @@ export async function processImages(inputDir, outputDir, siteConfig = {}) {
                 try {
                     // Always regenerate local file to ensure it exists for upload
                     if (!fsSync.existsSync(outPath)) {
-                         await handler(sharp(inputPath).resize({ width: w })).toFile(outPath);
+                         await handler(sharp(inputPath).rotate().resize({ width: w })).toFile(outPath);
                          console.log(`[img] processed local ${file} -> ${outFile}`);
                     }
 
