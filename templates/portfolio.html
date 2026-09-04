@@ -85,6 +85,10 @@
             <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
               Token Balance
             </div>
+            <div class="text-[10px] font-mono text-slate-400 mt-1 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Patron: <span id="hud-patron-name" class="text-emerald-300 font-bold">Unregistered</span></span>
+            </div>
           </div>
         </div>
 
@@ -117,7 +121,7 @@
     </div>
 
     <!-- Main Architectural Museum Canvas -->
-    <canvas id="museum-canvas" class="w-full block cursor-crosshair"></canvas>
+    <canvas id="museum-canvas" tabindex="0" class="w-full block cursor-crosshair outline-none focus:outline-none"></canvas>
 
     <!-- Floating Proximity Prompt (Triggered when standing near a wall painting or chaise) -->
     <div id="proximity-prompt" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 pointer-events-auto transition-all duration-300 opacity-0 translate-y-4 scale-95 flex items-center gap-3 bg-black/90 backdrop-blur-xl px-5 py-3 rounded-2xl border border-amber-500/50 shadow-[0_0_35px_rgba(245,158,11,0.35)]">
@@ -353,12 +357,18 @@
           <!-- Patron Identity & Amount Inputs -->
           <div class="grid grid-cols-2 gap-2">
             <div class="form-control">
-              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Username</span></label>
-              <input id="bid-patron-name" type="text" placeholder="e.g. alex" class="input input-sm input-bordered bg-black/40 text-xs" />
+              <label class="label py-0.5 flex items-center justify-between">
+                <span class="label-text text-[10px] font-bold text-white/90">Username <span class="text-error font-bold">*</span></span>
+                <span class="text-[9px] text-error font-bold tracking-wider uppercase">Required</span>
+              </label>
+              <input id="bid-patron-name" type="text" required placeholder="Choose a username..." class="input input-sm input-bordered bg-black/40 text-xs focus:border-primary transition-all" />
             </div>
             <div class="form-control">
-              <label class="label py-0.5"><span class="label-text text-[10px] opacity-70">Bid Amount (TKN)</span></label>
-              <input id="bid-amount-input" type="number" step="50" class="input input-sm input-bordered bg-black/40 text-xs font-mono font-bold text-amber-400" />
+              <label class="label py-0.5 flex items-center justify-between">
+                <span class="label-text text-[10px] font-bold text-white/90">Bid Amount (TKN) <span class="text-error font-bold">*</span></span>
+                <span class="text-[9px] text-amber-400/80 font-mono">Min +50</span>
+              </label>
+              <input id="bid-amount-input" type="number" step="50" required class="input input-sm input-bordered bg-black/40 text-xs font-mono font-bold text-amber-400" />
             </div>
           </div>
 

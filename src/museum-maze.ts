@@ -520,8 +520,9 @@ export function initMuseumMaze() {
   }
 
   function resize() {
-    if (!canvas || !canvas.parentElement) return;
-    canvas.width = canvas.parentElement.clientWidth;
+    if (!canvas) return;
+    const parentW = canvas.parentElement ? canvas.parentElement.clientWidth : 0;
+    canvas.width = parentW > 0 ? parentW : Math.max(320, Math.min(window.innerWidth - 32, 1200));
     canvas.height = Math.max(620, Math.min(window.innerHeight * 0.78, 800));
     updateVignette();
   }
@@ -1198,19 +1199,113 @@ export function initMuseumMaze() {
     }
   }
 
+  // --- View Mode Toggle & Game Focus ---
+  let currentViewMode: "maze" | "catalog" | "ledger" = "maze";
+  const mazeViewEl = document.getElementById("museum-view");
+  const catalogViewEl = document.getElementById("catalog-view");
+  const ledgerViewEl = document.getElementById("ledger-view");
+  const btnMaze = document.getElementById("view-mode-maze");
+  const btnCatalog = document.getElementById("view-mode-catalog");
+  const btnLedger = document.getElementById("view-mode-ledger");
+
+  function setViewMode(mode: "maze" | "catalog" | "ledger") {
+    currentViewMode = mode;
+    if (mazeViewEl) mazeViewEl.classList.toggle("hidden", mode !== "maze");
+    if (catalogViewEl) catalogViewEl.classList.toggle("hidden", mode !== "catalog");
+    if (ledgerViewEl) ledgerViewEl.classList.toggle("hidden", mode !== "ledger");
+
+    if (btnMaze) {
+      btnMaze.className = mode === "maze"
+        ? "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item"
+        : "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item";
+    }
+    if (btnCatalog) {
+      btnCatalog.className = mode === "catalog"
+        ? "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item"
+        : "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item";
+    }
+    if (btnLedger) {
+      btnLedger.className = mode === "ledger"
+        ? "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item text-white"
+        : "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item text-amber-300";
+    }
+
+    if (mode === "ledger") {
+      updateCatalogBids();
+    } else if (mode === "catalog") {
+      const isGhPages = window.location.pathname.startsWith("/init");
+      const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
+      document.querySelectorAll<HTMLImageElement>(".catalog-card img").forEach((img) => {
+        const artId = img.getAttribute("data-art-id");
+        if (artId) {
+          const art = artworks.find((a) => a.id === artId);
+          if (art && (!img.complete || img.naturalWidth === 0)) {
+            const clean = art.image.startsWith("/") ? art.image.slice(1) : art.image;
+            img.src = `${prefix}${clean}`;
+          }
+        }
+      });
+    }
+  }
+
+  btnMaze?.addEventListener("click", () => setViewMode("maze"));
+  btnCatalog?.addEventListener("click", () => setViewMode("catalog"));
+  btnLedger?.addEventListener("click", () => setViewMode("ledger"));
+
+  function focusMuseumGame(smooth = true) {
+    if (!mazeViewEl) return;
+
+    // 1. If currently on another tab, switch back to interactive maze view
+    if (currentViewMode !== "maze") {
+      setViewMode("maze");
+    }
+
+    // 2. Direct browser focus to canvas
+    if (canvas) {
+      canvas.focus({ preventScroll: true });
+    }
+
+    // 3. Smoothly align viewport so the entire museum canvas is in view
+    const rect = mazeViewEl.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const isComfortable = rect.top >= 20 && rect.top <= 120 && rect.bottom >= windowH * 0.75;
+    if (!isComfortable) {
+      mazeViewEl.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "center" });
+    }
+  }
+
+  // Focus museum when canvas is clicked
+  canvas.addEventListener("pointerdown", () => {
+    focusMuseumGame(false);
+  });
+
   // Keyboard state
   const keys: Record<string, boolean> = {};
 
   window.addEventListener("keydown", (e) => {
-    if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    // If typing in an input, textarea, or select element, do not intercept
+    if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
       return;
     }
+
+    // If inspection modal or another dialog is currently open, do not intercept
+    const inspectionModal = document.getElementById("artwork-inspection-modal") as HTMLDialogElement | null;
+    if (inspectionModal && inspectionModal.open) {
+      return;
+    }
+
     const k = e.key.toLowerCase();
     const c = e.code.toLowerCase();
 
     // Arrow keys disabled for character movement
     if (["arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) {
       return;
+    }
+
+    const isMoveKey = ["w", "a", "s", "d"].includes(k) || ["keyw", "keya", "keys", "keyd"].includes(c);
+    if (isMoveKey) {
+      e.preventDefault();
+      focusMuseumGame();
     }
 
     keys[k] = true;
@@ -1439,14 +1534,29 @@ export function initMuseumMaze() {
   // --- Bidding & Silent Ledger ---
   let ledgerData: Record<string, ArtworkLedger> = {};
   let patronBalance = 2500;
-  let currentPatronName = "Visitor";
+  let currentPatronName = "";
 
   const savedLedger = localStorage.getItem("museum_bids_ledger");
   const savedBalance = localStorage.getItem("museum_patron_balance");
   const savedPatron = localStorage.getItem("museum_patron_name");
 
-  if (savedPatron) currentPatronName = savedPatron;
+  if (savedPatron && savedPatron.trim() && savedPatron !== "Visitor" && savedPatron !== "Anonymous Patron") {
+    currentPatronName = savedPatron.trim();
+  }
   if (savedBalance) patronBalance = parseInt(savedBalance, 10) || 2500;
+
+  function updateHudPatron() {
+    const hudPatronEl = document.getElementById("hud-patron-name");
+    if (hudPatronEl) {
+      if (currentPatronName) {
+        hudPatronEl.textContent = `@${currentPatronName}`;
+        hudPatronEl.className = "text-emerald-300 font-bold";
+      } else {
+        hudPatronEl.textContent = "Unregistered";
+        hudPatronEl.className = "text-amber-400/90 italic font-normal";
+      }
+    }
+  }
 
   function updateHudBalance() {
     const balEl = document.getElementById("patron-display-balance");
@@ -1454,6 +1564,7 @@ export function initMuseumMaze() {
     const ledgerBalEl = document.getElementById("ledger-patron-balance");
     if (ledgerBalEl) ledgerBalEl.textContent = `${patronBalance.toLocaleString()} TKN`;
     localStorage.setItem("museum_patron_balance", patronBalance.toString());
+    updateHudPatron();
   }
   updateHudBalance();
 
@@ -1699,6 +1810,7 @@ export function initMuseumMaze() {
 
   type NpointStore = Record<string, Record<string, { amount: number; time?: string }>>;
   let npointStore: NpointStore = {};
+  let currentLedgerFilter = "all";
 
   function applyNpointStoreToLedger(store: NpointStore) {
     const artBidsMap: Record<string, Array<{ patron: string; amount: number; timestamp: string }>> = {};
@@ -1786,9 +1898,6 @@ export function initMuseumMaze() {
       }
     } catch (e) {}
   }
-  loadBidsData();
-
-  let currentLedgerFilter = "all";
 
   function renderLedgerTable() {
     const tbody = document.getElementById("ledger-table-body");
@@ -1914,6 +2023,9 @@ export function initMuseumMaze() {
     renderLedgerTable();
   }
 
+  // Load initial bids asynchronously (safe, non-blocking)
+  loadBidsData().catch((err) => console.warn("Live bids async load error:", err));
+
   // --- Inspection Modal ---
   let activeModalArtId: string | null = null;
   const modal = document.getElementById("artwork-inspection-modal") as HTMLDialogElement | null;
@@ -1976,7 +2088,19 @@ export function initMuseumMaze() {
     if (highBidEl) highBidEl.textContent = `${ledger.highest_bid.toLocaleString()} TKN`;
     if (leadingPatronEl) leadingPatronEl.textContent = `@${ledger.leading_patron}`;
 
-    if (patronInput) patronInput.value = currentPatronName;
+    if (patronInput) {
+      patronInput.value = currentPatronName;
+      patronInput.classList.remove("input-error", "border-error", "ring-2", "ring-error/50");
+      if (!currentPatronName) {
+        setTimeout(() => patronInput.focus(), 150);
+      }
+      patronInput.oninput = () => {
+        patronInput.classList.remove("input-error", "border-error", "ring-2", "ring-error/50");
+        if (messageEl && messageEl.textContent?.includes("username")) {
+          messageEl.classList.add("hidden");
+        }
+      };
+    }
     if (amountInput) amountInput.value = (ledger.highest_bid + 50).toString();
 
     if (messageEl) {
@@ -2062,18 +2186,24 @@ export function initMuseumMaze() {
       const patron = patronInput?.value.trim() || "";
       const amount = parseInt(amountInput?.value || "0", 10);
 
-      if (!patron) {
+      if (!patron || patron.toLowerCase() === "guest" || patron.toLowerCase() === "unregistered" || patron.toLowerCase() === "visitor") {
+        if (patronInput) {
+          patronInput.classList.add("input-error", "border-error", "ring-2", "ring-error/50");
+          patronInput.focus();
+        }
         if (messageEl) {
           messageEl.className =
-            "text-xs text-center py-2 rounded-lg bg-error/20 text-error border border-error/30";
-          messageEl.textContent = "Please enter your username!";
+            "text-xs text-center py-2 rounded-lg bg-error/20 text-error border border-error/30 font-semibold";
+          messageEl.textContent = "A valid username is strictly required to place a bid!";
           messageEl.classList.remove("hidden");
         }
         return;
       }
+      patronInput?.classList.remove("input-error", "border-error", "ring-2", "ring-error/50");
 
       currentPatronName = patron;
       localStorage.setItem("museum_patron_name", patron);
+      updateHudPatron();
 
       const ledger = ledgerData[activeModalArtId];
       if (!ledger || !messageEl) return;
@@ -2215,59 +2345,7 @@ export function initMuseumMaze() {
     });
   }
 
-  // --- View Mode Toggle ---
-  let currentViewMode: "maze" | "catalog" | "ledger" = "maze";
-  const mazeViewEl = document.getElementById("museum-view");
-  const catalogViewEl = document.getElementById("catalog-view");
-  const ledgerViewEl = document.getElementById("ledger-view");
-  const btnMaze = document.getElementById("view-mode-maze");
-  const btnCatalog = document.getElementById("view-mode-catalog");
-  const btnLedger = document.getElementById("view-mode-ledger");
-
-  function setViewMode(mode: "maze" | "catalog" | "ledger") {
-    currentViewMode = mode;
-    if (mazeViewEl) mazeViewEl.classList.toggle("hidden", mode !== "maze");
-    if (catalogViewEl) catalogViewEl.classList.toggle("hidden", mode !== "catalog");
-    if (ledgerViewEl) ledgerViewEl.classList.toggle("hidden", mode !== "ledger");
-
-    if (btnMaze) {
-      btnMaze.className = mode === "maze"
-        ? "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item"
-        : "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item";
-    }
-    if (btnCatalog) {
-      btnCatalog.className = mode === "catalog"
-        ? "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item"
-        : "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item";
-    }
-    if (btnLedger) {
-      btnLedger.className = mode === "ledger"
-        ? "btn btn-xs sm:btn-sm btn-primary rounded-lg join-item text-white"
-        : "btn btn-xs sm:btn-sm btn-ghost rounded-lg join-item text-amber-300";
-    }
-
-    if (mode === "ledger") {
-      updateCatalogBids();
-    } else if (mode === "catalog") {
-      // Ensure all catalog images resolve properly
-      const isGhPages = window.location.pathname.startsWith("/init");
-      const prefix = isGhPages ? "/init/" : (baseUrl ? `${baseUrl.replace(/\/$/, "")}/` : "/");
-      document.querySelectorAll<HTMLImageElement>(".catalog-card img").forEach((img) => {
-        const artId = img.getAttribute("data-art-id");
-        if (artId) {
-          const art = artworks.find((a) => a.id === artId);
-          if (art && (!img.complete || img.naturalWidth === 0)) {
-            const clean = art.image.startsWith("/") ? art.image.slice(1) : art.image;
-            img.src = `${prefix}${clean}`;
-          }
-        }
-      });
-    }
-  }
-
-  btnMaze?.addEventListener("click", () => setViewMode("maze"));
-  btnCatalog?.addEventListener("click", () => setViewMode("catalog"));
-  btnLedger?.addEventListener("click", () => setViewMode("ledger"));
+  // (View Mode Toggle and focusMuseumGame initialized above)
 
   // Ledger category filter buttons
   document.querySelectorAll(".ledger-filter-btn").forEach((btn) => {
@@ -2678,9 +2756,13 @@ export function initMuseumMaze() {
   camera.y = startIso.y;
 
   // --- Main Animation Loop ---
+  let hasRenderedFirstFrame = false;
   function animate() {
-    // Performance: Sleep animation loop completely when user is viewing Catalog/Ledger or tab is inactive
-    if (currentViewMode !== "maze" || !isPageVisible) {
+    if (canvas.width <= 0 || canvas.height <= 0) {
+      resize();
+    }
+    // Performance: Sleep animation loop completely when user is viewing Catalog/Ledger or tab is inactive (after initial paint)
+    if (hasRenderedFirstFrame && (currentViewMode !== "maze" || !isPageVisible)) {
       requestAnimationFrame(animate);
       return;
     }
@@ -3741,6 +3823,7 @@ export function initMuseumMaze() {
       minimapCtx.fill();
     }
 
+    hasRenderedFirstFrame = true;
     requestAnimationFrame(animate);
   }
 
