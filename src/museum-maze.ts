@@ -1887,7 +1887,7 @@ export function initMuseumMaze() {
     const promptReservedBadge = document.getElementById("prompt-reserved-badge");
 
     if (player.isSitting && promptEl && promptTitleEl) {
-      promptTitleEl.textContent = "Underworld Divan • House of Hades";
+      promptTitleEl.textContent = "Underworld Chaise • House of Hades";
       if (promptSubtitleEl) {
         promptSubtitleEl.textContent = "Resting in Royal Repose • Press [E], [WASD] or Click to Stand";
         promptSubtitleEl.className = "text-[10px] text-amber-400 uppercase font-bold tracking-wider";
@@ -1923,7 +1923,7 @@ export function initMuseumMaze() {
       promptEl.classList.remove("opacity-0", "translate-y-4", "scale-95");
       promptEl.classList.add("opacity-100", "translate-y-0", "scale-100");
     } else if (nearBench && promptEl && promptTitleEl) {
-      promptTitleEl.textContent = "Imperial Velvet Divan";
+      promptTitleEl.textContent = "Imperial Velvet Chaise";
       if (promptSubtitleEl) {
         promptSubtitleEl.textContent = "House of Hades Lounge • Press [E] or Click to Sit & Contemplate";
         promptSubtitleEl.className = "text-[10px] text-amber-300 uppercase font-bold tracking-wider";
