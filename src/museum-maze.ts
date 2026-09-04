@@ -883,8 +883,8 @@ export function initMuseumMaze() {
     targetCol: null as number | null,
     targetRow: null as number | null,
     radius: 0.28, // Robust collision radius: 3x frame step size, completely preventing tunnel clipping
-    maxSpeed: 0.09,
-    accel: 0.03,
+    maxSpeed: 0.14, // Increased speed for swift, responsive navigation through the museum
+    accel: 0.045,
     friction: 0.78,
     walkCycle: 0,
     distMoved: 0,
@@ -1754,13 +1754,13 @@ export function initMuseumMaze() {
         player.row = player.seatedBench.row + 0.5;
       }
     } else {
-      player.vx += (targetVx - player.vx) * 0.28;
-      player.vy += (targetVy - player.vy) * 0.28;
+      player.vx += (targetVx - player.vx) * 0.32;
+      player.vy += (targetVy - player.vy) * 0.32;
     }
 
     // Apply movement with wall collision & smooth sliding
     if (!player.isSitting && (Math.abs(player.vx) > 0.001 || Math.abs(player.vy) > 0.001)) {
-      player.walkCycle += 0.22;
+      player.walkCycle += 0.30;
 
       // Strict axis-separated collision resolution:
       // Prevents all wall clipping while allowing smooth sliding along corridors
@@ -1811,8 +1811,8 @@ export function initMuseumMaze() {
 
     // 2. Camera smoothly centers on player
     const playerIso = toIso(player.col, player.row);
-    camera.x += (playerIso.x - camera.x) * 0.08;
-    camera.y += (playerIso.y - camera.y) * 0.08;
+    camera.x += (playerIso.x - camera.x) * 0.11;
+    camera.y += (playerIso.y - camera.y) * 0.11;
 
     // 3. Artwork & Bench Proximity Check & HUD Wing Indicator Update (House of Hades)
     const currentZone = getTileZone(Math.floor(player.col), Math.floor(player.row));
