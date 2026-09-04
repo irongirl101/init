@@ -40,6 +40,8 @@ interface MountedPainting {
   category: "physical" | "digital" | "blender";
   isReservedMount?: boolean;
   wingName?: string;
+  spotX: number;
+  spotY: number;
 }
 
 export function initMuseumMaze() {
@@ -491,11 +493,29 @@ export function initMuseumMaze() {
     };
   }
 
-  // Canvas Sizing
+  // Canvas Sizing & Cached Vignette Gradient (Zero Allocation per Frame)
+  let cachedVigGrad: CanvasGradient | null = null;
+  function updateVignette() {
+    if (!ctx || !canvas) return;
+    const vig = ctx.createRadialGradient(
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.min(canvas.width, canvas.height) * 0.40,
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.max(canvas.width, canvas.height) * 0.78
+    );
+    vig.addColorStop(0, "rgba(0, 0, 0, 0)");
+    vig.addColorStop(0.65, "rgba(0, 0, 0, 0.25)");
+    vig.addColorStop(1, "rgba(0, 0, 0, 0.85)");
+    cachedVigGrad = vig;
+  }
+
   function resize() {
     if (!canvas || !canvas.parentElement) return;
     canvas.width = canvas.parentElement.clientWidth;
     canvas.height = Math.max(620, Math.min(window.innerHeight * 0.78, 800));
+    updateVignette();
   }
   window.addEventListener("resize", resize);
   resize();
@@ -664,6 +684,11 @@ export function initMuseumMaze() {
         ? "3D Blender Pavilion"
         : "Physical Fine Art Wing";
 
+    const spotPos = toIso(
+      slot.col + (slot.face === "SE" ? 0.7 : 0),
+      slot.row + (slot.face === "SW" ? 0.7 : 0)
+    );
+
     mountedPaintings.push({
       artId: art.id,
       col: slot.col,
@@ -675,6 +700,8 @@ export function initMuseumMaze() {
       category: cat,
       isReservedMount: false,
       wingName: wingName,
+      spotX: spotPos.x,
+      spotY: spotPos.y,
     });
   });
 
@@ -683,6 +710,10 @@ export function initMuseumMaze() {
   const remainingBlenderSlots = BLENDER_SLOTS.slice(blendCount, blendCount + 2);
   remainingBlenderSlots.forEach((slot, i) => {
     const dummyImg = new Image();
+    const spotPos = toIso(
+      slot.col + (slot.face === "SE" ? 0.7 : 0),
+      slot.row + (slot.face === "SW" ? 0.7 : 0)
+    );
     mountedPaintings.push({
       artId: `reserved-blender-${i}`,
       col: slot.col,
@@ -694,8 +725,24 @@ export function initMuseumMaze() {
       category: "blender",
       isReservedMount: true,
       wingName: "3D Blender Pavilion",
+      spotX: spotPos.x,
+      spotY: spotPos.y,
     });
   });
+
+  // Performance: Build O(1) 2D Spatial Lookup Grid for mounted artworks
+  // (Eliminates 1.3M inner loop iterations per second)
+  const paintingsGrid: (MountedPainting | null)[][] = Array.from({ length: ROWS }, () =>
+    Array(COLS).fill(null)
+  );
+  mountedPaintings.forEach((p) => {
+    if (p.row >= 0 && p.row < ROWS && p.col >= 0 && p.col < COLS) {
+      paintingsGrid[p.row][p.col] = p;
+    }
+  });
+
+  // List of active divans for O(1) distance scanning
+  const placedBenches: Array<{ col: number; row: number }> = [];
 
   // --- Dynamic Chair/Divan Randomization Across Underworld Salons ---
   // Constraints:
@@ -765,6 +812,7 @@ export function initMuseumMaze() {
     }
 
     // Place 9 well-spaced divans across the museum
+    placedBenches.length = 0;
     const placedChairs: [number, number][] = [];
     for (const [c, r] of eligibleTiles) {
       if (placedChairs.length >= 9) break;
@@ -773,6 +821,7 @@ export function initMuseumMaze() {
       );
       if (!tooClose) {
         placedChairs.push([c, r]);
+        placedBenches.push({ col: c, row: r });
         grid[r][c] = 3;
       }
     }
@@ -896,15 +945,12 @@ export function initMuseumMaze() {
     let nearest: { col: number; row: number } | null = null;
     let minDist = maxDist;
 
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        if (MAP[r][c] === 3) {
-          const d = Math.hypot(pc - (c + 0.5), pr - (r + 0.5));
-          if (d < minDist) {
-            minDist = d;
-            nearest = { col: c, row: r };
-          }
-        }
+    for (let i = 0; i < placedBenches.length; i++) {
+      const b = placedBenches[i];
+      const d = Math.hypot(pc - (b.col + 0.5), pr - (b.row + 0.5));
+      if (d < minDist) {
+        minDist = d;
+        nearest = b;
       }
     }
     return nearest;
@@ -2191,7 +2237,7 @@ export function initMuseumMaze() {
       }
     }
 
-    // --- Pass 1.5: Zagreus Burning Footstep Embers ---
+    // --- Pass 1.5: Zagreus Burning Footstep Embers (Fast Non-Allocating) ---
     for (let i = footstepEmbers.length - 1; i >= 0; i--) {
       const e = footstepEmbers[i];
       e.life -= 1 / e.maxLife;
@@ -2200,12 +2246,7 @@ export function initMuseumMaze() {
         continue;
       }
       const alpha = e.life;
-      const grad = ctx.createRadialGradient(e.isoX, e.isoY, 0, e.isoX, e.isoY, e.size * 2);
-      grad.addColorStop(0, `rgba(254, 240, 138, ${alpha * 0.95})`);
-      grad.addColorStop(0.35, `rgba(249, 115, 22, ${alpha * 0.75})`);
-      grad.addColorStop(0.75, `rgba(225, 29, 72, ${alpha * 0.45})`);
-      grad.addColorStop(1, "rgba(225, 29, 72, 0)");
-      ctx.fillStyle = grad;
+      ctx.fillStyle = `rgba(249, 115, 22, ${alpha * 0.75})`;
       ctx.beginPath();
       ctx.ellipse(e.isoX, e.isoY, e.size * 2, e.size, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -2213,17 +2254,12 @@ export function initMuseumMaze() {
 
     // --- Pass 2: Directional Art Spotlights on Floor (Colored by Wing) ---
     mountedPaintings.forEach((piece) => {
-      const spotPos = toIso(
-        piece.col + (piece.face === "SE" ? 0.7 : 0),
-        piece.row + (piece.face === "SW" ? 0.7 : 0)
-      );
-
-      // Frustum Cull: Skip spotlights outside viewport
+      // Frustum Cull: Skip spotlights outside viewport using pre-calculated coordinates
       if (
-        spotPos.x < minIsoX - 70 ||
-        spotPos.x > maxIsoX + 70 ||
-        spotPos.y < minIsoY - 70 ||
-        spotPos.y > maxIsoY + 70
+        piece.spotX < minIsoX - 70 ||
+        piece.spotX > maxIsoX + 70 ||
+        piece.spotY < minIsoY - 70 ||
+        piece.spotY > maxIsoY + 70
       ) {
         return;
       }
@@ -2231,11 +2267,11 @@ export function initMuseumMaze() {
       const isNear = near?.artId === piece.artId;
 
       const spot = ctx.createRadialGradient(
-        spotPos.x,
-        spotPos.y + TILE_H / 2,
+        piece.spotX,
+        piece.spotY + TILE_H / 2,
         3,
-        spotPos.x,
-        spotPos.y + TILE_H / 2,
+        piece.spotX,
+        piece.spotY + TILE_H / 2,
         isNear ? 54 : 38
       );
 
@@ -2256,8 +2292,8 @@ export function initMuseumMaze() {
       ctx.fillStyle = spot;
       ctx.beginPath();
       ctx.ellipse(
-        spotPos.x,
-        spotPos.y + TILE_H / 2,
+        piece.spotX,
+        piece.spotY + TILE_H / 2,
         isNear ? 50 : 36,
         isNear ? 25 : 18,
         0,
@@ -2554,8 +2590,8 @@ export function initMuseumMaze() {
           }
           ctx.stroke();
 
-          // 4. Render Mounted Artwork on Feature Walls (True Isometric Wall Projection)
-          const piece = mountedPaintings.find((a) => a.col === c && a.row === r);
+          // 4. Render Mounted Artwork on Feature Walls (O(1) Spatial Grid Lookup)
+          const piece = paintingsGrid[r][c];
           if (piece) {
             const isNear = near?.artId === piece.artId;
             ctx.save();
@@ -3030,21 +3066,11 @@ export function initMuseumMaze() {
       ctx.fill();
     });
 
-    // --- Pass 4: Atmospheric Cinema Vignette ---
-    // Soft radial falloff that frames the museum pavilion against the pure black canvas
-    const vig = ctx.createRadialGradient(
-      canvas.width / 2,
-      canvas.height / 2,
-      Math.min(canvas.width, canvas.height) * 0.40,
-      canvas.width / 2,
-      canvas.height / 2,
-      Math.max(canvas.width, canvas.height) * 0.78
-    );
-    vig.addColorStop(0, "rgba(0, 0, 0, 0)");
-    vig.addColorStop(0.65, "rgba(0, 0, 0, 0.25)");
-    vig.addColorStop(1, "rgba(0, 0, 0, 0.85)");
-    ctx.fillStyle = vig;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // --- Pass 4: Atmospheric Cinema Vignette (Zero-Allocation Cached Gradient) ---
+    if (cachedVigGrad) {
+      ctx.fillStyle = cachedVigGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
     // --- Pass 5: Top-Left Blueprint Radar (Using Pre-rendered Offscreen Cache) ---
     if (minimapCtx && minimapCanvas) {

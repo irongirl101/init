@@ -354,6 +354,9 @@ function animate(): void {
     if (glassNavbar) {
       glassNavbar.style.setProperty("--navbar-bg-rgb", "0, 0, 0");
     }
+    // Performance: Pause heavy Perlin noise grid calculation and hidden canvas draws on portfolio page
+    requestAnimationFrame(animate);
+    return;
   } else {
     if (canvas && canvas.style.display === "none") canvas.style.display = "block";
     // Interpolate body background color based on spidey active level for regular pages
