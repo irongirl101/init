@@ -74,6 +74,8 @@ images:
 navigation:
   - name: "Home"
     url: "/"
+  - name: "Games"
+    url: "/games"
   - name: "Blog"
     url: "/blog/"
   - name: "Art Portfolio"

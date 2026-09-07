@@ -1,0 +1,580 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Authentic 16-Bit Retro Arcade Typography (Press Start 2P & VT323) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+<div class="pixel-games-container min-h-screen py-4 px-2 sm:px-4 font-mono select-none">
+  
+  <div class="max-w-5xl mx-auto flex flex-col items-center">
+
+    <!-- =========================================================================
+         TOP ARCADE BAR: [◀ HOME] ... LIBRARY ... SFX TOGGLE
+         ========================================================================= -->
+    <div class="w-full bg-[#341b10] border-2 border-[#1e0d06] rounded-t-xl px-4 py-2.5 flex items-center justify-between shadow-2xl text-[#fef9c3] mb-0 relative z-20">
+      
+      <!-- Left: Home Link -->
+      <a href="{{ site.base_url }}/" class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer text-[#f59e0b]" style="font-family: 'Press Start 2P', monospace; font-size: 11px;">
+        <span>◀</span>
+        <span>HOME</span>
+      </a>
+
+      <!-- Center: LIBRARY Title -->
+      <div class="flex items-center gap-2">
+        <span class="text-base sm:text-2xl font-bold tracking-widest text-[#fef9c3] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]" style="font-family: 'Press Start 2P', monospace;">
+          LIBRARY
+        </span>
+      </div>
+
+      <!-- Right: Audio SFX Toggle -->
+      <div class="flex items-center gap-2">
+        <button id="sfx-toggle-btn" class="text-[9px] px-2.5 py-1 bg-[#22120a] hover:bg-[#432314] border border-[#a16207] rounded text-[#fde047] transition-all cursor-pointer flex items-center gap-1 shadow-sm" title="Toggle Sound Effects">
+          <span id="sfx-icon">🔊</span>
+          <span id="sfx-label">SFX: ON</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         THE RETRO PIXEL BOOKCASE (Using User's Custom Shelf Template)
+         ========================================================================= -->
+    <div class="w-full overflow-x-auto no-scrollbar shadow-2xl rounded-b-xl border-x-2 border-b-2 border-[#1e0d06] bg-[#1a0f08]">
+      
+      <div class="pixel-user-shelf-container min-w-[640px] sm:min-w-full mx-auto" style="background-image: url('{{ site.base_url }}/assets/images/games/shelf-template.png');">
+        
+        <!-- =====================================================================
+             ROW 1: Top Shelf Cubbies (Floor at 27.8%)
+             ===================================================================== -->
+        <!-- Cubby 1-1 (x: 6.6% to 30.5%) -->
+        <div class="shelf-cubby" style="top: 8.8%; left: 6.6%; width: 23.9%; height: 19.0%; padding-bottom: 2px;">
+          {% for game in page.games[0:3] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 1-2 (x: 31.6% to 56.6%) -->
+        <div class="shelf-cubby" style="top: 8.8%; left: 31.6%; width: 25.0%; height: 19.0%; padding-bottom: 2px;">
+          {% for game in page.games[3:6] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 1-3 (x: 57.9% to 80.5%) -->
+        <div class="shelf-cubby" style="top: 8.8%; left: 57.9%; width: 22.6%; height: 19.0%; padding-bottom: 2px;">
+          {% for game in page.games[6:9] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 1-4 (x: 81.8% to 97.7%) - Showcases the user's green pixel hanging plant! -->
+        <div class="shelf-cubby cursor-pointer" style="top: 8.8%; left: 81.8%; width: 15.9%; height: 19.0%;" title="Succulent Ivy Hanging Plant">
+          <div class="w-full h-full" id="plant-easter-egg"></div>
+        </div>
+
+        <!-- =====================================================================
+             ROW 2: Middle-Upper Shelf Cubbies (Floor at 48.6%)
+             ===================================================================== -->
+        <!-- Cubby 2-1 (x: 6.6% to 38.4%) -->
+        <div class="shelf-cubby" style="top: 30.8%; left: 6.6%; width: 31.8%; height: 17.8%; padding-bottom: 2px;">
+          {% for game in page.games[9:12] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 2-2 (x: 39.6% to 71.4%) -->
+        <div class="shelf-cubby" style="top: 30.8%; left: 39.6%; width: 31.8%; height: 17.8%; padding-bottom: 2px;">
+          {% for game in page.games[12:16] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 2-3 (x: 72.7% to 97.7%) -->
+        <div class="shelf-cubby" style="top: 30.8%; left: 72.7%; width: 25.0%; height: 17.8%; padding-bottom: 2px;">
+          {% for game in page.games[16:19] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- =====================================================================
+             ROW 3: Middle-Lower Shelf Cubbies (Floor at 69.9%)
+             ===================================================================== -->
+        <!-- Cubby 3-1 (x: 6.6% to 27.0%) - Left holds user's pixel scroll & book, right holds games -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 6.6%; width: 20.4%; height: 18.8%; padding-bottom: 2px; justify-content: flex-end; padding-right: 6px;">
+          {% for game in page.games[19:20] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 3-2 (x: 28.3% to 51.0%) -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 28.3%; width: 22.7%; height: 18.8%; padding-bottom: 2px;">
+          {% for game in page.games[20:22] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 3-3 (x: 52.2% to 76.0%) -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 52.2%; width: 23.8%; height: 18.8%; padding-bottom: 2px;">
+          {% for game in page.games[22:24] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- Cubby 3-4 (x: 77.2% to 97.7%) -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 77.2%; width: 20.5%; height: 18.8%; padding-bottom: 2px;">
+          {% for game in page.games[24:26] %}
+            {% include "partials/cd_case_cubby.html" %}
+          {% endfor %}
+        </div>
+
+        <!-- =====================================================================
+             ROW 4: Wide Centerpiece Counter (y: 72.0% to 88.0%)
+             Interactive Opened CD Jewel Case + Retro Deck Controller
+             ===================================================================== -->
+        <div class="absolute flex items-center justify-between px-3 sm:px-6 gap-3" 
+             style="top: 72.0%; left: 6.6%; width: 91.1%; height: 16.0%; z-index: 25;">
+          
+          <!-- LEFT: Opened CD Jewel Case (Booklet Cover + Spinning CD Disc) -->
+          <div class="flex items-center flex-shrink-0">
+            <div class="relative flex items-center bg-[#090503] border border-[#4a2615] rounded p-1 shadow-2xl">
+              
+              <!-- Left: Booklet Cover Art -->
+              <div id="active-cd-cover" 
+                   class="w-14 h-14 sm:w-18 sm:h-18 rounded-xs border border-white/25 shadow-xl flex flex-col justify-between p-1 relative overflow-hidden flex-shrink-0 z-10 transition-colors"
+                   style="background: linear-gradient(180deg, #051329 0%, #001f3f 40%, #082d49 100%);">
+                
+                <!-- Cover Image -->
+                <img id="active-cover-img" 
+                     src="/assets/images/games/hollow-knight.jpg" 
+                     alt="Cover Art" 
+                     class="absolute inset-0 w-full h-full object-cover z-0" />
+
+                <!-- Fallback Pixel Cover -->
+                <div id="active-cover-fallback" class="hidden absolute inset-0 z-0 p-1 flex flex-col justify-between bg-[#111827]">
+                  <span class="text-[5px] uppercase text-amber-300 font-mono truncate" id="fallback-developer">TEAM CHERRY</span>
+                  <div class="text-[7px] font-extrabold text-white leading-tight drop-shadow my-auto truncate" id="fallback-title" style="font-family: 'Press Start 2P', monospace;">
+                    HOLLOW KNIGHT
+                  </div>
+                  <div class="flex items-end justify-between">
+                    <span class="text-[5px] text-white/90 bg-black/70 px-0.5 rounded uppercase font-mono" id="fallback-genre">METROIDVANIA</span>
+                    <span class="text-[6px] text-amber-300 font-bold font-mono" id="fallback-score">10/10</span>
+                  </div>
+                </div>
+
+                <!-- Acrylic Glint -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/20 pointer-events-none z-10"></div>
+              </div>
+
+              <!-- Right: Jewel Case Tray with Spinning Disc -->
+              <div class="w-12 h-12 sm:w-16 sm:h-16 -ml-3.5 sm:-ml-5 relative flex-shrink-0 cursor-pointer group" id="active-disc-wrapper" title="Click disc to pause / spin">
+                <div class="w-full h-full bg-[#110a05] border border-[#3b1f11] rounded-xs p-0.5 shadow-inner flex items-center justify-center">
+                  <div id="active-disc" class="pixel-cd-disc animate-spin-cd w-full h-full flex items-center justify-center">
+                    <div class="absolute text-[5px] font-bold text-white/95 uppercase truncate max-w-[45px] text-center pointer-events-none drop-shadow" id="active-disc-label" style="font-family: 'Press Start 2P', monospace; font-size: 4.5px;">
+                      HOLLOW KNIGHT
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- RIGHT: Integrated Deck Info inside the wide shelf -->
+          <div class="flex-1 min-w-0 h-full flex flex-col justify-center px-1 sm:px-3">
+            <div class="flex flex-col justify-between h-full py-1">
+              
+              <!-- Top line: Title & Stars & Platform -->
+              <div class="flex items-center justify-between gap-2 border-b border-[#4a2615] pb-0.5">
+                <div class="flex items-center gap-1.5 truncate">
+                  <h2 id="active-dialogue-title" class="text-[10px] sm:text-xs font-extrabold text-[#fde047] tracking-wide uppercase truncate" style="font-family: 'Press Start 2P', monospace;">
+                    HOLLOW KNIGHT
+                  </h2>
+                  <span id="active-dialogue-platform" class="text-[7px] px-1 py-0.2 bg-[#1e293b] border border-[#38bdf8] text-[#7dd3fc] rounded-xs uppercase font-mono hidden sm:inline-block">
+                    PC / STEAM
+                  </span>
+                </div>
+                <div class="flex items-center gap-0.5 text-[#facc15] text-[9px] sm:text-xs flex-shrink-0" id="active-dialogue-stars">
+                  ★★★★★
+                </div>
+              </div>
+
+              <!-- Middle line: Quote / Review -->
+              <div class="text-[9px] sm:text-[11px] italic text-[#fde047] truncate">
+                “<span id="active-dialogue-quote">HEGALE! GIT GUD! SHAWWW!</span>”
+              </div>
+
+              <!-- Bottom line: Badges & Prev/Next buttons -->
+              <div class="flex items-center justify-between text-[8px] font-mono">
+                <div class="flex items-center gap-1.5">
+                  <span id="active-dialogue-hours" class="text-[#93c5fd] bg-[#172554] border border-[#3b82f6]/40 px-1 py-0.2 rounded-xs">
+                    145h logged
+                  </span>
+                  <span id="active-dialogue-status" class="text-emerald-300 bg-emerald-950 border border-emerald-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold">
+                    CURRENTLY PLAYING
+                  </span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button id="active-prev-btn" class="px-1.5 py-0.5 bg-[#201007] hover:bg-[#3d1f11] border border-[#522c16] text-[#fef9c3] rounded-xs cursor-pointer transition-colors">
+                    ◀ PREV
+                  </button>
+                  <span class="text-[8px] text-[#ca8a04]" id="active-index-display">1 / 26</span>
+                  <button id="active-next-btn" class="px-1.5 py-0.5 bg-[#201007] hover:bg-[#3d1f11] border border-[#522c16] text-[#fef9c3] rounded-xs cursor-pointer transition-colors">
+                    NEXT ▶
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         EXPANDED ARCADE FILTERS & SEARCH HUD
+         ========================================================================= -->
+    <div class="w-full max-w-5xl mt-3 bg-[#170e08]/95 border-2 border-[#381c10] rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono shadow-2xl">
+      
+      <!-- Quick Filter Buttons -->
+      <div class="flex flex-wrap items-center gap-1.5" id="shelf-filters">
+        <button class="filter-btn active-filter px-2.5 py-1 rounded bg-[#b45309] text-white border border-[#f59e0b] shadow cursor-pointer transition-all" data-filter="all">
+          [ALL GAMES]
+        </button>
+        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="playing">
+          [🟢 NOW PLAYING]
+        </button>
+        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="cleared">
+          [🏆 100% CLEARED]
+        </button>
+        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="masterpiece">
+          [★ 10/10 GEMS]
+        </button>
+      </div>
+
+      <!-- Live Search Library -->
+      <div class="relative w-full sm:w-60">
+        <input type="text" id="shelf-search" placeholder="[🔍 SEARCH LIBRARY...]" 
+          class="w-full bg-[#0d0704] border border-[#4a2615] text-xs font-mono text-[#fef9c3] px-3 py-1.5 rounded focus:outline-none focus:border-[#f59e0b] shadow-inner placeholder-[#78350f]">
+      </div>
+
+    </div>
+
+    <!-- Safe JSON Injected Data for JS Interactive Engine -->
+    <script type="application/json" id="games-collection-data">
+      {{ page.games | tojson }}
+    </script>
+
+  </div>
+
+</div>
+
+<!-- =========================================================================
+     INTERACTIVE RETRO SOUND & CD BOOKCASE ENGINE
+     ========================================================================= -->
+<script>
+(function() {
+  // 1. Synthesized 8-Bit Web Audio Engine
+  let audioCtx = null;
+  let sfxEnabled = true;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playTone(freq, duration, type = "square", volume = 0.04) {
+    if (!sfxEnabled || !audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  function playHoverSound() {
+    playTone(520, 0.025, "triangle", 0.02);
+  }
+
+  function playSwapSound() {
+    initAudio();
+    playTone(330, 0.04, "square", 0.05);
+    setTimeout(() => playTone(660, 0.06, "square", 0.04), 40);
+  }
+
+  // SFX Toggle
+  const sfxBtn = document.getElementById('sfx-toggle-btn');
+  if (sfxBtn) {
+    sfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      document.getElementById('sfx-icon').textContent = sfxEnabled ? '🔊' : '🔇';
+      document.getElementById('sfx-label').textContent = sfxEnabled ? 'SFX: ON' : 'SFX: OFF';
+      if (sfxEnabled) {
+        initAudio();
+        playTone(600, 0.05);
+      }
+    });
+  }
+
+  // Easter egg sound on clicking plant
+  const plantEl = document.getElementById('plant-easter-egg');
+  if (plantEl) {
+    plantEl.addEventListener('click', () => {
+      initAudio();
+      playTone(587.33, 0.06, "sine", 0.06);
+      setTimeout(() => playTone(880, 0.1, "sine", 0.06), 60);
+    });
+  }
+
+  // 2. Game Data & Interactive State
+  const dataEl = document.getElementById('games-collection-data');
+  if (!dataEl) return;
+  let games = [];
+  try {
+    games = JSON.parse(dataEl.textContent);
+  } catch (e) {
+    console.error("Failed to parse games JSON:", e);
+    return;
+  }
+
+  let activeIndex = 0;
+
+  // Cache DOM Elements
+  const coverEl = document.getElementById('active-cd-cover');
+  const coverImg = document.getElementById('active-cover-img');
+  const coverFallback = document.getElementById('active-cover-fallback');
+  const fallbackDev = document.getElementById('fallback-developer');
+  const fallbackTitle = document.getElementById('fallback-title');
+  const fallbackGenre = document.getElementById('fallback-genre');
+  const fallbackScore = document.getElementById('fallback-score');
+
+  const discEl = document.getElementById('active-disc');
+  const discWrapper = document.getElementById('active-disc-wrapper');
+  const discLabel = document.getElementById('active-disc-label');
+
+  const dialogueTitle = document.getElementById('active-dialogue-title');
+  const dialogueStars = document.getElementById('active-dialogue-stars');
+  const dialoguePlatform = document.getElementById('active-dialogue-platform');
+  const dialogueHours = document.getElementById('active-dialogue-hours');
+  const dialogueStatus = document.getElementById('active-dialogue-status');
+  const dialogueQuote = document.getElementById('active-dialogue-quote');
+  const indexDisplay = document.getElementById('active-index-display');
+
+  // Load Game into Opened CD Case & Deck Display
+  function loadGame(game, index) {
+    if (!game) return;
+    activeIndex = index;
+
+    // A. Update CD Booklet Cover Art
+    if (game.cover_image && game.cover_image.trim() !== '') {
+      coverImg.src = game.cover_image;
+      coverImg.classList.remove('hidden');
+      coverFallback.classList.add('hidden');
+      coverEl.style.background = game.spine_gradient || '#0f172a';
+    } else {
+      coverImg.classList.add('hidden');
+      coverFallback.classList.remove('hidden');
+      if (fallbackDev) fallbackDev.textContent = game.developer || "INDIE VAULT";
+      if (fallbackTitle) fallbackTitle.textContent = game.title;
+      if (fallbackGenre) fallbackGenre.textContent = game.genre || "CLASSIC";
+      if (fallbackScore) fallbackScore.textContent = game.score || "10/10";
+      coverEl.style.background = game.spine_gradient || '#0f172a';
+    }
+
+    // B. Update Spinning Disc Silk Screen Label
+    if (discLabel) discLabel.textContent = game.disc_title || game.title;
+
+    // C. Update Header Deck inside Row 4
+    if (dialogueTitle) dialogueTitle.textContent = game.title;
+    
+    // Star rating
+    if (dialogueStars) {
+      let starStr = "";
+      const ratingNum = Math.min(5, Math.max(1, game.rating || 5));
+      for (let i = 0; i < ratingNum; i++) starStr += "★";
+      for (let i = ratingNum; i < 5; i++) starStr += "☆";
+      dialogueStars.textContent = starStr;
+    }
+
+    // Platform Badge & Hours
+    if (dialoguePlatform) dialoguePlatform.textContent = `${game.platform || 'PC'}`;
+    if (dialogueHours) dialogueHours.textContent = `${game.hours || '50h'} logged`;
+    
+    if (dialogueStatus) {
+      if (game.is_currently_playing) {
+        dialogueStatus.textContent = "CURRENTLY PLAYING";
+        dialogueStatus.className = "text-emerald-300 bg-emerald-950 border border-emerald-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold";
+      } else if (game.status && game.status.includes('100%')) {
+        dialogueStatus.textContent = "100% CLEARED";
+        dialogueStatus.className = "text-amber-300 bg-amber-950 border border-amber-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold";
+      } else {
+        dialogueStatus.textContent = game.status || "COMPLETED";
+        dialogueStatus.className = "text-slate-300 bg-slate-900 border border-slate-700/40 px-1 py-0.2 rounded-xs hidden sm:inline-block";
+      }
+    }
+
+    // Quote
+    if (dialogueQuote) dialogueQuote.textContent = game.quote || `${game.title} - An unforgettable classic.`;
+
+    // Counter
+    if (indexDisplay) indexDisplay.textContent = `${index + 1} / ${games.length}`;
+
+    // Highlight CD Case on Shelf
+    document.querySelectorAll('.pixel-cd-case-compact').forEach(el => {
+      if (el.getAttribute('data-id') === game.id) {
+        el.classList.add('cd-active-now');
+      } else {
+        el.classList.remove('cd-active-now');
+      }
+    });
+  }
+
+  // Bind Shelf Cases Click & Hover
+  document.querySelectorAll('.pixel-cd-case-compact').forEach((caseEl) => {
+    const gameId = caseEl.getAttribute('data-id');
+    const gIndex = games.findIndex(g => g.id === gameId);
+    
+    caseEl.addEventListener('mouseenter', () => {
+      playHoverSound();
+    });
+
+    caseEl.addEventListener('click', () => {
+      if (gIndex !== -1) {
+        playSwapSound();
+        loadGame(games[gIndex], gIndex);
+      }
+    });
+
+    caseEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (gIndex !== -1) {
+          playSwapSound();
+          loadGame(games[gIndex], gIndex);
+        }
+      }
+    });
+  });
+
+  // Prev / Next Buttons
+  const prevBtn = document.getElementById('active-prev-btn');
+  const nextBtn = document.getElementById('active-next-btn');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      playSwapSound();
+      const prevIdx = (activeIndex - 1 + games.length) % games.length;
+      loadGame(games[prevIdx], prevIdx);
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      playSwapSound();
+      const nextIdx = (activeIndex + 1) % games.length;
+      loadGame(games[nextIdx], nextIdx);
+    });
+  }
+
+  // Click Disc to Toggle Spin
+  if (discWrapper && discEl) {
+    discWrapper.addEventListener('click', () => {
+      discEl.classList.toggle('paused-cd');
+      playTone(discEl.classList.contains('paused-cd') ? 220 : 880, 0.05);
+    });
+  }
+
+  // Filter Buttons
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('bg-[#b45309]', 'text-white', 'border-[#f59e0b]');
+        b.classList.add('bg-[#201007]', 'text-[#fef9c3]', 'border-[#4a2615]');
+      });
+      btn.classList.add('bg-[#b45309]', 'text-white', 'border-[#f59e0b]');
+      btn.classList.remove('bg-[#201007]', 'text-[#fef9c3]', 'border-[#4a2615]');
+
+      const filterType = btn.getAttribute('data-filter');
+      applyFilter(filterType, searchInput ? searchInput.value : '');
+    });
+  });
+
+  // Search Input
+  const searchInput = document.getElementById('shelf-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const activeFilter = document.querySelector('.filter-btn.bg-\\[\\#b45309\\]')?.getAttribute('data-filter') || 'all';
+      applyFilter(activeFilter, e.target.value.trim().toLowerCase());
+    });
+  }
+
+  function applyFilter(filter, query = "") {
+    document.querySelectorAll('.pixel-cd-case-compact').forEach(el => {
+      const gId = el.getAttribute('data-id');
+      const game = games.find(g => g.id === gId);
+      if (!game) return;
+
+      let matchesFilter = true;
+      if (filter === 'playing') {
+        matchesFilter = !!game.is_currently_playing;
+      } else if (filter === 'cleared') {
+        matchesFilter = game.status && game.status.includes('100%');
+      } else if (filter === 'masterpiece') {
+        matchesFilter = game.score && game.score.includes('10/10');
+      }
+
+      let matchesQuery = true;
+      if (query) {
+        const text = `${game.title} ${game.developer} ${game.genre} ${game.platform}`.toLowerCase();
+        matchesQuery = text.includes(query);
+      }
+
+      if (matchesFilter && matchesQuery) {
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'auto';
+        el.style.filter = 'none';
+      } else {
+        el.style.opacity = '0.15';
+        el.style.filter = 'grayscale(100%) brightness(0.5)';
+        el.style.pointerEvents = 'none';
+      }
+    });
+  }
+
+  // Initialize with First Game (Hollow Knight)
+  if (games.length > 0) {
+    loadGame(games[0], 0);
+  }
+
+  // Global Keybindings (Arrow keys to browse)
+  window.addEventListener('keydown', (e) => {
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    if (e.key === 'ArrowLeft') {
+      const prevIdx = (activeIndex - 1 + games.length) % games.length;
+      loadGame(games[prevIdx], prevIdx);
+    } else if (e.key === 'ArrowRight') {
+      const nextIdx = (activeIndex + 1) % games.length;
+      loadGame(games[nextIdx], nextIdx);
+    }
+  });
+
+})();
+</script>
+{% endblock %}

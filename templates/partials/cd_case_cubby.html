@@ -1,0 +1,55 @@
+{# Compact Standing CD Jewel Case for User Template Cubbies #}
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="{{ game.id }}"
+     data-title="{{ game.title }}"
+     data-platform="{{ game.platform }}"
+     tabindex="0"
+     role="button"
+     aria-label="{{ game.title }}">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: {{ game.spine_gradient }};">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      {% if game.is_currently_playing %}
+        <div class="w-full h-1 bg-emerald-400 rounded-xs mb-0.5 shadow-[0_0_5px_#10b981] animate-pulse"></div>
+      {% endif %}
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: {{ game.spine_text_color }};">
+      {{ game.title }}
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: {{ game.accent_color }};">
+        {% if game.platform_code == "steam" %}
+          PC
+        {% elif game.platform_code == "switch" %}
+          SW
+        {% elif game.platform_code == "ps5" %}
+          PS5
+        {% else %}
+          CD
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  {% if game.rating == 5 and ("10/10" in game.score or "100%" in game.status) %}
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  {% endif %}
+
+</div>
