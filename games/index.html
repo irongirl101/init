@@ -1352,7 +1352,7 @@
                 
                 <!-- Cover Image -->
                 <img id="active-cover-img" 
-                     src="/assets/images/games/hollow-knight.jpg" 
+                     src="/init/assets/images/games/hollow-knight.jpg" 
                      alt="Cover Art" 
                      class="absolute inset-0 w-full h-full object-cover z-0" />
 
@@ -1590,7 +1590,12 @@
 
     // A. Update CD Booklet Cover Art
     if (game.cover_image && game.cover_image.trim() !== '') {
-      coverImg.src = game.cover_image;
+      let coverSrc = game.cover_image;
+      const baseUrl = '/init';
+      if (baseUrl && coverSrc.startsWith('/') && !coverSrc.startsWith(baseUrl + '/')) {
+        coverSrc = baseUrl + coverSrc;
+      }
+      coverImg.src = coverSrc;
       coverImg.classList.remove('hidden');
       coverFallback.classList.add('hidden');
       coverEl.style.background = game.spine_gradient || '#0f172a';

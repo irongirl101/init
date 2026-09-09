@@ -105,7 +105,7 @@ so rotations are done around that particular axis. </p>
 <p>Prevention of Gimbal Lock<br />
 As we've seen before, Euler is very order-oriented. Take an example of this cube shown below. <br />
 Let Red -&gt; X axis rotation, Green -&gt; Y axis rotation, Blue -&gt; Z axis rotation, and let the middle axis be Y, X is the smallest. <br />
-<img src="/assets/images/blog%20images/gimbal.png" alt="Gimbal lock visualization" width="320" height = "160"><br />
+<img src="/init/assets/images/blog%20images/gimbal.png" alt="Gimbal lock visualization" width="320" height = "160"><br />
 If say, there is a rotation of X (90 deg) and then Y (90 deg), then X and Z would have lined up. So, if we were to rotate using the outermost ring (Z)/ rotate the innermost ring (X), it would lead to the exact same rotation of the object. So a whole dimension is lost, and degrees of freedom (rotation) are also lost. <br />
 This is known as a gimbal lock. </p>
 <p><strong>Usage of Quaternions, does not allow for gimbal lock to occur -- due to the existence of another axis.</strong> </p>
