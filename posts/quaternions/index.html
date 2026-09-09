@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quaternions | init</title>
+  <link rel="stylesheet" href="/init/assets/main-NrR60sFw.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Quaternions</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-09-09</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/ARVR.html">ARVR</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Quaternion.html">Quaternion</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Learning.html">Learning</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p><em>'Here as he walked by, on the 16th  of October 1843 Sir William Rowan Hamilton had a flash of genius discovered the fundmental formula for quaternion multiplication <code>i^2 = j^2 = k^2 = ijk = -1</code> and cut it on a stone of this bridge. (Broom Bridge, Dublin)'</em> -- Quaternion Plaque, Dublin</p>
+<p>When I first heard of this terminology in my ARVR class, I was nothing but confused. So the sole purpose of this blog is for it to be my rubber duck :) </p>
+<h3 id="before-going-into-quaternions-euler-values">Before going into Quaternions, Euler values<a class="headerlink" href="#before-going-into-quaternions-euler-values" title="Permanent link">&para;</a></h3>
+<p>Its a basic 3D graph -- represented by x,y and z components. It is a much easier way to visualize objects and it is usually the <em>default</em> way of going about rotations, focusing more on the order of the rotations. </p>
+<div class="codehilite"><pre><span></span><code>                    z
+                    │
+                    │
+                    │
+                    │
+                    O──────────── y
+                   /
+                  /
+                 /
+                /
+               x
+</code></pre></div>
+
+<h2 id="but-what-is-a-quaternion">But what is a Quaternion<a class="headerlink" href="#but-what-is-a-quaternion" title="Permanent link">&para;</a></h2>
+<p>Quaternions were invented to capture the algebra of rotations of 3-dimensional real space, extending the way that the complex numbers capture the algebra of rotations of 2-dimensional real space.</p>
+<p>A point in 2D space can be represented using <br />
+<em><code>x = a + bi</code></em></p>
+<p>Multiplying z by a unit complex number <code>e^{i\ϴ} = cos (ϴ) + i sin(ϴ)</code> rotates that point around the origin by angle ϴ.</p>
+<p>Hamilton spent years trying to do the exact same thing in 3D space with triplets a + bi + cj,  but 3-element systems cannot form a closed division algebra—multiplying two triplets naturally spits out cross-terms that demand a fourth dimension. On his walk , he realized that to rotate in 3D, you need <strong>four</strong> dimensions, introducing three distinct imaginary units: i, j, and k.</p>
+<p>The set of all quaternions is denoted by H (in honor of Hamilton):<br />
+<code>H = {w + xi + yj + zk; w, x, y, z in R}</code></p>
+<h3 id="if-eulers-values-are-easier-to-understand-easier-to-visualize-and-is-a-defualt-value-why-use-quaternions">If Euler's values are easier to understand, easier to visualize and is a defualt value, why use Quaternions?<a class="headerlink" href="#if-eulers-values-are-easier-to-understand-easier-to-visualize-and-is-a-defualt-value-why-use-quaternions" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>Quaternions do not care about order as much as Euler does. </p>
+<ul>
+<li>If a rotation is done on X axis, Y axis then Z axis on a matrix of coordinates (for an object) of say M <br />
+<code>The final rotation matrix would be 
+        R = Rz * Ry * Rx * M</code><br />
+where, Rz, Ry, Rz are all rotation matrices around z,y,x axes. </li>
+</ul>
+<p><strong>Quaternions does not care about the order.</strong> </p>
+<p>If exists a unit axis (x,y,z) and an angle of rotation is ϴ, the rotated quaternion <br />
+<code>r = (cos ϴ/2, x . sin ϴ/2 , y . sin ϴ/2, z . sin ϴ/2)</code> <br />
+so rotations are done around that particular axis. </p>
+<ul>
+<li><em>Euler descirbes a rotation as a sequence of rotations around axes. A quaternion does the same as one mathematical object.</em></li>
+</ul>
+</li>
+<li>
+<p>Prevention of Gimbal Lock<br />
+As we've seen before, Euler is very order-oriented. Take an example of this cube shown below. <br />
+Let Red -&gt; X axis rotation, Green -&gt; Y axis rotation, Blue -&gt; Z axis rotation, and let the middle axis be Y, X is the smallest. <br />
+<img src="/assets/images/blog%20images/gimbal.png" alt="Gimbal lock visualization" width="320" height = "160"><br />
+If say, there is a rotation of X (90 deg) and then Y (90 deg), then X and Z would have lined up. So, if we were to rotate using the outermost ring (Z)/ rotate the innermost ring (X), it would lead to the exact same rotation of the object. So a whole dimension is lost, and degrees of freedom (rotation) are also lost. <br />
+This is known as a gimbal lock. </p>
+<p><strong>Usage of Quaternions, does not allow for gimbal lock to occur -- due to the existence of another axis.</strong> </p>
+</li>
+</ul>
+<p>Hope ya learnt something from my ramblings :) </p>
+</article>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-CGijubkg.js"></script>
+</body>
+
+</html>

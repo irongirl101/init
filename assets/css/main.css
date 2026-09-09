@@ -61,7 +61,8 @@ footer {
 
 /* Spider-Man Timeline Styles */
 .spidey-timeline-line {
-  border-left: 2px dashed rgba(255, 255, 255, 0.15) !important;
+  border-left: 2px dashed rgba(255, 255, 255, 0.2) !important;
+  position: relative;
 }
 
 .spidey-timeline-line::before {
@@ -69,20 +70,20 @@ footer {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -2px;
+  left: -1px;
   width: 2px;
-  background: linear-gradient(to bottom, rgba(230, 36, 41, 0.4), rgba(0, 85, 255, 0.4));
-  box-shadow: 0 0 10px rgba(230, 36, 41, 0.4);
+  background: linear-gradient(to bottom, rgba(230, 36, 41, 0.6), rgba(0, 85, 255, 0.6));
+  box-shadow: 0 0 12px rgba(230, 36, 41, 0.5);
   pointer-events: none;
 }
 
 .spidey-card {
   position: relative;
   z-index: 10;
-  background: rgba(8, 10, 20, 0.35) !important;
+  background: rgba(8, 10, 20, 0.45) !important;
   backdrop-filter: blur(20px) saturate(190%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -90,25 +91,464 @@ footer {
 .spidey-card:hover {
   border-color: rgba(230, 36, 41, 0.45) !important;
   box-shadow: 0 12px 40px rgba(230, 36, 41, 0.25), 0 0 30px rgba(0, 85, 255, 0.15) !important;
-  transform: translateY(-4px) scale(1.01);
+  transform: translateY(-2px) scale(1.01);
 }
 
 .spidey-node {
   background-color: #0d0f19 !important;
-  border: 3.5px solid #e62429 !important;
+  border: 3px solid #e62429 !important;
   box-shadow: 0 0 15px rgba(230, 36, 41, 0.7), inset 0 0 8px rgba(230, 36, 41, 0.5);
   color: #ffffff;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 20;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .spidey-node:hover {
-  transform: scale(1.2) rotate(15deg);
+  transform: translateY(-50%) scale(1.2) rotate(15deg) !important;
   border-color: #0055ff !important;
   box-shadow: 0 0 20px rgba(0, 85, 255, 0.8), inset 0 0 10px rgba(0, 85, 255, 0.6);
 }
 
-pre,
-pre code {
+/* ==========================================================================
+   CODE BLOCKS ENCAPSULATED IN ``` ``` (Fit Content, Constrained Length & Overflow)
+   ========================================================================== */
+
+.codehilite,
+article pre:not(.codehilite pre),
+.prose pre:not(.codehilite pre) {
+  display: block;
+  width: fit-content !important;
+  min-width: min(100%, 16rem);
+  max-width: 100% !important;
+  max-height: 34rem;
+  overflow: auto !important;
+  margin: 1.5rem 0 !important;
+  padding: 1rem 1.25rem !important;
   background-color: #02120e !important;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
+}
+
+.codehilite pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  white-space: pre !important;
+  word-break: normal !important;
+  word-wrap: normal !important;
+  overflow: visible !important;
+}
+
+.codehilite pre code,
+article pre:not(.codehilite pre) code,
+.prose pre:not(.codehilite pre) code {
+  background-color: transparent !important;
   color: #d3d7dd;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Custom subtle scrollbars for code blocks */
+.codehilite::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.codehilite::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.codehilite::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.codehilite::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ==========================================================================
+   COZY PIXEL BOOKSHELF & RETRO CD ARCADE (Faithful to Mockup)
+   ========================================================================== */
+
+/* Clean Retro Games Room Container (No grid or mortar lines) */
+.pixel-games-container {
+  background-color: transparent;
+  min-height: 100%;
+}
+
+/* Bookshelf Wooden Frame using User's Pixel Template */
+.pixel-user-shelf-container {
+  position: relative;
+  width: 100%;
+  max-width: 1024px;
+  aspect-ratio: 1024 / 611;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.95),
+    0 0 0 3px #1a0f08;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Shelf Cubby Flex Zones */
+.shelf-cubby {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  overflow: visible;
+  z-index: 20;
+}
+
+/* Compact Standing CD Spines for User Shelf */
+.pixel-cd-case-compact {
+  position: relative;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
+  user-select: none;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  height: 80%;
+  width: 20px;
+}
+
+@media (min-width: 640px) {
+  .pixel-cd-case-compact {
+    width: 24px;
+    height: 82%;
+  }
+}
+
+@media (min-width: 860px) {
+  .pixel-cd-case-compact {
+    width: 28px;
+    height: 84%;
+  }
+}
+
+.pixel-cd-case-compact:hover,
+.pixel-cd-case-compact:focus-visible {
+  transform: translateY(-8px) scale(1.08);
+  z-index: 40;
+  filter: brightness(1.25);
+}
+
+.pixel-cd-case-compact.cd-active-now {
+  transform: translateY(-5px);
+  filter: brightness(1.15);
+}
+
+.pixel-cd-case-compact.cd-active-now .cd-spine-acrylic {
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.95), inset 0 0 5px rgba(250, 204, 21, 0.7);
+  border-color: #facc15;
+}
+
+/* Compact Spine Title */
+.cd-spine-title-compact {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  font-family: 'Press Start 2P', monospace;
+  font-weight: 700;
+  font-size: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  max-height: 52px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+}
+
+@media (min-width: 640px) {
+  .cd-spine-title-compact {
+    font-size: 6.5px;
+    max-height: 60px;
+  }
+}
+
+@media (min-width: 860px) {
+  .cd-spine-title-compact {
+    font-size: 7px;
+    max-height: 66px;
+  }
+}
+
+
+
+@media (min-width: 640px) {
+  .pixel-bookcase {
+    border-width: 14px;
+  }
+}
+
+/* Brass Corner Brackets on Bookcase Frame */
+.brass-bracket-tl {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(135deg, #facc15 0%, #ca8a04 50%, #854d0e 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 35% 35%, 35% 100%, 0 100%);
+  z-index: 30;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.brass-bracket-tr {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(225deg, #facc15 0%, #ca8a04 50%, #854d0e 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 65% 100%, 65% 35%, 0 35%);
+  z-index: 30;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Bookshelf Shelf Beam / Ledge */
+.pixel-shelf-ledge {
+  height: 18px;
+  background: linear-gradient(to bottom, #724225 0%, #522d17 32%, #351b0d 100%);
+  border-top: 2px solid #8e5531;
+  border-bottom: 3px solid #170b05;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 15;
+  width: 100%;
+}
+
+.pixel-shelf-ledge::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+/* CD Jewel Case - Standing Spine on Shelf */
+.pixel-cd-case {
+  position: relative;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.2s ease;
+  user-select: none;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.pixel-cd-case:hover,
+.pixel-cd-case:focus-visible {
+  transform: translateY(-14px) scale(1.04);
+  z-index: 35;
+  filter: brightness(1.18);
+}
+
+.pixel-cd-case.cd-active-now {
+  transform: translateY(-8px);
+}
+
+.pixel-cd-case.cd-active-now .cd-spine-acrylic {
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.7), inset 0 0 6px rgba(250, 204, 21, 0.4);
+  border-color: #facc15;
+}
+
+/* Jewel Case Spine Outer Acrylic Styling */
+.cd-spine-acrylic {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
+  border-right: 2px solid rgba(0, 0, 0, 0.7);
+  border-top: 2px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 
+    -2px 0 6px rgba(0, 0, 0, 0.6),
+    2px 0 6px rgba(0, 0, 0, 0.6),
+    inset 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+/* Plastic Ribs at top and bottom of jewel case spine */
+.cd-spine-ribs-top,
+.cd-spine-ribs-bottom {
+  width: 100%;
+  height: 8px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.28) 0px,
+    rgba(255, 255, 255, 0.28) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.8;
+}
+
+/* Vertical Spine Text */
+.cd-spine-title {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  font-family: 'Press Start 2P', monospace;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  max-height: 125px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+@media (min-width: 640px) {
+  .cd-spine-title {
+    font-size: 9.5px;
+    max-height: 140px;
+  }
+}
+
+/* Clear Plastic Jewel Case Reflection Sheen */
+.cd-spine-reflection {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 3px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.35) 100%);
+  pointer-events: none;
+}
+
+/* Spinning Disc Keyframes */
+@keyframes spin-cd {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-cd {
+  animation: spin-cd 9s linear infinite;
+}
+
+.paused-cd {
+  animation-play-state: paused !important;
+}
+
+/* CD Disc Surface & Rainbow Holographic Sheen */
+.pixel-cd-disc {
+  position: relative;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  background: 
+    radial-gradient(circle at 50% 50%, transparent 16%, #18181b 17%, #27272a 20%, transparent 21%),
+    conic-gradient(
+      from 0deg,
+      #3f3f46 0deg,
+      #71717a 40deg,
+      rgba(56, 189, 248, 0.4) 80deg,
+      rgba(244, 63, 94, 0.4) 120deg,
+      #52525b 170deg,
+      rgba(234, 179, 8, 0.4) 215deg,
+      rgba(168, 85, 247, 0.4) 265deg,
+      #71717a 310deg,
+      #3f3f46 360deg
+    );
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.8),
+    inset 0 0 10px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.pixel-cd-disc::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #09090b 24%, rgba(255, 255, 255, 0.25) 26%, #18181b 45%, #27272a 70%);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.9);
+}
+
+/* 16-Bit RPG Dialogue Box (Direct Mockup Match: Dark Slate Navy with Silver Border) */
+.rpg-dialogue-box {
+  background: #111726;
+  background-image: linear-gradient(180deg, #161e31 0%, #0d1320 100%);
+  border: 3px solid #e2e8f0;
+  outline: 2px solid #0f172a;
+  box-shadow: 
+    inset 0 0 0 1px #334155,
+    inset 0 0 20px rgba(0, 0, 0, 0.8),
+    0 15px 35px rgba(0, 0, 0, 0.9);
+  position: relative;
+  image-rendering: pixelated;
+}
+
+.rpg-corner-stud {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #facc15;
+  border: 1px solid #713f12;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Desk Lamp Warm Radial Light Glow */
+.desk-lamp-glow {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, rgba(245, 158, 11, 0.12) 50%, transparent 70%);
+  pointer-events: none;
+  filter: blur(8px);
+}
+
+/* Wall Lantern Glow */
+.wall-lantern-glow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.38) 0%, rgba(217, 119, 6, 0.15) 50%, transparent 70%);
+  pointer-events: none;
+  filter: blur(6px);
 }

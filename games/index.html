@@ -1,0 +1,1794 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaming Shelf | init</title>
+  <link rel="stylesheet" href="/init/assets/main-NrR60sFw.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<!-- Authentic 16-Bit Retro Arcade Typography (Press Start 2P & VT323) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+<div class="pixel-games-container min-h-screen py-4 px-2 sm:px-4 font-mono select-none">
+  
+  <div class="max-w-5xl mx-auto flex flex-col items-center">
+
+    <!-- =========================================================================
+         TOP ARCADE BAR: [◀ HOME] ... LIBRARY ... SFX TOGGLE
+         ========================================================================= -->
+    <div class="w-full bg-[#341b10] border-2 border-[#1e0d06] rounded-t-xl px-4 py-2.5 flex items-center justify-between shadow-2xl text-[#fef9c3] mb-0 relative z-20">
+      
+      <!-- Left: Home Link -->
+      <a href="/init/" class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer text-[#f59e0b]" style="font-family: 'Press Start 2P', monospace; font-size: 11px;">
+        <span>◀</span>
+        <span>HOME</span>
+      </a>
+
+      <!-- Center: LIBRARY Title -->
+      <div class="flex items-center gap-2">
+        <span class="text-base sm:text-2xl font-bold tracking-widest text-[#fef9c3] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]" style="font-family: 'Press Start 2P', monospace;">
+          LIBRARY
+        </span>
+      </div>
+
+      <!-- Right: Audio SFX Toggle -->
+      <div class="flex items-center gap-2">
+        <button id="sfx-toggle-btn" class="text-[9px] px-2.5 py-1 bg-[#22120a] hover:bg-[#432314] border border-[#a16207] rounded text-[#fde047] transition-all cursor-pointer flex items-center gap-1 shadow-sm" title="Toggle Sound Effects">
+          <span id="sfx-icon">🔊</span>
+          <span id="sfx-label">SFX: ON</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         THE RETRO PIXEL BOOKCASE (Using User's Custom Shelf Template)
+         ========================================================================= -->
+    <div class="w-full overflow-x-auto no-scrollbar shadow-2xl rounded-b-xl border-x-2 border-b-2 border-[#1e0d06] bg-[#1a0f08]">
+      
+      <div class="pixel-user-shelf-container min-w-[640px] sm:min-w-full mx-auto" style="background-image: url('/init/assets/images/games/shelf-template.png');">
+        
+        <!-- =====================================================================
+             ROW 1: Top Shelf Cubbies (Floor at 27.8%)
+             ===================================================================== -->
+        <!-- Cubby 1-1 (x: 6.6% to 30.5%) -->
+        <div class="shelf-cubby" style="top: 8.8%; left: 6.6%; width: 23.9%; height: 19.0%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="celeste"
+     data-title="Celeste"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Celeste">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #2e0854 0%, #4a154b 45%, #6b21a8 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #f3e8ff;">
+      Celeste
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #c084fc;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="hades"
+     data-title="Hades"
+     data-platform="Nintendo Switch"
+     tabindex="0"
+     role="button"
+     aria-label="Hades">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #450a0a 0%, #7f1d1d 45%, #991b1b 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fecaca;">
+      Hades
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #f87171;">
+        
+          SW
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="bloodborne"
+     data-title="Bloodborne"
+     data-platform="PlayStation 5"
+     tabindex="0"
+     role="button"
+     aria-label="Bloodborne">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #09090b 0%, #18181b 45%, #27272a 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #e4e4e7;">
+      Bloodborne
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #a1a1aa;">
+        
+          PS5
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 1-2 (x: 31.6% to 56.6%) -->
+        <div class="shelf-cubby" style="top: 8.8%; left: 31.6%; width: 25.0%; height: 19.0%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="hollow-knight"
+     data-title="Hollow Knight"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Hollow Knight">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #051329 0%, #001f3f 40%, #082d49 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+        <div class="w-full h-1 bg-emerald-400 rounded-xs mb-0.5 shadow-[0_0_5px_#10b981] animate-pulse"></div>
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #e0f2fe;">
+      Hollow Knight
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #38bdf8;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="elden-ring"
+     data-title="Elden Ring"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Elden Ring">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #181512 0%, #292524 45%, #44403c 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+        <div class="w-full h-1 bg-emerald-400 rounded-xs mb-0.5 shadow-[0_0_5px_#10b981] animate-pulse"></div>
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fef08a;">
+      Elden Ring
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #eab308;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="elden-ring-erdtree"
+     data-title="Shadow of Erdtree"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Shadow of Erdtree">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #1c1408 0%, #35250c 45%, #523a13 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+        <div class="w-full h-1 bg-emerald-400 rounded-xs mb-0.5 shadow-[0_0_5px_#10b981] animate-pulse"></div>
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fde047;">
+      Shadow of Erdtree
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #eab308;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 1-3 (x: 57.9% to 80.5%) -->
+        <div class="shelf-cubby" style="top: 8.8%; left: 57.9%; width: 22.6%; height: 19.0%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="persona-5-royal"
+     data-title="Persona 5 Royal"
+     data-platform="PlayStation 5"
+     tabindex="0"
+     role="button"
+     aria-label="Persona 5 Royal">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #4c0519 0%, #881337 45%, #9f1239 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #ffe4e6;">
+      Persona 5 Royal
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #fb7185;">
+        
+          PS5
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="spiderman-remastered"
+     data-title="Spider-Man"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Spider-Man">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #450a0a 0%, #7f1d1d 40%, #991b1b 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fee2e2;">
+      Spider-Man
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #ef4444;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="sekiro"
+     data-title="Sekiro"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Sekiro">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #18181b 0%, #27272a 50%, #3f3f46 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fdba74;">
+      Sekiro
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #f97316;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 1-4 (x: 81.8% to 97.7%) - Showcases the user's green pixel hanging plant! -->
+        <div class="shelf-cubby cursor-pointer" style="top: 8.8%; left: 81.8%; width: 15.9%; height: 19.0%;" title="Succulent Ivy Hanging Plant">
+          <div class="w-full h-full" id="plant-easter-egg"></div>
+        </div>
+
+        <!-- =====================================================================
+             ROW 2: Middle-Upper Shelf Cubbies (Floor at 48.6%)
+             ===================================================================== -->
+        <!-- Cubby 2-1 (x: 6.6% to 38.4%) -->
+        <div class="shelf-cubby" style="top: 30.8%; left: 6.6%; width: 31.8%; height: 17.8%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="persona-4-golden"
+     data-title="Persona 4 Golden"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Persona 4 Golden">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #713f12 0%, #a16207 45%, #ca8a04 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fef9c3;">
+      Persona 4 Golden
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #fde047;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="baldur-gate-3"
+     data-title="Baldur's Gate 3"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Baldur's Gate 3">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #e0e7ff;">
+      Baldur's Gate 3
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #818cf8;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="witcher-3"
+     data-title="The Witcher 3"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="The Witcher 3">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #111827 0%, #1f2937 45%, #374151 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #f3f4f6;">
+      The Witcher 3
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #f87171;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 2-2 (x: 39.6% to 71.4%) -->
+        <div class="shelf-cubby" style="top: 30.8%; left: 39.6%; width: 31.8%; height: 17.8%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="outer-wilds"
+     data-title="Outer Wilds"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Outer Wilds">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #1c1917 0%, #292524 45%, #431407 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fed7aa;">
+      Outer Wilds
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #fb923c;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="undertale"
+     data-title="Undertale"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Undertale">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 45%, #334155 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #f8fafc;">
+      Undertale
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #f1f5f9;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="undertale-ce"
+     data-title="Undertale (OST)"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Undertale (OST)">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #052e16 0%, #14532d 45%, #15803d 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #bbf7d0;">
+      Undertale (OST)
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #4ade80;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="stardew-valley"
+     data-title="Stardew Valley"
+     data-platform="Nintendo Switch"
+     tabindex="0"
+     role="button"
+     aria-label="Stardew Valley">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #0369a1 0%, #0284c7 45%, #0ea5e9 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #e0f2fe;">
+      Stardew Valley
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #38bdf8;">
+        
+          SW
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 2-3 (x: 72.7% to 97.7%) -->
+        <div class="shelf-cubby" style="top: 30.8%; left: 72.7%; width: 25.0%; height: 17.8%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="shovel-knight"
+     data-title="Shovel Knight"
+     data-platform="Nintendo Switch"
+     tabindex="0"
+     role="button"
+     aria-label="Shovel Knight">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 45%, #2563eb 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #dbeafe;">
+      Shovel Knight
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #60a5fa;">
+        
+          SW
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="cave-story"
+     data-title="Cave Story+"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Cave Story+">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #422006 0%, #713f12 45%, #854d0e 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fef3c7;">
+      Cave Story+
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #fde047;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="spelunky-2"
+     data-title="Spelunky 2"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Spelunky 2">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #78350f 0%, #92400e 45%, #b45309 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fef3c7;">
+      Spelunky 2
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #f59e0b;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- =====================================================================
+             ROW 3: Middle-Lower Shelf Cubbies (Floor at 69.9%)
+             ===================================================================== -->
+        <!-- Cubby 3-1 (x: 6.6% to 27.0%) - Left holds user's pixel scroll & book, right holds games -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 6.6%; width: 20.4%; height: 18.8%; padding-bottom: 2px; justify-content: flex-end; padding-right: 6px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="dead-cells"
+     data-title="Dead Cells"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Dead Cells">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #143224 0%, #1e4d36 45%, #2d7351 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #d1fae5;">
+      Dead Cells
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #34d399;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 3-2 (x: 28.3% to 51.0%) -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 28.3%; width: 22.7%; height: 18.8%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="chrono-trigger"
+     data-title="Chrono Trigger"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Chrono Trigger">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #713f12 0%, #854d0e 45%, #a16207 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fef9c3;">
+      Chrono Trigger
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #facc15;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="blasphemous"
+     data-title="Blasphemous"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Blasphemous">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #3b0764 0%, #581c87 45%, #701a75 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #f5d0fe;">
+      Blasphemous
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #d946ef;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 3-3 (x: 52.2% to 76.0%) -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 52.2%; width: 23.8%; height: 18.8%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="zelda-totk"
+     data-title="Zelda: Tears of Kingdom"
+     data-platform="Nintendo Switch"
+     tabindex="0"
+     role="button"
+     aria-label="Zelda: Tears of Kingdom">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #042f2e 0%, #115e59 45%, #0f766e 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #ccfbf1;">
+      Zelda: Tears of Kingdom
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #2dd4bf;">
+        
+          SW
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="metroid-dread"
+     data-title="Metroid Dread"
+     data-platform="Nintendo Switch"
+     tabindex="0"
+     role="button"
+     aria-label="Metroid Dread">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #1e1b4b 0%, #172554 45%, #1e3a8a 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #dbeafe;">
+      Metroid Dread
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #60a5fa;">
+        
+          SW
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+        </div>
+
+        <!-- Cubby 3-4 (x: 77.2% to 97.7%) -->
+        <div class="shelf-cubby" style="top: 51.1%; left: 77.2%; width: 20.5%; height: 18.8%; padding-bottom: 2px;">
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="disco-elysium"
+     data-title="Disco Elysium"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="Disco Elysium">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #142f2b 0%, #204e46 45%, #854d0e 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #fef3c7;">
+      Disco Elysium
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #f59e0b;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+    <div class="absolute -top-1 -right-1 z-30 w-2.5 h-2.5 bg-amber-400 text-amber-950 text-[6px] rounded-full flex items-center justify-center font-bold shadow pointer-events-none">
+      ★
+    </div>
+  
+
+</div>
+          
+            
+<div class="pixel-cd-case-compact relative flex-shrink-0 cursor-pointer select-none group" 
+     data-id="nier-automata"
+     data-title="NieR:Automata"
+     data-platform="PC / Steam"
+     tabindex="0"
+     role="button"
+     aria-label="NieR:Automata">
+
+  <!-- Standing Jewel Case Acrylic Spine Body -->
+  <div class="cd-spine-acrylic w-full h-full relative flex flex-col justify-between items-center py-1 px-0.5 rounded-xs shadow-md transition-all duration-150"
+       style="background: linear-gradient(180deg, #1e293b 0%, #334155 45%, #475569 100%);">
+    
+    <!-- Top Acrylic Ribs & Now Playing Indicator -->
+    <div class="w-full flex flex-col items-center">
+      
+      <div class="w-full h-0.5 bg-white/25"></div>
+    </div>
+
+    <!-- Acrylic Reflection Line -->
+    <div class="cd-spine-reflection"></div>
+
+    <!-- Spine Title (Vertical Pixel Typography) -->
+    <div class="cd-spine-title-compact my-auto" style="color: #e2e8f0;">
+      NieR:Automata
+    </div>
+
+    <!-- Bottom Mini Platform Badge -->
+    <div class="w-full flex flex-col items-center">
+      <div class="text-[6px] font-mono font-black tracking-tighter uppercase px-0.5 py-0.2 rounded border border-white/20 text-center leading-none w-full truncate"
+           style="background: rgba(0, 0, 0, 0.85); color: #94a3b8;">
+        
+          PC
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gold Star for Masterpiece (10/10) -->
+  
+
+</div>
+          
+        </div>
+
+        <!-- =====================================================================
+             ROW 4: Wide Centerpiece Counter (y: 72.0% to 88.0%)
+             Interactive Opened CD Jewel Case + Retro Deck Controller
+             ===================================================================== -->
+        <div class="absolute flex items-center justify-between px-3 sm:px-6 gap-3" 
+             style="top: 72.0%; left: 6.6%; width: 91.1%; height: 16.0%; z-index: 25;">
+          
+          <!-- LEFT: Opened CD Jewel Case (Booklet Cover + Spinning CD Disc) -->
+          <div class="flex items-center flex-shrink-0">
+            <div class="relative flex items-center bg-[#090503] border border-[#4a2615] rounded p-1 shadow-2xl">
+              
+              <!-- Left: Booklet Cover Art -->
+              <div id="active-cd-cover" 
+                   class="w-14 h-14 sm:w-18 sm:h-18 rounded-xs border border-white/25 shadow-xl flex flex-col justify-between p-1 relative overflow-hidden flex-shrink-0 z-10 transition-colors"
+                   style="background: linear-gradient(180deg, #051329 0%, #001f3f 40%, #082d49 100%);">
+                
+                <!-- Cover Image -->
+                <img id="active-cover-img" 
+                     src="/assets/images/games/hollow-knight.jpg" 
+                     alt="Cover Art" 
+                     class="absolute inset-0 w-full h-full object-cover z-0" />
+
+                <!-- Fallback Pixel Cover -->
+                <div id="active-cover-fallback" class="hidden absolute inset-0 z-0 p-1 flex flex-col justify-between bg-[#111827]">
+                  <span class="text-[5px] uppercase text-amber-300 font-mono truncate" id="fallback-developer">TEAM CHERRY</span>
+                  <div class="text-[7px] font-extrabold text-white leading-tight drop-shadow my-auto truncate" id="fallback-title" style="font-family: 'Press Start 2P', monospace;">
+                    HOLLOW KNIGHT
+                  </div>
+                  <div class="flex items-end justify-between">
+                    <span class="text-[5px] text-white/90 bg-black/70 px-0.5 rounded uppercase font-mono" id="fallback-genre">METROIDVANIA</span>
+                    <span class="text-[6px] text-amber-300 font-bold font-mono" id="fallback-score">10/10</span>
+                  </div>
+                </div>
+
+                <!-- Acrylic Glint -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/20 pointer-events-none z-10"></div>
+              </div>
+
+              <!-- Right: Jewel Case Tray with Spinning Disc -->
+              <div class="w-12 h-12 sm:w-16 sm:h-16 -ml-3.5 sm:-ml-5 relative flex-shrink-0 cursor-pointer group" id="active-disc-wrapper" title="Click disc to pause / spin">
+                <div class="w-full h-full bg-[#110a05] border border-[#3b1f11] rounded-xs p-0.5 shadow-inner flex items-center justify-center">
+                  <div id="active-disc" class="pixel-cd-disc animate-spin-cd w-full h-full flex items-center justify-center">
+                    <div class="absolute text-[5px] font-bold text-white/95 uppercase truncate max-w-[45px] text-center pointer-events-none drop-shadow" id="active-disc-label" style="font-family: 'Press Start 2P', monospace; font-size: 4.5px;">
+                      HOLLOW KNIGHT
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- RIGHT: Integrated Deck Info inside the wide shelf -->
+          <div class="flex-1 min-w-0 h-full flex flex-col justify-center px-1 sm:px-3">
+            <div class="flex flex-col justify-between h-full py-1">
+              
+              <!-- Top line: Title & Stars & Platform -->
+              <div class="flex items-center justify-between gap-2 border-b border-[#4a2615] pb-0.5">
+                <div class="flex items-center gap-1.5 truncate">
+                  <h2 id="active-dialogue-title" class="text-[10px] sm:text-xs font-extrabold text-[#fde047] tracking-wide uppercase truncate" style="font-family: 'Press Start 2P', monospace;">
+                    HOLLOW KNIGHT
+                  </h2>
+                  <span id="active-dialogue-platform" class="text-[7px] px-1 py-0.2 bg-[#1e293b] border border-[#38bdf8] text-[#7dd3fc] rounded-xs uppercase font-mono hidden sm:inline-block">
+                    PC / STEAM
+                  </span>
+                </div>
+                <div class="flex items-center gap-0.5 text-[#facc15] text-[9px] sm:text-xs flex-shrink-0" id="active-dialogue-stars">
+                  ★★★★★
+                </div>
+              </div>
+
+              <!-- Middle line: Quote / Review -->
+              <div class="text-[9px] sm:text-[11px] italic text-[#fde047] truncate">
+                “<span id="active-dialogue-quote">HEGALE! GIT GUD! SHAWWW!</span>”
+              </div>
+
+              <!-- Bottom line: Badges & Prev/Next buttons -->
+              <div class="flex items-center justify-between text-[8px] font-mono">
+                <div class="flex items-center gap-1.5">
+                  <span id="active-dialogue-hours" class="text-[#93c5fd] bg-[#172554] border border-[#3b82f6]/40 px-1 py-0.2 rounded-xs">
+                    145h logged
+                  </span>
+                  <span id="active-dialogue-status" class="text-emerald-300 bg-emerald-950 border border-emerald-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold">
+                    CURRENTLY PLAYING
+                  </span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button id="active-prev-btn" class="px-1.5 py-0.5 bg-[#201007] hover:bg-[#3d1f11] border border-[#522c16] text-[#fef9c3] rounded-xs cursor-pointer transition-colors">
+                    ◀ PREV
+                  </button>
+                  <span class="text-[8px] text-[#ca8a04]" id="active-index-display">1 / 26</span>
+                  <button id="active-next-btn" class="px-1.5 py-0.5 bg-[#201007] hover:bg-[#3d1f11] border border-[#522c16] text-[#fef9c3] rounded-xs cursor-pointer transition-colors">
+                    NEXT ▶
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         EXPANDED ARCADE FILTERS & SEARCH HUD
+         ========================================================================= -->
+    <div class="w-full max-w-5xl mt-3 bg-[#170e08]/95 border-2 border-[#381c10] rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono shadow-2xl">
+      
+      <!-- Quick Filter Buttons -->
+      <div class="flex flex-wrap items-center gap-1.5" id="shelf-filters">
+        <button class="filter-btn active-filter px-2.5 py-1 rounded bg-[#b45309] text-white border border-[#f59e0b] shadow cursor-pointer transition-all" data-filter="all">
+          [ALL GAMES]
+        </button>
+        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="playing">
+          [🟢 NOW PLAYING]
+        </button>
+        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="cleared">
+          [🏆 100% CLEARED]
+        </button>
+        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="masterpiece">
+          [★ 10/10 GEMS]
+        </button>
+      </div>
+
+      <!-- Live Search Library -->
+      <div class="relative w-full sm:w-60">
+        <input type="text" id="shelf-search" placeholder="[🔍 SEARCH LIBRARY...]" 
+          class="w-full bg-[#0d0704] border border-[#4a2615] text-xs font-mono text-[#fef9c3] px-3 py-1.5 rounded focus:outline-none focus:border-[#f59e0b] shadow-inner placeholder-[#78350f]">
+      </div>
+
+    </div>
+
+    <!-- Safe JSON Injected Data for JS Interactive Engine -->
+    <script type="application/json" id="games-collection-data">
+      [{"accent_color": "#c084fc", "badge_color": "#9333ea", "cover_image": "", "developer": "Extremely OK Games", "disc_color": "#9333ea", "disc_title": "CELESTE", "genre": "Precision Platformer", "height_class": "h-[195px] sm:h-[215px]", "hours": "75h", "id": "celeste", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Just breathe. You can do this.", "rating": 5, "review": "A profoundly emotional story about anxiety, perseverance, and self-acceptance disguised as one of the tightest precision platformers ever engineered. The Farewell chapter pushed me to my absolute limits.", "score": "10/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #2e0854 0%, #4a154b 45%, #6b21a8 100%)", "spine_text_color": "#f3e8ff", "status": "100% Cleared", "tags": ["Platformer", "Precision", "Indie", "Masterpiece"], "title": "Celeste", "width_class": "w-9 sm:w-11", "year_played": "2023"}, {"accent_color": "#f87171", "badge_color": "#b91c1c", "cover_image": "/assets/images/games/hades.jpg", "developer": "Supergiant Games", "disc_color": "#b91c1c", "disc_title": "HADES", "genre": "Roguelike", "height_class": "h-[200px] sm:h-[220px]", "hours": "160h", "id": "hades", "is_currently_playing": false, "platform": "Nintendo Switch", "platform_code": "switch", "quote": "There is no escape.", "rating": 5, "review": "Supergiant struck perfection. The seamless intertwining of narrative progression with Roguelike loop failure is pure genius. Darren Korb\u0027s OST is permanently on repeat!", "score": "10/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #450a0a 0%, #7f1d1d 45%, #991b1b 100%)", "spine_text_color": "#fecaca", "status": "100% Cleared", "tags": ["Roguelike", "Action", "Mythology", "Masterpiece"], "title": "Hades", "width_class": "w-10 sm:w-12", "year_played": "2023 - 2024"}, {"accent_color": "#a1a1aa", "badge_color": "#71717a", "cover_image": "", "developer": "FromSoftware", "disc_color": "#71717a", "disc_title": "BLOODBORNE", "genre": "Action RPG", "height_class": "h-[195px] sm:h-[215px]", "hours": "110h", "id": "bloodborne", "is_currently_playing": false, "platform": "PlayStation 5", "platform_code": "ps5", "quote": "A hunter must hunt.", "rating": 5, "review": "The Victorian Gothic love letter to cosmic horror. The trick weapon system and rally mechanic incentivize aggressive play like nothing else. Still waiting for a 60 FPS patch!", "score": "10/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #09090b 0%, #18181b 45%, #27272a 100%)", "spine_text_color": "#e4e4e7", "status": "Completed", "tags": ["Soulslike", "Horror", "Gothic", "Masterpiece"], "title": "Bloodborne", "width_class": "w-9 sm:w-10", "year_played": "2023"}, {"accent_color": "#38bdf8", "badge_color": "#0284c7", "cover_image": "/assets/images/games/hollow-knight.jpg", "developer": "Team Cherry", "disc_color": "#0284c7", "disc_title": "HOLLOW KNIGHT", "genre": "Metroidvania", "height_class": "h-[200px] sm:h-[220px]", "hours": "145h", "id": "hollow-knight", "is_currently_playing": true, "platform": "PC / Steam", "platform_code": "steam", "quest": "Defeating Nightmare King Grimm in Godhome \u0026 Steel Soul 112%", "quote": "HEGALE! GIT GUD! SHAWWW!", "rating": 5, "review": "An atmospheric, incredibly detailed indie masterpiece. A beautiful, challenging adventure with vast exploration and memorable bosses. 10/10.", "score": "10/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #051329 0%, #001f3f 40%, #082d49 100%)", "spine_text_color": "#e0f2fe", "status": "Currently Playing", "tags": ["Metroidvania", "Soulslike", "Atmospheric", "Masterpiece"], "title": "Hollow Knight", "width_class": "w-10 sm:w-12", "year_played": "2024 - Present"}, {"accent_color": "#eab308", "badge_color": "#ca8a04", "cover_image": "", "developer": "FromSoftware", "disc_color": "#ca8a04", "disc_title": "ELDEN RING", "genre": "Action RPG", "height_class": "h-[200px] sm:h-[220px]", "hours": "185h", "id": "elden-ring", "is_currently_playing": true, "platform": "PC / Steam", "platform_code": "steam", "quest": "Exploring Shadow of the Erdtree expansion", "quote": "Foul Tarnished, in search of the Elden Ring...", "rating": 5, "review": "The sense of wonder upon stepping out into Limgrave is unmatched in modern gaming. Unforgiving boss fights, jaw-dropping world design, and limitless build variety.", "score": "9.8/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #181512 0%, #292524 45%, #44403c 100%)", "spine_text_color": "#fef08a", "status": "Currently Playing", "tags": ["Soulslike", "Open World", "Action RPG", "Dark Fantasy"], "title": "Elden Ring", "width_class": "w-11 sm:w-13", "year_played": "2024 - Present"}, {"accent_color": "#eab308", "badge_color": "#a16207", "cover_image": "", "developer": "FromSoftware", "disc_color": "#a16207", "disc_title": "ERDTREE", "genre": "Action RPG", "height_class": "h-[200px] sm:h-[220px]", "hours": "65h", "id": "elden-ring-erdtree", "is_currently_playing": true, "platform": "PC / Steam", "platform_code": "steam", "quote": "Touch the withered arm, and enter the Realm of Shadow.", "rating": 5, "review": "A staggering expansion that could easily qualify as a standalone game. Messmer and the Scadutree Chalice landscape represent FromSoft\u0027s art direction at its grandest.", "score": "9.9/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #1c1408 0%, #35250c 45%, #523a13 100%)", "spine_text_color": "#fde047", "status": "Currently Playing", "tags": ["Expansion", "Dark Fantasy", "Soulslike"], "title": "Shadow of Erdtree", "width_class": "w-10 sm:w-12", "year_played": "2024"}, {"accent_color": "#fb7185", "badge_color": "#e11d48", "cover_image": "", "developer": "Atlus", "disc_color": "#e11d48", "disc_title": "PERSONA 5", "genre": "JRPG", "height_class": "h-[195px] sm:h-[215px]", "hours": "135h", "id": "persona-5-royal", "is_currently_playing": false, "platform": "PlayStation 5", "platform_code": "ps5", "quote": "Wake up, get up, get out there!", "rating": 5, "review": "The slickest UI, most infectious acid-jazz soundtrack, and charismatic cast of phantom thieves in gaming history. Took over my life for two entire months.", "score": "9.6/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #4c0519 0%, #881337 45%, #9f1239 100%)", "spine_text_color": "#ffe4e6", "status": "Completed", "tags": ["JRPG", "Turn-Based", "Stylized", "Anime"], "title": "Persona 5 Royal", "width_class": "w-10 sm:w-12", "year_played": "2024"}, {"accent_color": "#ef4444", "badge_color": "#dc2626", "cover_image": "", "developer": "Insomniac Games", "disc_color": "#dc2626", "disc_title": "SPIDER-MAN", "genre": "Action Adventure", "height_class": "h-[190px] sm:h-[210px]", "hours": "68h", "id": "spiderman-remastered", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "With great power comes great responsibility.", "rating": 5, "review": "The web-swinging physics and momentum mechanics feel magical. Spent dozens of hours just swinging across Manhattan at sunset listening to lofi.", "score": "9.5/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #450a0a 0%, #7f1d1d 40%, #991b1b 100%)", "spine_text_color": "#fee2e2", "status": "100% Cleared", "tags": ["Action", "Open World", "Superhero", "Spider-Man"], "title": "Spider-Man", "width_class": "w-9 sm:w-11", "year_played": "2024"}, {"accent_color": "#f97316", "badge_color": "#ea580c", "cover_image": "", "developer": "FromSoftware", "disc_color": "#ea580c", "disc_title": "SEKIRO", "genre": "Action / Stealth", "height_class": "h-[190px] sm:h-[210px]", "hours": "92h", "id": "sekiro", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Hesitation is defeat.", "rating": 5, "review": "The pinnacle of rhythmic sword combat. The CLANG of a perfect deflection is the most satisfying audio-tactile feedback in all of gaming.", "score": "9.7/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #18181b 0%, #27272a 50%, #3f3f46 100%)", "spine_text_color": "#fdba74", "status": "Completed", "tags": ["Action", "Difficult", "Ninja", "Soulslike"], "title": "Sekiro", "width_class": "w-9 sm:w-10", "year_played": "2023"}, {"accent_color": "#fde047", "badge_color": "#eab308", "cover_image": "", "developer": "Atlus", "disc_color": "#eab308", "disc_title": "PERSONA 4", "genre": "JRPG", "height_class": "h-[190px] sm:h-[210px]", "hours": "88h", "id": "persona-4-golden", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Reach out to the truth.", "rating": 5, "review": "The foggy rural town of Inaba and its heartwarming mystery investigation squad gave me some of my fondest summer memories.", "score": "9.4/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #713f12 0%, #a16207 45%, #ca8a04 100%)", "spine_text_color": "#fef9c3", "status": "Completed", "tags": ["JRPG", "Mystery", "Anime", "Cozy"], "title": "Persona 4 Golden", "width_class": "w-9 sm:w-10", "year_played": "2022"}, {"accent_color": "#818cf8", "badge_color": "#6366f1", "cover_image": "", "developer": "Larian Studios", "disc_color": "#6366f1", "disc_title": "BALDUR\u0027S GATE", "genre": "CRPG", "height_class": "h-[200px] sm:h-[220px]", "hours": "155h", "id": "baldur-gate-3", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "You have your own path to forge. Roll with advantage.", "rating": 5, "review": "A monumental triumph for roleplaying games. Unprecedented narrative freedom, brilliant party companions, and turn-based tactical depth that sets a new industry bar.", "score": "10/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%)", "spine_text_color": "#e0e7ff", "status": "Completed", "tags": ["CRPG", "D\u0026D", "Story Rich", "Masterpiece"], "title": "Baldur\u0027s Gate 3", "width_class": "w-11 sm:w-13", "year_played": "2023 - 2024"}, {"accent_color": "#f87171", "badge_color": "#991b1b", "cover_image": "", "developer": "CD Projekt Red", "disc_color": "#991b1b", "disc_title": "WITCHER 3", "genre": "Open World RPG", "height_class": "h-[195px] sm:h-[215px]", "hours": "170h", "id": "witcher-3", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Wind\u0027s howling.", "rating": 5, "review": "Geralt\u0027s quest across Velen, Novigrad, and Skellige is storytelling gold. The Bloody Baron questline and Blood and Wine DLC remain golden standards.", "score": "9.9/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #111827 0%, #1f2937 45%, #374151 100%)", "spine_text_color": "#f3f4f6", "status": "Completed", "tags": ["RPG", "Story Rich", "Fantasy", "Masterpiece"], "title": "The Witcher 3", "width_class": "w-10 sm:w-12", "year_played": "2021"}, {"accent_color": "#fb923c", "badge_color": "#ea580c", "cover_image": "", "developer": "Mobius Digital", "disc_color": "#ea580c", "disc_title": "OUTER WILDS", "genre": "Mystery / Space", "height_class": "h-[190px] sm:h-[210px]", "hours": "35h", "id": "outer-wilds", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "The universe is, and we are.", "rating": 5, "review": "A once-in-a-lifetime experience. A game driven purely by your own curiosity and knowledge acquisition. You can only play it once for the first time, and it changes you forever.", "score": "10/10", "shelf": "top", "spine_gradient": "linear-gradient(180deg, #1c1917 0%, #292524 45%, #431407 100%)", "spine_text_color": "#fed7aa", "status": "Completed", "tags": ["Space", "Mystery", "Indie", "Philosophy"], "title": "Outer Wilds", "width_class": "w-9 sm:w-11", "year_played": "2024"}, {"accent_color": "#f1f5f9", "badge_color": "#475569", "cover_image": "", "developer": "Toby Fox", "disc_color": "#475569", "disc_title": "UNDERTALE", "genre": "RPG", "height_class": "h-[190px] sm:h-[210px]", "hours": "40h", "id": "undertale", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Despite everything, it\u0027s still you.", "rating": 5, "review": "Toby Fox rewrote what an RPG narrative could do with player guilt, mercy, and expectation. The Megalovania fight and Hopes and Dreams climax will forever live in my head.", "score": "9.9/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #0f172a 0%, #1e293b 45%, #334155 100%)", "spine_text_color": "#f8fafc", "status": "Completed (True Pacifist)", "tags": ["RPG", "Indie", "Music", "Iconic"], "title": "Undertale", "width_class": "w-9 sm:w-10", "year_played": "2022"}, {"accent_color": "#4ade80", "badge_color": "#16a34a", "cover_image": "", "developer": "Toby Fox", "disc_color": "#16a34a", "disc_title": "UNDERTALE OST", "genre": "Soundtrack Edition", "height_class": "h-[190px] sm:h-[210px]", "hours": "25h", "id": "undertale-ce", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "You\u0027re filled with determination.", "rating": 5, "review": "The complete 101-track soundtrack that captured the internet. Every melodic motif interweaves seamlessly into character identity and emotional payoff.", "score": "10/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #052e16 0%, #14532d 45%, #15803d 100%)", "spine_text_color": "#bbf7d0", "status": "Conquered", "tags": ["Chiptune", "Soundtrack", "Masterpiece"], "title": "Undertale (OST)", "width_class": "w-9 sm:w-10", "year_played": "2022"}, {"accent_color": "#38bdf8", "badge_color": "#0284c7", "cover_image": "", "developer": "ConcernedApe", "disc_color": "#0284c7", "disc_title": "STARDEW", "genre": "Farming / Life Sim", "height_class": "h-[195px] sm:h-[215px]", "hours": "210h", "id": "stardew-valley", "is_currently_playing": false, "platform": "Nintendo Switch", "platform_code": "switch", "quote": "You\u0027ve got a granddad who believes in you.", "rating": 5, "review": "The ultimate digital comfort food. The soundtrack changing through the seasons, tending crops, descending Skull Cavern, and restoring the Community Center. Pure therapy.", "score": "9.5/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #0369a1 0%, #0284c7 45%, #0ea5e9 100%)", "spine_text_color": "#e0f2fe", "status": "Completed", "tags": ["Cozy", "Farming", "Indie", "Pixel Art"], "title": "Stardew Valley", "width_class": "w-10 sm:w-12", "year_played": "2022 - 2023"}, {"accent_color": "#60a5fa", "badge_color": "#2563eb", "cover_image": "", "developer": "Yacht Club Games", "disc_color": "#2563eb", "disc_title": "SHOVEL KNIGHT", "genre": "Retro Platformer", "height_class": "h-[190px] sm:h-[210px]", "hours": "48h", "id": "shovel-knight", "is_currently_playing": false, "platform": "Nintendo Switch", "platform_code": "switch", "quote": "Strike the Earth!", "rating": 5, "review": "A masterclass in 8-bit NES nostalgia executed with modern game design philosophies. Every campaign (Specter of Torment especially) is golden.", "score": "9.3/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 45%, #2563eb 100%)", "spine_text_color": "#dbeafe", "status": "Completed", "tags": ["Retro", "Platformer", "8-Bit", "Chiptune"], "title": "Shovel Knight", "width_class": "w-9 sm:w-11", "year_played": "2022"}, {"accent_color": "#fde047", "badge_color": "#ca8a04", "cover_image": "", "developer": "Studio Pixel", "disc_color": "#ca8a04", "disc_title": "CAVE STORY", "genre": "Action Adventure", "height_class": "h-[190px] sm:h-[210px]", "hours": "30h", "id": "cave-story", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Quote the Soldier awakens in a cave.", "rating": 5, "review": "The pioneer of indie games that inspired generations of developers. Built by one person (Daisuke Amaya) over five years. The Sanctuary Hell run is legendary.", "score": "9.2/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #422006 0%, #713f12 45%, #854d0e 100%)", "spine_text_color": "#fef3c7", "status": "Completed", "tags": ["Indie Classic", "Action", "Retro", "Iconic"], "title": "Cave Story+", "width_class": "w-9 sm:w-10", "year_played": "2021"}, {"accent_color": "#f59e0b", "badge_color": "#d97706", "cover_image": "", "developer": "Mossmouth", "disc_color": "#d97706", "disc_title": "SPELUNKY 2", "genre": "Roguelike Platformer", "height_class": "h-[190px] sm:h-[210px]", "hours": "140h", "id": "spelunky-2", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Trust nothing. Not even the rocks.", "rating": 5, "review": "The most diabolical, hilarious, emergent sandbox game in existence. Hundreds of deaths, each teaching a brutal lesson in cascading domino chain-reaction physics.", "score": "9.5/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #78350f 0%, #92400e 45%, #b45309 100%)", "spine_text_color": "#fef3c7", "status": "Conquered (Sunken City)", "tags": ["Roguelike", "Platformer", "Hardcore", "Indie"], "title": "Spelunky 2", "width_class": "w-9 sm:w-10", "year_played": "2023"}, {"accent_color": "#34d399", "badge_color": "#059669", "cover_image": "", "developer": "Motion Twin", "disc_color": "#059669", "disc_title": "DEAD CELLS", "genre": "Rogue-lite", "height_class": "h-[190px] sm:h-[210px]", "hours": "115h", "id": "dead-cells", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Kill. Die. Learn. Repeat.", "rating": 5, "review": "Buttery smooth kinetic combat that feels great under your fingers from the very first minute. 5 Boss Cells took blood and tears, but conquering the Collector was euphoric.", "score": "9.4/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #143224 0%, #1e4d36 45%, #2d7351 100%)", "spine_text_color": "#d1fae5", "status": "Completed (5BC)", "tags": ["Roguelike", "Action", "Pixel Art", "Fast-Paced"], "title": "Dead Cells", "width_class": "w-9 sm:w-11", "year_played": "2023"}, {"accent_color": "#facc15", "badge_color": "#ca8a04", "cover_image": "", "developer": "Square", "disc_color": "#ca8a04", "disc_title": "CHRONO TRIGGER", "genre": "Classic JRPG", "height_class": "h-[200px] sm:h-[220px]", "hours": "55h", "id": "chrono-trigger", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "If history is to change, let it change.", "rating": 5, "review": "Timeless perfection. The dream team of Sakaguchi, Horii, and Toriyama created a pacing masterclass where no screen or hour is wasted. Yasunori Mitsuda\u0027s Corridors of Time is legendary.", "score": "10/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #713f12 0%, #854d0e 45%, #a16207 100%)", "spine_text_color": "#fef9c3", "status": "Completed", "tags": ["JRPG", "Time Travel", "16-Bit", "Legendary"], "title": "Chrono Trigger", "width_class": "w-11 sm:w-13", "year_played": "2022"}, {"accent_color": "#d946ef", "badge_color": "#a21caf", "cover_image": "", "developer": "The Game Kitchen", "disc_color": "#a21caf", "disc_title": "BLASPHEMOUS", "genre": "Metroidvania", "height_class": "h-[190px] sm:h-[210px]", "hours": "52h", "id": "blasphemous", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Sorrowful be the heart, Penitent One.", "rating": 4, "review": "Jaw-dropping Spanish gothic religious iconography paired with brutal pixel art execution animations and weighty Metroidvania exploration.", "score": "9.0/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #3b0764 0%, #581c87 45%, #701a75 100%)", "spine_text_color": "#f5d0fe", "status": "Completed", "tags": ["Metroidvania", "Dark Fantasy", "Pixel Art", "Brutal"], "title": "Blasphemous", "width_class": "w-9 sm:w-10", "year_played": "2023"}, {"accent_color": "#2dd4bf", "badge_color": "#0d9488", "cover_image": "", "developer": "Nintendo", "disc_color": "#0d9488", "disc_title": "TOTK", "genre": "Action Adventure", "height_class": "h-[195px] sm:h-[215px]", "hours": "145h", "id": "zelda-totk", "is_currently_playing": false, "platform": "Nintendo Switch", "platform_code": "switch", "quote": "Open your eyes. Save Hyrule once more.", "rating": 5, "review": "Ultrahand and fuse physics are a staggering engineering miracle. Traversing seamlessly from floating sky islands down into the terrifying depths is unforgettable.", "score": "9.8/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #042f2e 0%, #115e59 45%, #0f766e 100%)", "spine_text_color": "#ccfbf1", "status": "Completed", "tags": ["Open World", "Adventure", "Physics", "Masterpiece"], "title": "Zelda: Tears of Kingdom", "width_class": "w-10 sm:w-12", "year_played": "2023"}, {"accent_color": "#60a5fa", "badge_color": "#2563eb", "cover_image": "", "developer": "MercurySteam", "disc_color": "#2563eb", "disc_title": "METROID DREAD", "genre": "Metroidvania", "height_class": "h-[190px] sm:h-[210px]", "hours": "32h", "id": "metroid-dread", "is_currently_playing": false, "platform": "Nintendo Switch", "platform_code": "switch", "quote": "Fear is not an option.", "rating": 5, "review": "Samus controls like pure liquid. The E.M.M.I. stealth chase zones inject genuine horror, and the Raven Beak finale demands flawless execution.", "score": "9.5/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #1e1b4b 0%, #172554 45%, #1e3a8a 100%)", "spine_text_color": "#dbeafe", "status": "100% Cleared", "tags": ["Metroidvania", "Sci-Fi", "Action", "Nintendo"], "title": "Metroid Dread", "width_class": "w-9 sm:w-11", "year_played": "2022"}, {"accent_color": "#f59e0b", "badge_color": "#d97706", "cover_image": "", "developer": "ZA/UM", "disc_color": "#d97706", "disc_title": "DISCO ELYSIUM", "genre": "Isometric RPG", "height_class": "h-[195px] sm:h-[215px]", "hours": "50h", "id": "disco-elysium", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Sunrise parabellum.", "rating": 5, "review": "The greatest written video game in history. The thought cabinet, internalized political debates, and Kim Kitsuragi make Martinaise an indelible literary journey.", "score": "10/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #142f2b 0%, #204e46 45%, #854d0e 100%)", "spine_text_color": "#fef3c7", "status": "Completed", "tags": ["RPG", "Narrative", "Masterpiece", "Atmospheric"], "title": "Disco Elysium", "width_class": "w-10 sm:w-12", "year_played": "2023"}, {"accent_color": "#94a3b8", "badge_color": "#64748b", "cover_image": "", "developer": "PlatinumGames", "disc_color": "#64748b", "disc_title": "NIER:AUTOMATA", "genre": "Action RPG", "height_class": "h-[195px] sm:h-[215px]", "hours": "62h", "id": "nier-automata", "is_currently_playing": false, "platform": "PC / Steam", "platform_code": "steam", "quote": "Everything that lives is designed to end.", "rating": 5, "review": "Yoko Taro uses the medium of interactive software to deliver an existential triumph. Ending E is one of the most sublime gaming moments in history. Keiichi Okabe\u0027s music is untouchable.", "score": "9.8/10", "shelf": "bottom", "spine_gradient": "linear-gradient(180deg, #1e293b 0%, #334155 45%, #475569 100%)", "spine_text_color": "#e2e8f0", "status": "Completed (Ending E)", "tags": ["Action", "Philosophy", "Soundtrack", "Masterpiece"], "title": "NieR:Automata", "width_class": "w-9 sm:w-11", "year_played": "2023"}]
+    </script>
+
+  </div>
+
+</div>
+
+<!-- =========================================================================
+     INTERACTIVE RETRO SOUND & CD BOOKCASE ENGINE
+     ========================================================================= -->
+<script>
+(function() {
+  // 1. Synthesized 8-Bit Web Audio Engine
+  let audioCtx = null;
+  let sfxEnabled = true;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playTone(freq, duration, type = "square", volume = 0.04) {
+    if (!sfxEnabled || !audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  function playHoverSound() {
+    playTone(520, 0.025, "triangle", 0.02);
+  }
+
+  function playSwapSound() {
+    initAudio();
+    playTone(330, 0.04, "square", 0.05);
+    setTimeout(() => playTone(660, 0.06, "square", 0.04), 40);
+  }
+
+  // SFX Toggle
+  const sfxBtn = document.getElementById('sfx-toggle-btn');
+  if (sfxBtn) {
+    sfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      document.getElementById('sfx-icon').textContent = sfxEnabled ? '🔊' : '🔇';
+      document.getElementById('sfx-label').textContent = sfxEnabled ? 'SFX: ON' : 'SFX: OFF';
+      if (sfxEnabled) {
+        initAudio();
+        playTone(600, 0.05);
+      }
+    });
+  }
+
+  // Easter egg sound on clicking plant
+  const plantEl = document.getElementById('plant-easter-egg');
+  if (plantEl) {
+    plantEl.addEventListener('click', () => {
+      initAudio();
+      playTone(587.33, 0.06, "sine", 0.06);
+      setTimeout(() => playTone(880, 0.1, "sine", 0.06), 60);
+    });
+  }
+
+  // 2. Game Data & Interactive State
+  const dataEl = document.getElementById('games-collection-data');
+  if (!dataEl) return;
+  let games = [];
+  try {
+    games = JSON.parse(dataEl.textContent);
+  } catch (e) {
+    console.error("Failed to parse games JSON:", e);
+    return;
+  }
+
+  let activeIndex = 0;
+
+  // Cache DOM Elements
+  const coverEl = document.getElementById('active-cd-cover');
+  const coverImg = document.getElementById('active-cover-img');
+  const coverFallback = document.getElementById('active-cover-fallback');
+  const fallbackDev = document.getElementById('fallback-developer');
+  const fallbackTitle = document.getElementById('fallback-title');
+  const fallbackGenre = document.getElementById('fallback-genre');
+  const fallbackScore = document.getElementById('fallback-score');
+
+  const discEl = document.getElementById('active-disc');
+  const discWrapper = document.getElementById('active-disc-wrapper');
+  const discLabel = document.getElementById('active-disc-label');
+
+  const dialogueTitle = document.getElementById('active-dialogue-title');
+  const dialogueStars = document.getElementById('active-dialogue-stars');
+  const dialoguePlatform = document.getElementById('active-dialogue-platform');
+  const dialogueHours = document.getElementById('active-dialogue-hours');
+  const dialogueStatus = document.getElementById('active-dialogue-status');
+  const dialogueQuote = document.getElementById('active-dialogue-quote');
+  const indexDisplay = document.getElementById('active-index-display');
+
+  // Load Game into Opened CD Case & Deck Display
+  function loadGame(game, index) {
+    if (!game) return;
+    activeIndex = index;
+
+    // A. Update CD Booklet Cover Art
+    if (game.cover_image && game.cover_image.trim() !== '') {
+      coverImg.src = game.cover_image;
+      coverImg.classList.remove('hidden');
+      coverFallback.classList.add('hidden');
+      coverEl.style.background = game.spine_gradient || '#0f172a';
+    } else {
+      coverImg.classList.add('hidden');
+      coverFallback.classList.remove('hidden');
+      if (fallbackDev) fallbackDev.textContent = game.developer || "INDIE VAULT";
+      if (fallbackTitle) fallbackTitle.textContent = game.title;
+      if (fallbackGenre) fallbackGenre.textContent = game.genre || "CLASSIC";
+      if (fallbackScore) fallbackScore.textContent = game.score || "10/10";
+      coverEl.style.background = game.spine_gradient || '#0f172a';
+    }
+
+    // B. Update Spinning Disc Silk Screen Label
+    if (discLabel) discLabel.textContent = game.disc_title || game.title;
+
+    // C. Update Header Deck inside Row 4
+    if (dialogueTitle) dialogueTitle.textContent = game.title;
+    
+    // Star rating
+    if (dialogueStars) {
+      let starStr = "";
+      const ratingNum = Math.min(5, Math.max(1, game.rating || 5));
+      for (let i = 0; i < ratingNum; i++) starStr += "★";
+      for (let i = ratingNum; i < 5; i++) starStr += "☆";
+      dialogueStars.textContent = starStr;
+    }
+
+    // Platform Badge & Hours
+    if (dialoguePlatform) dialoguePlatform.textContent = `${game.platform || 'PC'}`;
+    if (dialogueHours) dialogueHours.textContent = `${game.hours || '50h'} logged`;
+    
+    if (dialogueStatus) {
+      if (game.is_currently_playing) {
+        dialogueStatus.textContent = "CURRENTLY PLAYING";
+        dialogueStatus.className = "text-emerald-300 bg-emerald-950 border border-emerald-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold";
+      } else if (game.status && game.status.includes('100%')) {
+        dialogueStatus.textContent = "100% CLEARED";
+        dialogueStatus.className = "text-amber-300 bg-amber-950 border border-amber-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold";
+      } else {
+        dialogueStatus.textContent = game.status || "COMPLETED";
+        dialogueStatus.className = "text-slate-300 bg-slate-900 border border-slate-700/40 px-1 py-0.2 rounded-xs hidden sm:inline-block";
+      }
+    }
+
+    // Quote
+    if (dialogueQuote) dialogueQuote.textContent = game.quote || `${game.title} - An unforgettable classic.`;
+
+    // Counter
+    if (indexDisplay) indexDisplay.textContent = `${index + 1} / ${games.length}`;
+
+    // Highlight CD Case on Shelf
+    document.querySelectorAll('.pixel-cd-case-compact').forEach(el => {
+      if (el.getAttribute('data-id') === game.id) {
+        el.classList.add('cd-active-now');
+      } else {
+        el.classList.remove('cd-active-now');
+      }
+    });
+  }
+
+  // Bind Shelf Cases Click & Hover
+  document.querySelectorAll('.pixel-cd-case-compact').forEach((caseEl) => {
+    const gameId = caseEl.getAttribute('data-id');
+    const gIndex = games.findIndex(g => g.id === gameId);
+    
+    caseEl.addEventListener('mouseenter', () => {
+      playHoverSound();
+    });
+
+    caseEl.addEventListener('click', () => {
+      if (gIndex !== -1) {
+        playSwapSound();
+        loadGame(games[gIndex], gIndex);
+      }
+    });
+
+    caseEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (gIndex !== -1) {
+          playSwapSound();
+          loadGame(games[gIndex], gIndex);
+        }
+      }
+    });
+  });
+
+  // Prev / Next Buttons
+  const prevBtn = document.getElementById('active-prev-btn');
+  const nextBtn = document.getElementById('active-next-btn');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      playSwapSound();
+      const prevIdx = (activeIndex - 1 + games.length) % games.length;
+      loadGame(games[prevIdx], prevIdx);
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      playSwapSound();
+      const nextIdx = (activeIndex + 1) % games.length;
+      loadGame(games[nextIdx], nextIdx);
+    });
+  }
+
+  // Click Disc to Toggle Spin
+  if (discWrapper && discEl) {
+    discWrapper.addEventListener('click', () => {
+      discEl.classList.toggle('paused-cd');
+      playTone(discEl.classList.contains('paused-cd') ? 220 : 880, 0.05);
+    });
+  }
+
+  // Filter Buttons
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('bg-[#b45309]', 'text-white', 'border-[#f59e0b]');
+        b.classList.add('bg-[#201007]', 'text-[#fef9c3]', 'border-[#4a2615]');
+      });
+      btn.classList.add('bg-[#b45309]', 'text-white', 'border-[#f59e0b]');
+      btn.classList.remove('bg-[#201007]', 'text-[#fef9c3]', 'border-[#4a2615]');
+
+      const filterType = btn.getAttribute('data-filter');
+      applyFilter(filterType, searchInput ? searchInput.value : '');
+    });
+  });
+
+  // Search Input
+  const searchInput = document.getElementById('shelf-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const activeFilter = document.querySelector('.filter-btn.bg-\\[\\#b45309\\]')?.getAttribute('data-filter') || 'all';
+      applyFilter(activeFilter, e.target.value.trim().toLowerCase());
+    });
+  }
+
+  function applyFilter(filter, query = "") {
+    document.querySelectorAll('.pixel-cd-case-compact').forEach(el => {
+      const gId = el.getAttribute('data-id');
+      const game = games.find(g => g.id === gId);
+      if (!game) return;
+
+      let matchesFilter = true;
+      if (filter === 'playing') {
+        matchesFilter = !!game.is_currently_playing;
+      } else if (filter === 'cleared') {
+        matchesFilter = game.status && game.status.includes('100%');
+      } else if (filter === 'masterpiece') {
+        matchesFilter = game.score && game.score.includes('10/10');
+      }
+
+      let matchesQuery = true;
+      if (query) {
+        const text = `${game.title} ${game.developer} ${game.genre} ${game.platform}`.toLowerCase();
+        matchesQuery = text.includes(query);
+      }
+
+      if (matchesFilter && matchesQuery) {
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'auto';
+        el.style.filter = 'none';
+      } else {
+        el.style.opacity = '0.15';
+        el.style.filter = 'grayscale(100%) brightness(0.5)';
+        el.style.pointerEvents = 'none';
+      }
+    });
+  }
+
+  // Initialize with First Game (Hollow Knight)
+  if (games.length > 0) {
+    loadGame(games[0], 0);
+  }
+
+  // Global Keybindings (Arrow keys to browse)
+  window.addEventListener('keydown', (e) => {
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    if (e.key === 'ArrowLeft') {
+      const prevIdx = (activeIndex - 1 + games.length) % games.length;
+      loadGame(games[prevIdx], prevIdx);
+    } else if (e.key === 'ArrowRight') {
+      const nextIdx = (activeIndex + 1) % games.length;
+      loadGame(games[nextIdx], nextIdx);
+    }
+  });
+
+})();
+</script>
+
+  </main>
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-CGijubkg.js"></script>
+</body>
+
+</html>
