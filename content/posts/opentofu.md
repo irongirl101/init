@@ -28,5 +28,5 @@ It came in as a replacement for HashiCorp's Terraform -- ending its status as a 
 
 There are wayyy more layers to OpenTofu -- as it would be in any CNCF project XP, so much that i cannot cover here. They are also, a very active repository!
 
-Repository Link: ![Repo](https://github.com/opentofu/opentofu)
-Documentation Link: ![Docs](https://opentofu.org/docs/)
+Repository Link: [Repo](https://github.com/opentofu/opentofu)
+Documentation Link: [Docs](https://opentofu.org/docs/)

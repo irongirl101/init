@@ -109,10 +109,76 @@ footer {
   box-shadow: 0 0 20px rgba(0, 85, 255, 0.8), inset 0 0 10px rgba(0, 85, 255, 0.6);
 }
 
-pre,
-pre code {
+/* ==========================================================================
+   CODE BLOCKS ENCAPSULATED IN ``` ``` (Fit Content, Constrained Length & Overflow)
+   ========================================================================== */
+
+.codehilite,
+article pre:not(.codehilite pre),
+.prose pre:not(.codehilite pre) {
+  display: block;
+  width: fit-content !important;
+  min-width: min(100%, 16rem);
+  max-width: 100% !important;
+  max-height: 34rem;
+  overflow: auto !important;
+  margin: 1.5rem 0 !important;
+  padding: 1rem 1.25rem !important;
   background-color: #02120e !important;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
+}
+
+.codehilite pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  white-space: pre !important;
+  word-break: normal !important;
+  word-wrap: normal !important;
+  overflow: visible !important;
+}
+
+.codehilite pre code,
+article pre:not(.codehilite pre) code,
+.prose pre:not(.codehilite pre) code {
+  background-color: transparent !important;
   color: #d3d7dd;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Custom subtle scrollbars for code blocks */
+.codehilite::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.codehilite::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.codehilite::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.codehilite::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 /* ==========================================================================
