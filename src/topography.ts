@@ -23,9 +23,43 @@ let targetMouseY = -9999;
 let mouseX = -9999;
 let mouseY = -9999;
 
-// Eased coordinates for the spider web center
-let webCenterX = 0;
-let webCenterY = 0;
+// Interactive background spider-web lattice grid
+interface WebPoint {
+  origX: number;
+  origY: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+}
+
+let webGrid: WebPoint[][] = [];
+const webSpacing = 50;
+
+function initWebPattern(): void {
+  webGrid = [];
+  const webCols = Math.ceil(width / webSpacing) + 2;
+  const webRows = Math.ceil(height / webSpacing) + 2;
+
+  for (let r = 0; r <= webRows; r++) {
+    const row: WebPoint[] = [];
+    const isOdd = r % 2 === 1;
+    for (let c = 0; c <= webCols; c++) {
+      const offsetX = isOdd ? webSpacing * 0.5 : 0;
+      const ox = (c - 1) * webSpacing + offsetX;
+      const oy = (r - 1) * webSpacing;
+      row.push({
+        origX: ox,
+        origY: oy,
+        x: ox,
+        y: oy,
+        vx: 0,
+        vy: 0,
+      });
+    }
+    webGrid.push(row);
+  }
+}
 
 let currentThreshold = 0;
 let noiseMin = 100;
@@ -36,6 +70,7 @@ const inputValues: number[][] = [];
 const timelineSection = document.getElementById("timeline-section");
 let targetSpideyFactor = 0;
 let currentSpideyFactor = 0;
+let spideyWebY = 30;
 
 // Dynamic background color blending values
 let startR = 4;
@@ -61,6 +96,8 @@ function resizeCanvas(): void {
 
   cols = Math.floor(width / res) + 1;
   rows = Math.floor(height / res) + 1;
+
+  initWebPattern();
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -72,27 +109,32 @@ function updateSpideyFactor() {
     return;
   }
   const rect = timelineSection.getBoundingClientRect();
-  const viewportHeight = window.innerHeight;
-  
-  // The timeline section is active in the upper half of the screen
-  const isActive = rect.top < viewportHeight * 0.4 && rect.bottom > 0;
-  
-  if (isActive) {
-    // Start fading in web when top of timeline crosses 40% of viewport height
-    // Reach full intensity when top of timeline is at 10% of viewport height
-    const startFade = viewportHeight * 0.4;
-    const endFade = viewportHeight * 0.1;
-    
-    let factor = 0;
-    if (rect.top <= endFade) {
-      factor = 1.0;
-    } else if (rect.top < startFade) {
-      factor = (startFade - rect.top) / (startFade - endFade);
-    }
-    targetSpideyFactor = factor;
-  } else {
+  const vh = window.innerHeight;
+  const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+
+  // If near the top of the page (Hero section) or timeline hasn't entered viewport
+  if (scrollY < 120 || rect.top > vh * 0.65) {
     targetSpideyFactor = 0;
+    return;
   }
+
+  // If timeline section has scrolled off the top of the screen (e.g. past timeline)
+  if (rect.bottom < 60) {
+    targetSpideyFactor = 0;
+    return;
+  }
+
+  // Timeline is in view: calculate smooth progressive fade-in and fade-out
+  let factor = 1.0;
+  if (rect.top > vh * 0.25) {
+    // Entering from bottom
+    factor = (vh * 0.65 - rect.top) / (vh * 0.4);
+  } else if (rect.bottom < vh * 0.45) {
+    // Exiting towards top
+    factor = Math.max(0, (rect.bottom - 60) / (vh * 0.35));
+  }
+
+  targetSpideyFactor = Math.max(0, Math.min(1, factor));
 }
 
 function generateNoise(): void {
@@ -225,111 +267,141 @@ function renderTopography(opacity: number): void {
   ctx.stroke();
 }
 
-function renderSpiderWeb(opacity: number): void {
-  if (opacity <= 0.01) return;
+function renderWebPattern(opacity: number, isMouseInTimeline: boolean): void {
+  if (opacity <= 0.01 || webGrid.length === 0) return;
 
-  const numRadials = 12;
-  const angleStep = (Math.PI * 2) / numRadials;
-  const maxDist = Math.max(width, height);
-  const time = Date.now() * 0.0008;
+  // Only allow mouse to interact with the web grid if cursor is actually inside the timeline
+  const hasMouse = targetMouseX !== -9999 && targetMouseY !== -9999 && isMouseInTimeline;
+  const mouseRadius = 140;
+  const mouseRadiusSq = mouseRadius * mouseRadius;
 
-  // 1. Draw radial threads from web center
-  ctx.beginPath();
-  for (let j = 0; j < numRadials; j++) {
-    const angle = j * angleStep;
-    const x = webCenterX + Math.cos(angle) * maxDist;
-    const y = webCenterY + Math.sin(angle) * maxDist;
-    ctx.moveTo(webCenterX, webCenterY);
-    ctx.lineTo(x, y);
-  }
-  
-  const radGrad = ctx.createRadialGradient(
-    webCenterX, webCenterY, 5,
-    webCenterX, webCenterY, maxDist * 0.6
-  );
-  radGrad.addColorStop(0, `rgba(255, 255, 255, ${0.45 * opacity})`);
-  radGrad.addColorStop(0.2, `rgba(0, 85, 255, ${0.2 * opacity})`);
-  radGrad.addColorStop(0.5, `rgba(230, 36, 41, ${0.08 * opacity})`);
-  radGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
+  const webRows = webGrid.length;
+  const webCols = webGrid[0]?.length || 0;
 
-  ctx.strokeStyle = radGrad;
-  ctx.lineWidth = 1;
-  ctx.stroke();
+  // 1. Interactive spring physics simulation across the background web lattice
+  for (let r = 0; r < webRows; r++) {
+    const row = webGrid[r];
+    for (let c = 0; c < webCols; c++) {
+      const p = row[c];
 
-  // 2. Draw concentric rings with saggy curves
-  const numLayers = 8;
-  ctx.beginPath();
-  for (let i = 1; i <= numLayers; i++) {
-    const r = i * ((maxDist * 0.4) / numLayers);
+      // Cursor elastic perturbation
+      if (hasMouse) {
+        const dx = p.x - targetMouseX;
+        const dy = p.y - targetMouseY;
+        const distSq = dx * dx + dy * dy;
 
-    for (let j = 0; j <= numRadials; j++) {
-      const angle1 = j * angleStep;
-      const angle2 = (j + 1) * angleStep;
-
-      // Slight wavy movement based on time
-      const w1 = Math.sin(angle1 * 3 + time) * 5;
-      const w2 = Math.sin(angle2 * 3 + time) * 5;
-
-      const r1 = r + w1;
-      const r2 = r + w2;
-
-      const x1 = webCenterX + Math.cos(angle1) * r1;
-      const y1 = webCenterY + Math.sin(angle1) * r1;
-
-      const x2 = webCenterX + Math.cos(angle2) * r2;
-      const y2 = webCenterY + Math.sin(angle2) * r2;
-
-      if (j === 0) {
-        ctx.moveTo(x1, y1);
+        if (distSq < mouseRadiusSq && distSq > 0.01) {
+          const dist = Math.sqrt(distSq);
+          const force = (1 - dist / mouseRadius) * 12;
+          const angle = Math.atan2(dy, dx);
+          p.vx += Math.cos(angle) * force * 0.35;
+          p.vy += Math.sin(angle) * force * 0.35;
+        }
       }
 
-      // Calculate sagging control point
-      const midX = (x1 + x2) / 2;
-      const midY = (y1 + y2) / 2;
-      const controlX = midX + (webCenterX - midX) * 0.16;
-      const controlY = midY + (webCenterY - midY) * 0.16;
+      // High-tension silk spring-back to rest position
+      p.vx += (p.origX - p.x) * 0.09;
+      p.vy += (p.origY - p.y) * 0.09;
+      p.vx *= 0.85; // Damping
+      p.vy *= 0.85;
 
-      ctx.quadraticCurveTo(controlX, controlY, x2, y2);
+      p.x += p.vx;
+      p.y += p.vy;
     }
   }
-  ctx.strokeStyle = `rgba(255, 255, 255, ${0.16 * opacity})`;
-  ctx.lineWidth = 0.8;
+
+  // 2. Render background spider-web mesh lines
+  ctx.beginPath();
+  for (let r = 0; r < webRows; r++) {
+    const row = webGrid[r];
+    const isOdd = r % 2 === 1;
+
+    for (let c = 0; c < webCols; c++) {
+      const p = row[c];
+
+      // Horizontal web strand
+      if (c < webCols - 1) {
+        const right = row[c + 1];
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(right.x, right.y);
+      }
+
+      // Downward diagonal web threads (creating triangular/hexagonal spider webbing)
+      if (r < webRows - 1) {
+        const downRight = isOdd ? webGrid[r + 1][c + 1] : webGrid[r + 1][c];
+        if (downRight) {
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(downRight.x, downRight.y);
+        }
+
+        const downLeft = isOdd ? webGrid[r + 1][c] : (c > 0 ? webGrid[r + 1][c - 1] : null);
+        if (downLeft) {
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(downLeft.x, downLeft.y);
+        }
+      }
+    }
+  }
+  ctx.strokeStyle = `rgba(255, 255, 255, ${0.055 * opacity})`;
+  ctx.lineWidth = 0.5;
   ctx.stroke();
 
-  // 3. Draw active threads connecting the web center to visible timeline nodes
-  const nodes = document.querySelectorAll(".timeline-node");
-  nodes.forEach((node) => {
-    const rect = node.getBoundingClientRect();
-    const nodeX = rect.left + rect.width / 2;
-    const nodeY = rect.top + rect.height / 2;
+  // 3. Highlighted active web strands & cursor illumination
+  if (hasMouse) {
+    ctx.beginPath();
+    for (let r = 0; r < webRows; r++) {
+      const row = webGrid[r];
+      const isOdd = r % 2 === 1;
 
-    // Connect if node is visible on viewport
-    if (nodeY > -50 && nodeY < height + 50) {
-      const midX = (webCenterX + nodeX) / 2;
-      const midY = (webCenterY + nodeY) / 2;
-
-      // Dynamic control point representing gravity sag + scroll inertia sway
-      const sway = Math.sin(time * 2.5 + nodeY) * 10;
-      const controlX = midX + sway;
-      const controlY = midY + 25; // Droop down
-
-      // Core white web line
-      ctx.beginPath();
-      ctx.moveTo(webCenterX, webCenterY);
-      ctx.quadraticCurveTo(controlX, controlY, nodeX, nodeY);
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.35 * opacity})`;
-      ctx.lineWidth = 1.1;
-      ctx.stroke();
-
-      // Secondary glowing blue core
-      ctx.beginPath();
-      ctx.moveTo(webCenterX, webCenterY);
-      ctx.quadraticCurveTo(controlX - sway * 0.2, controlY - 5, nodeX, nodeY);
-      ctx.strokeStyle = `rgba(0, 85, 255, ${0.18 * opacity})`;
-      ctx.lineWidth = 0.7;
-      ctx.stroke();
+      for (let c = 0; c < webCols; c++) {
+        const p = row[c];
+        const dist = Math.hypot(p.x - targetMouseX, p.y - targetMouseY);
+        if (dist < mouseRadius * 1.15) {
+          if (c < webCols - 1) {
+            const right = row[c + 1];
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(right.x, right.y);
+          }
+          if (r < webRows - 1) {
+            const downRight = isOdd ? webGrid[r + 1][c + 1] : webGrid[r + 1][c];
+            if (downRight) {
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(downRight.x, downRight.y);
+            }
+          }
+        }
+      }
     }
-  });
+    ctx.strokeStyle = `rgba(186, 230, 253, ${0.18 * opacity})`;
+    ctx.lineWidth = 0.75;
+    ctx.stroke();
+
+    // Subtle localized moonlight aura
+    const aura = ctx.createRadialGradient(
+      targetMouseX, targetMouseY, 0,
+      targetMouseX, targetMouseY, mouseRadius
+    );
+    aura.addColorStop(0, `rgba(147, 197, 253, ${0.06 * opacity})`);
+    aura.addColorStop(0.5, `rgba(230, 36, 41, ${0.02 * opacity})`);
+    aura.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle = aura;
+    ctx.beginPath();
+    ctx.arc(targetMouseX, targetMouseY, mouseRadius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 4. Subtle silk intersection micro-droplets
+  ctx.beginPath();
+  for (let r = 0; r < webRows; r += 2) {
+    const row = webGrid[r];
+    for (let c = 0; c < webCols; c += 2) {
+      const p = row[c];
+      ctx.moveTo(p.x + 0.7, p.y);
+      ctx.arc(p.x, p.y, 0.7, 0, Math.PI * 2);
+    }
+  }
+  ctx.fillStyle = `rgba(215, 238, 255, ${0.1 * opacity})`;
+  ctx.fill();
 }
 
 function animate(): void {
@@ -359,7 +431,8 @@ function animate(): void {
   currentSpideyFactor += (targetSpideyFactor - currentSpideyFactor) * 0.07;
 
   if (canvas && canvas.style.display === "none") canvas.style.display = "block";
-  // Interpolate body background color based on spidey active level for regular pages
+  // Smooth transition: Original green (#04241c) across the website,
+  // transitioning to the sleek dark background (rgb(8, 9, 17)) exclusively when scrolling into the timeline.
   const targetR = 8;
   const targetG = 9;
   const targetB = 17;
@@ -374,32 +447,29 @@ function animate(): void {
     glassNavbar.style.setProperty("--navbar-bg-rgb", `${r}, ${g}, ${b}`);
   }
 
-  // Check if mouse is within timelineSection bounds
+  const hasMouse = targetMouseX !== -9999 && targetMouseY !== -9999;
+
+  // Determine area context based on cursor position relative to timeline
   let isMouseInTimeline = false;
-  if (timelineSection && targetMouseX !== -9999) {
+  if (timelineSection && hasMouse) {
     const rect = timelineSection.getBoundingClientRect();
-    if (
-      targetMouseX >= rect.left &&
-      targetMouseX <= rect.right &&
-      targetMouseY >= rect.top &&
-      targetMouseY <= rect.bottom
-    ) {
+    // Spans vertically across the timeline section across the viewport width
+    if (targetMouseY >= rect.top - 60 && targetMouseY <= rect.bottom + 60) {
       isMouseInTimeline = true;
     }
   }
 
-  // Smooth web center coordinates
-  if (!isMouseInTimeline) {
-    // When mouse is off-screen or not in the timeline, hover in a circular wind pattern
-    const time = Date.now() * 0.0008;
-    const hoverX = width / 2 + Math.sin(time) * 140;
-    const hoverY = height / 2 + Math.cos(time * 0.8) * 90;
-    webCenterX += (hoverX - webCenterX) * 0.05;
-    webCenterY += (hoverY - webCenterY) * 0.05;
-  } else {
-    // Follow the cursor
-    webCenterX += (targetMouseX - webCenterX) * 0.08;
-    webCenterY += (targetMouseY - webCenterY) * 0.08;
+  // Update card cursor spotlights whenever in timeline
+  if (timelineSection && currentSpideyFactor > 0.04) {
+    const cards = timelineSection.querySelectorAll(".spidey-card");
+    cards.forEach((c) => {
+      const cardEl = c as HTMLElement;
+      const cRect = cardEl.getBoundingClientRect();
+      const cx = targetMouseX - cRect.left;
+      const cy = targetMouseY - cRect.top;
+      cardEl.style.setProperty("--mouse-x", `${cx}px`);
+      cardEl.style.setProperty("--mouse-y", `${cy}px`);
+    });
   }
 
   // Draw topographic contours
@@ -407,53 +477,48 @@ function animate(): void {
   const roundedNoiseMin = Math.floor(noiseMin / thresholdIncrement) * thresholdIncrement;
   const roundedNoiseMax = Math.ceil(noiseMax / thresholdIncrement) * thresholdIncrement;
 
+  // Topography stays active: vibrant 100% in hero/blog, keeping a subtle 15% depth in timeline
+  // so the terrain is always interactive across every area
+  const topoOpacity = Math.max(0.15, 1 - currentSpideyFactor * 0.85);
+
   for (
     let threshold = roundedNoiseMin;
     threshold < roundedNoiseMax;
     threshold += thresholdIncrement
   ) {
     currentThreshold = threshold;
-    renderTopography(1 - currentSpideyFactor);
+    renderTopography(topoOpacity);
   }
 
-  // Draw interactive spider web
-  renderSpiderWeb(currentSpideyFactor);
+  // Draw interactive background web pattern strictly with timeline opacity
+  renderWebPattern(currentSpideyFactor, isMouseInTimeline);
 
-  // "Leap of Faith" Silhouette Scroll Animation
+  // Spider-Man Mascot on the Timeline Web String: slides and bobs up and down
   const silhouette = document.getElementById("spidey-silhouette");
-  if (silhouette && timelineSection) {
-    const rect = timelineSection.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    
-    // Calculate scroll progress through the timeline section
-    // 0.0 means the timeline section just started entering the screen from the bottom
-    // 1.0 means the timeline section has scrolled off the screen at the top
-    const totalDist = rect.height + viewportHeight;
-    const currentDist = viewportHeight - rect.top;
-    const progress = Math.max(0, Math.min(1, currentDist / totalDist));
-    
-    // Map progress to y-position: from 115vh (below screen) to -35vh (above screen)
-    // Since it's "falling upwards", it rises as we scroll down (progress increases)
-    const startY = 115; 
-    const endY = -35;   
-    const yPos = startY + (endY - startY) * progress;
-    
-    silhouette.style.top = `${yPos}vh`;
-    
-    // Fade in/out at the boundaries to make it smooth
-    let opacity = currentSpideyFactor;
-    if (progress < 0.12) {
-      opacity *= (progress / 0.12);
-    } else if (progress > 0.88) {
-      opacity *= ((1 - progress) / 0.12);
-    }
-    
-    silhouette.style.opacity = `${opacity}`;
-    
-    // Add a gentle wind sway / rotation based on time
-    const time = Date.now() * 0.002;
-    const sway = Math.sin(time) * 4;
-    silhouette.style.transform = `translateX(-50%) rotate(${sway}deg) scale(0.95)`;
+  const timelineContainer = document.querySelector(".timeline-container") as HTMLElement;
+  if (silhouette && timelineContainer) {
+    const cRect = timelineContainer.getBoundingClientRect();
+    const vh = window.innerHeight;
+
+    // Target focal point tracks user's viewport reading center (around 42% down the screen)
+    const focalY = vh * 0.42;
+    const rawTargetY = focalY - cRect.top;
+    // Clamp between top milestone node area (24px) and bottom of the string
+    const targetY = Math.max(24, Math.min(cRect.height - 35, rawTargetY));
+
+    // Smooth elastic travel along the web string
+    spideyWebY += (targetY - spideyWebY) * 0.08;
+
+    // Continuous organic up-and-down bobbing & hanging sway along the silk thread
+    const time = Date.now() * 0.003;
+    const bob = Math.sin(time) * 10; // Bobs up and down by ±10px
+    const sway = Math.sin(time * 0.75) * 3.5; // ±3.5deg gentle sway
+
+    const finalY = spideyWebY + bob;
+    silhouette.style.top = `${finalY}px`;
+    silhouette.style.left = `0px`;
+    silhouette.style.transform = `translate(-50%, -50%) rotate(${sway}deg)`;
+    silhouette.style.opacity = `${Math.max(0, Math.min(1, currentSpideyFactor * 1.25))}`;
   }
 
   requestAnimationFrame(animate);
@@ -461,11 +526,78 @@ function animate(): void {
 
 animate();
 
-// Initialize Museum Maze if on portfolio page
+// =========================================================================
+// RETRO PIXEL ARCADE PORTAL (TACTILE CHIPTUNE AUDIO & CRT WARP)
+// =========================================================================
+function initArcadePortal(): void {
+  const arcadeBtn = document.getElementById("arcade-games-btn");
+  if (!arcadeBtn) return;
+
+  arcadeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    const href = arcadeBtn.getAttribute("href") || "/games/";
+
+    // 1. Play authentic chiptune 8-bit arcade start beep (Web Audio API)
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) {
+        const actx = new AudioCtx();
+        // Tone 1: 330 Hz (E4)
+        const osc1 = actx.createOscillator();
+        const gain1 = actx.createGain();
+        osc1.type = "square";
+        osc1.frequency.setValueAtTime(330, actx.currentTime);
+        gain1.gain.setValueAtTime(0.12, actx.currentTime);
+        gain1.gain.exponentialRampToValueAtTime(0.01, actx.currentTime + 0.09);
+        osc1.connect(gain1);
+        gain1.connect(actx.destination);
+        osc1.start(actx.currentTime);
+        osc1.stop(actx.currentTime + 0.09);
+
+        // Tone 2: 660 Hz (E5) ascending chiptune tone
+        const osc2 = actx.createOscillator();
+        const gain2 = actx.createGain();
+        osc2.type = "square";
+        osc2.frequency.setValueAtTime(660, actx.currentTime + 0.08);
+        gain2.gain.setValueAtTime(0.15, actx.currentTime + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.28);
+        osc2.connect(gain2);
+        gain2.connect(actx.destination);
+        osc2.start(actx.currentTime + 0.08);
+        osc2.stop(actx.currentTime + 0.28);
+      }
+    } catch {
+      // Audio fallback
+    }
+
+    // 2. Tactile button depressed state
+    arcadeBtn.classList.add("btn-pressed");
+
+    // 3. CRT arcade screen flash & warp transition
+    let crtOverlay = document.getElementById("crt-transition-overlay");
+    if (!crtOverlay) {
+      crtOverlay = document.createElement("div");
+      crtOverlay.id = "crt-transition-overlay";
+      crtOverlay.className = "crt-arcade-transition";
+      document.body.appendChild(crtOverlay);
+    }
+
+    requestAnimationFrame(() => {
+      crtOverlay?.classList.add("active");
+      setTimeout(() => {
+        window.location.href = href;
+      }, 260);
+    });
+  });
+}
+
+// Initialize modules on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     initMuseumMaze();
+    initArcadePortal();
   });
 } else {
   initMuseumMaze();
+  initArcadePortal();
 }

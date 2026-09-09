@@ -59,55 +59,182 @@ footer {
   background: rgba(var(--navbar-bg-rgb, 4, 36, 28), 0.5) !important;
 }
 
-/* Spider-Man Timeline Styles */
+/* Spider-Man Timeline Web String & Card Styles */
 .spidey-timeline-line {
-  border-left: 2px dashed rgba(255, 255, 255, 0.2) !important;
+  border-left: none !important;
   position: relative;
 }
 
+/* Delicate, crisp spider-web string core (no glow bleeding outside) */
 .spidey-timeline-line::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -1px;
-  width: 2px;
-  background: linear-gradient(to bottom, rgba(230, 36, 41, 0.6), rgba(0, 85, 255, 0.6));
-  box-shadow: 0 0 12px rgba(230, 36, 41, 0.5);
+  top: 6px;
+  bottom: 6px;
+  left: -0.5px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.8) 8%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.8) 92%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  box-shadow: 0 0 1.5px rgba(255, 255, 255, 0.7);
+  border-radius: 9999px;
   pointer-events: none;
+  z-index: 5;
+}
+
+/* Traveling sheen strictly contained within the string bounds */
+.spidey-timeline-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -0.5px;
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.95) 50%,
+    transparent 100%
+  );
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 6;
+  animation: webSilkGlisten 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes webSilkGlisten {
+  0% {
+    top: 6px;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    top: calc(100% - 66px);
+    opacity: 0;
+  }
+}
+
+/* Spider-Man Mascot along the Timeline Web String (User's Spider-Verse Artwork) */
+#spidey-silhouette {
+  position: absolute;
+  left: 0;
+  width: 44px;
+  height: 93px;
+  pointer-events: none;
+  z-index: 25;
+  transform: translate(-50%, -50%);
+  will-change: top, transform, opacity;
+  transition: opacity 0.3s ease;
+}
+
+.spidey-spiderverse-art {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.85))
+          drop-shadow(0 0 8px rgba(220, 38, 38, 0.5));
 }
 
 .spidey-card {
   position: relative;
+  overflow: hidden;
   z-index: 10;
-  background: rgba(8, 10, 20, 0.45) !important;
-  backdrop-filter: blur(20px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  background: rgba(10, 14, 26, 0.65) !important;
+  backdrop-filter: blur(24px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Dynamic cursor radial spotlight inside card */
+.spidey-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    280px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(230, 36, 41, 0.14),
+    rgba(0, 85, 255, 0.06) 40%,
+    transparent 80%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.spidey-card:hover::after {
+  opacity: 1;
 }
 
 .spidey-card:hover {
   border-color: rgba(230, 36, 41, 0.45) !important;
-  box-shadow: 0 12px 40px rgba(230, 36, 41, 0.25), 0 0 30px rgba(0, 85, 255, 0.15) !important;
-  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 12px 28px -10px rgba(230, 36, 41, 0.2), 0 0 20px rgba(0, 85, 255, 0.1) !important;
+  transform: translateY(-2px) scale(1.006);
+}
+
+.spidey-card > * {
+  position: relative;
+  z-index: 2;
 }
 
 .spidey-node {
-  background-color: #0d0f19 !important;
-  border: 3px solid #e62429 !important;
-  box-shadow: 0 0 15px rgba(230, 36, 41, 0.7), inset 0 0 8px rgba(230, 36, 41, 0.5);
+  background-color: #0b0f19 !important;
+  border: 1.5px solid #e62429 !important;
+  box-shadow: 0 0 8px rgba(230, 36, 41, 0.6), inset 0 0 4px rgba(230, 36, 41, 0.3);
   color: #ffffff;
   z-index: 20;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease !important;
 }
 
 .spidey-node:hover {
-  transform: translateY(-50%) scale(1.2) rotate(15deg) !important;
-  border-color: #0055ff !important;
-  box-shadow: 0 0 20px rgba(0, 85, 255, 0.8), inset 0 0 10px rgba(0, 85, 255, 0.6);
+  transform: scale(1.15) rotate(8deg) !important;
+  border-color: #0084ff !important;
+  box-shadow: 0 0 12px rgba(0, 132, 255, 0.75), inset 0 0 5px rgba(0, 132, 255, 0.5) !important;
 }
+
+.spidey-node::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  border: 1px solid rgba(230, 36, 41, 0.35);
+  animation: spideyNodePulse 2.4s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes spideyNodePulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
 
 /* ==========================================================================
    CODE BLOCKS ENCAPSULATED IN ``` ``` (Fit Content, Constrained Length & Overflow)
@@ -551,4 +678,145 @@ pre::-webkit-scrollbar-thumb:hover {
   background: radial-gradient(circle, rgba(245, 158, 11, 0.38) 0%, rgba(217, 119, 6, 0.15) 50%, transparent 70%);
   pointer-events: none;
   filter: blur(6px);
+}
+
+/* ==========================================================================
+   RETRO PIXEL ARCADE BUTTON (AFTER TIMELINE)
+   ========================================================================== */
+
+.arcade-portal-card {
+  background: #0d121f;
+  border: 3px solid #1e293b;
+  box-shadow: 
+    0 0 0 2px #0a0d17,
+    0 0 0 4px #334155,
+    0 16px 36px -8px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  image-rendering: pixelated;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.arcade-portal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 0 0 2px #0a0d17,
+    0 0 0 4px #ef4444,
+    0 20px 40px -8px rgba(239, 68, 68, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.arcade-crt-scanlines {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+.arcade-blink-text {
+  animation: arcadeBlink 1.4s infinite steps(1);
+}
+
+@keyframes arcadeBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Chunky 3D Pixel Arcade Push Button */
+.arcade-push-btn {
+  background: #7f1d1d;
+  border: 2px solid #450a0a;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 
+    0 6px 0 #450a0a,
+    0 8px 18px rgba(0, 0, 0, 0.8),
+    0 0 24px rgba(220, 38, 38, 0.35);
+  transform: translateY(0);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  text-decoration: none !important;
+}
+
+.arcade-push-btn .arcade-btn-surface {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 55%, #b91c1c 100%);
+  padding: 14px 20px;
+  border-radius: 9px;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35);
+}
+
+.arcade-push-btn .arcade-btn-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0px #7f1d1d, 0 0 10px rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+}
+
+.arcade-push-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 #450a0a,
+    0 12px 24px rgba(0, 0, 0, 0.85),
+    0 0 32px rgba(239, 68, 68, 0.55);
+}
+
+.arcade-push-btn:hover .arcade-btn-surface {
+  background: linear-gradient(180deg, #f87171 0%, #ef4444 55%, #dc2626 100%);
+}
+
+.arcade-push-btn:active,
+.arcade-push-btn.btn-pressed {
+  transform: translateY(4px);
+  box-shadow: 
+    0 2px 0 #450a0a,
+    0 4px 10px rgba(0, 0, 0, 0.8),
+    0 0 16px rgba(239, 68, 68, 0.4);
+}
+
+/* CRT Screen Flash / Pixel Warp Animation Overlay */
+.crt-arcade-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: #ffffff;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.crt-arcade-transition.active {
+  opacity: 1;
+  background: radial-gradient(circle, #f87171 0%, #000000 85%);
+  animation: crtWarp 0.35s forwards;
+}
+
+@keyframes crtWarp {
+  0% {
+    transform: scaleY(0.005) scaleX(1);
+    filter: brightness(3.5);
+  }
+  45% {
+    transform: scaleY(1) scaleX(1);
+    filter: brightness(2);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
 }

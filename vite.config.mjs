@@ -301,10 +301,15 @@ const py_build_plugin = (baseUrl = '') => {
     },
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        let url = (req.url || '').split('?')[0];
+        let rawUrl = req.url || '';
+        let url = rawUrl.split('?')[0];
+        const query = rawUrl.includes('?') ? '?' + rawUrl.split('?')[1] : '';
+
         if (baseUrl && url.startsWith(baseUrl)) {
-          url = url.slice(baseUrl.length);
+          url = url.slice(baseUrl.length) || '/';
+          req.url = url + query;
         }
+
         if (!url || url === '/') {
           return next();
         }
@@ -314,9 +319,9 @@ const py_build_plugin = (baseUrl = '') => {
         const folderHtml = path.join(__dirname, cleanPath, 'index.html');
 
         if (fs.existsSync(folderHtml)) {
-          req.url = (baseUrl || '') + '/' + cleanPath + '/index.html';
+          req.url = '/' + cleanPath + '/index.html' + query;
         } else if (fs.existsSync(directHtml)) {
-          req.url = (baseUrl || '') + '/' + cleanPath + '.html';
+          req.url = '/' + cleanPath + '.html' + query;
         }
         next();
       });
