@@ -21,7 +21,14 @@ const FORMAT_HANDLERS = {
 };
 
 function getS3Client() {
-    if (!process.env.S3_BUCKET || !process.env.S3_ACCESS_KEY || !process.env.S3_SECRET_KEY) {
+    if (
+        !process.env.S3_BUCKET || 
+        !process.env.S3_ACCESS_KEY || 
+        !process.env.S3_SECRET_KEY ||
+        process.env.S3_BUCKET === 'your-bucket-name' ||
+        process.env.S3_ACCESS_KEY === 'your-access-key' ||
+        process.env.S3_SECRET_KEY === 'your-secret-key'
+    ) {
         return null;
     }
     return new S3Client({

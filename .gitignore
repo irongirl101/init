@@ -7,6 +7,10 @@ package-lock.json
 !/assets/images/spidey*
 !/assets/images/blog images/
 !/assets/images/blog images/**
+!/assets/images/games/
+!/assets/images/games/**
+!/assets/images/hades_coin.png
+!/assets/images/games-*
 
 .env
 

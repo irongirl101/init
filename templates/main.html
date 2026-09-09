@@ -22,8 +22,14 @@
         </div>
         
         <div class="mt-8">
-            <a href="/contact.html" class="btn btn-primary">Contact Me</a>
-            <a href="/resume.pdf" class="btn btn-outline ml-4">Download Resume</a>
+            {% if page.contact_url %}
+                <a href="{{ site.base_url }}{{ page.contact_url }}" class="btn btn-primary">Contact Me</a>
+            {% else %}
+                <a href="mailto:aditi061806@gmail.com" class="btn btn-primary">Contact Me</a>
+            {% endif %}
+            {% if page.resume_url %}
+                <a href="{{ site.base_url }}{{ page.resume_url }}" class="btn btn-outline ml-4" download>Download Resume</a>
+            {% endif %}
         </div>
       </div>
 

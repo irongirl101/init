@@ -289,6 +289,11 @@ const py_build_plugin = (baseUrl = '') => {
           }
 
           console.log('Files moved successfully');
+          try {
+            execSync(`"${pythonExecutable}" src/main.py --clean`, { stdio: 'ignore' });
+          } catch (cleanErr) {
+            // Ignore clean error
+          }
         } catch (e) {
           console.error('Failed to move files to dist:', e);
         }

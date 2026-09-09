@@ -69,7 +69,7 @@ The set of all quaternions is denoted by H (in honor of Hamilton):
 - Prevention of Gimbal Lock
 As we've seen before, Euler is very order-oriented. Take an example of this cube shown below. 
 Let Red -> X axis rotation, Green -> Y axis rotation, Blue -> Z axis rotation, and let the middle axis be Y, X is the smallest. 
-<img src="/assets/images/blog%20images/gimbal.png" alt="Gimbal lock visualization" width="320" height = "160">
+<img src="/init/assets/images/blog%20images/gimbal.png" alt="Gimbal lock visualization" width="320" height = "160">
 If say, there is a rotation of X (90 deg) and then Y (90 deg), then X and Z would have lined up. So, if we were to rotate using the outermost ring (Z)/ rotate the innermost ring (X), it would lead to the exact same rotation of the object. So a whole dimension is lost, and degrees of freedom (rotation) are also lost. 
 This is known as a gimbal lock. 
 
