@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home | init</title>
-  <link rel="stylesheet" href="/init/assets/main-NrR60sFw.css">
+  <link rel="stylesheet" href="/init/assets/main-BVVw_hRT.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col">
@@ -24,6 +24,8 @@
         <li><a href="/init/blog/">Blog</a></li>
         
         <li><a href="/init/portfolio">Art Portfolio</a></li>
+        
+        <li><a href="/init/games/">Games</a></li>
         
       </ul>
     </div>
@@ -78,18 +80,30 @@
   <div class="divider my-12"></div>
 
   <!-- Timeline Section -->
-  <div id="timeline-section" class="my-20 max-w-4xl mx-auto px-4 relative">
-    <h2
-      class="text-4xl font-bold mb-16 text-center bg-gradient-to-r from-[#e62429] to-[#0055ff] bg-clip-text text-transparent filter drop-shadow-[0_2px_8px_rgba(230,36,41,0.3)]">
-      My Journey</h2>
+  <div id="timeline-section" class="my-16 max-w-2xl mx-auto px-4 relative">
+    <div class="mb-8 text-center">
+      <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-slate-200">
+        My Journey
+      </h2>
+    </div>
 
-    <div class="relative pl-8 space-y-12 ml-4 md:ml-8 timeline-container spidey-timeline-line">
+    <div class="relative pl-6 space-y-7 ml-3 md:ml-6 timeline-container spidey-timeline-line">
+      <!-- Spider-Man Mascot on the Web String (User's Spider-Verse Art) -->
+      <div id="spidey-silhouette" class="absolute pointer-events-none" style="top: 24px; left: 0px; transform: translate(-50%, -50%); width: 44px; height: 93px; z-index: 25; opacity: 0;">
+        <img src="/init/assets/images/spidey-spiderverse.png"
+             data-no-process
+             onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/assets/images/spidey-spiderverse.png';}else if(!this.dataset.retry2){this.dataset.retry2='1';this.src='./assets/images/spidey-spiderverse.png';}"
+             alt="Spider-Man"
+             class="spidey-spiderverse-art" />
+      </div>
 
+      
       <!-- Timeline Item 1 -->
       <div class="timeline-item relative">
         <div
-          class="timeline-node absolute -left-[47px] top-1.5 w-8 h-8 rounded-full flex items-center justify-center spidey-node transition-all duration-300">
-          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="2023 • Origins">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
             <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
             <!-- Left legs -->
@@ -105,18 +119,31 @@
           </svg>
         </div>
         <div
-          class="timeline-content-card spidey-card rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <span class="text-xs font-semibold text-[#e62429] uppercase tracking-wider block mb-1">Present</span>
-          <h3 class="text-xl font-bold mb-2 text-[#ffffff]"></h3>
-          <p class="opacity-80 leading-relaxed text-sm md:text-base text-[#e2e8f0]"></p>
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#e62429]">
+              
+              <span class="w-1 h-1 rounded-full bg-[#e62429] animate-ping"></span>
+              
+              2023 • Origins
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Beginning of Everything
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Built my first ever django application with a friend for usage at school, in the height of 12th grade -- realizing how much i loved the subject
+          </p>
+          
         </div>
       </div>
-
+      
       <!-- Timeline Item 2 -->
       <div class="timeline-item relative">
         <div
-          class="timeline-node absolute -left-[47px] top-1.5 w-8 h-8 rounded-full flex items-center justify-center spidey-node transition-all duration-300">
-          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Sept 2024 • Foundations">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
             <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
             <!-- Left legs -->
@@ -132,18 +159,29 @@
           </svg>
         </div>
         <div
-          class="timeline-content-card spidey-card rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <span class="text-xs font-semibold text-[#0055ff] uppercase tracking-wider block mb-1">Late 2025</span>
-          <h3 class="text-xl font-bold mb-2 text-[#ffffff]"></h3>
-          <p class="opacity-80 leading-relaxed text-sm md:text-base text-[#e2e8f0]"></p>
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#0055ff]">
+              
+              Sept 2024 • Foundations
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            A New Chapter: PESU
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Started my journey as an actual Comp Sci student, and came second place in a hackathon :)
+          </p>
+          
         </div>
       </div>
-
+      
       <!-- Timeline Item 3 -->
       <div class="timeline-item relative">
         <div
-          class="timeline-node absolute -left-[47px] top-1.5 w-8 h-8 rounded-full flex items-center justify-center spidey-node transition-all duration-300">
-          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="March 2025 • Exploring ">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
             <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
             <!-- Left legs -->
@@ -159,18 +197,29 @@
           </svg>
         </div>
         <div
-          class="timeline-content-card spidey-card rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <span class="text-xs font-semibold text-[#e62429] uppercase tracking-wider block mb-1">Mid 2024</span>
-          <h3 class="text-xl font-bold mb-2 text-[#ffffff]"></h3>
-          <p class="opacity-80 leading-relaxed text-sm md:text-base text-[#e2e8f0]"></p>
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#e62429]">
+              
+              March 2025 • Exploring 
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Curling
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Tried using curl and API calling in a C application -- which was so much harder than anticipated
+          </p>
+          
         </div>
       </div>
-
+      
       <!-- Timeline Item 4 -->
       <div class="timeline-item relative">
         <div
-          class="timeline-node absolute -left-[47px] top-1.5 w-8 h-8 rounded-full flex items-center justify-center spidey-node transition-all duration-300">
-          <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Sept 2025 • Games">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
             <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
             <!-- Left legs -->
@@ -186,20 +235,330 @@
           </svg>
         </div>
         <div
-          class="timeline-content-card spidey-card rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <span class="text-xs font-semibold text-[#0055ff] uppercase tracking-wider block mb-1">2023</span>
-          <h3 class="text-xl font-bold mb-2 text-[#ffffff]"></h3>
-          <p class="opacity-80 leading-relaxed text-sm md:text-base text-[#e2e8f0]"></p>
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#0055ff]">
+              
+              Sept 2025 • Games
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            GameJam
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Handmade assets for a game made for a gamejam -- feuling my love for ARVR & 3D Modeling
+          </p>
+          
         </div>
       </div>
-
-    </div>
-
-    <!-- "Leap of Faith" Silhouette -->
-    <div id="spidey-silhouette" class="fixed pointer-events-none transition-opacity duration-300" style="top: 115vh; left: 50%; transform: translateX(-50%) scale(0.95); width: 260px; height: 450px; z-index: 2; opacity: 0;">
-      <div style="width: 100%; height: 100%; background-color: #e62429; -webkit-mask: url(/init/assets/images/spidey-silhouette.png) no-repeat center / contain; mask: url(/init/assets/images/spidey-silhouette.png) no-repeat center / contain; opacity: 0.35;"></div>
+      
+      <!-- Timeline Item 5 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Oct 2025 • Discovery">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#e62429]">
+              
+              Oct 2025 • Discovery
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Falling in Love with Open Source
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Attended a hacktoberfest event, and learnt a lot about open source :D
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 6 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Nov 2025 • Realization">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#0055ff]">
+              
+              Nov 2025 • Realization
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Started Dreaming
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Initial thoughts for start a FOSS club in my campus, and started networking with a few seniors and professors
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 7 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Jan 2026 • Swift">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#e62429]">
+              
+              Jan 2026 • Swift
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Coded my first application in swift with some help :p
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Built an island for MacOS, using SwiftUI
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 8 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Feb 2026 • Growth">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#0055ff]">
+              
+              Feb 2026 • Growth
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Dreams do come true
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Successfully started a FOSS club in my campus, and helped grow the community to around 900~ people
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 9 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="March 2026 • Workshopping">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#e62429]">
+              
+              March 2026 • Workshopping
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            GitGud
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Hosted our first main event -- a git workshop that helped over 150+ students get started with git :)
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 10 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="April 2026 • OSFs">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#0055ff]">
+              
+              April 2026 • OSFs
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Started writing short posts
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Wrote 'Open Source Fridays' on Whastapp to teach people about different open source fridays, still going strong
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 11 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="June 2026 • Interning">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#e62429]">
+              
+              June 2026 • Interning
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            Interned at FiniteLoop
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Learnt a lot about building a full product end to end, and explored my cybersecurity interests
+          </p>
+          
+        </div>
+      </div>
+      
+      <!-- Timeline Item 12 -->
+      <div class="timeline-item relative">
+        <div
+          class="timeline-node absolute -left-[36px] top-1 w-6 h-6 rounded-full flex items-center justify-center spidey-node transition-all duration-300"
+          title="Present ">
+          <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <ellipse cx="12" cy="12" rx="3" ry="4" fill="currentColor"/>
+            <circle cx="12" cy="7" r="1.8" fill="currentColor"/>
+            <!-- Left legs -->
+            <path d="M 9,10 C 6,9 5,6 3,7"/>
+            <path d="M 9,12 C 5,12 4,10 2,12"/>
+            <path d="M 9,14 C 5,15 4,17 3,19"/>
+            <path d="M 10,15 C 7,18 6,20 5,22"/>
+            <!-- Right legs -->
+            <path d="M 15,10 C 18,9 19,6 21,7"/>
+            <path d="M 15,12 C 19,12 20,10 22,12"/>
+            <path d="M 15,14 C 19,15 20,17 22,19"/>
+            <path d="M 14,15 C 17,18 18,20 19,22"/>
+          </svg>
+        </div>
+        <div
+          class="timeline-content-card spidey-card rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-medium uppercase tracking-wider flex items-center gap-1.5 text-[#0055ff]">
+              
+              Present 
+            </span>
+          </div>
+          <h3 class="text-base md:text-lg font-semibold mb-1.5 text-white">
+            So far, so good :)
+          </h3>
+          <p class="opacity-80 leading-relaxed text-xs md:text-sm text-slate-300 mb-2.5">
+            Almost got placed, started my dream capstone project, and the FOSS community continues to grow :D
+          </p>
+          
+        </div>
+      </div>
+      
     </div>
   </div>
+
 
   <div class="divider my-12"></div>
 
@@ -218,7 +577,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-CGijubkg.js"></script>
+  <script type="module" src="/init/assets/main-BjnKZWEb.js"></script>
 </body>
 
 </html>
