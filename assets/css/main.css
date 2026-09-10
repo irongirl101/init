@@ -312,6 +312,61 @@ pre::-webkit-scrollbar-thumb:hover {
    COZY PIXEL BOOKSHELF & RETRO CD ARCADE (Faithful to Mockup)
    ========================================================================== */
 
+/* ==========================================================================
+   EXCLUSIVE DARK EMERALD & OBSIDIAN THEME FOR /games
+   ========================================================================== */
+body.games-theme-page {
+  background-color: #031813 !important;
+  background-image: 
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(32, 140, 115, 0.22), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 50% 35%, rgba(15, 64, 52, 0.28), transparent 75%),
+    radial-gradient(circle at 50% 50%, transparent 55%, rgba(1, 15, 11, 0.92) 100%),
+    linear-gradient(180deg, #04241c 0%, #031a14 50%, #01100c 100%) !important;
+  background-attachment: fixed !important;
+  color: #ecfdf5 !important;
+}
+
+/* Subtle elegant green topography web canvas on games page */
+body.games-theme-page #res-canvas {
+  opacity: 0.35 !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* Theme-aligned Emerald Glass Navbar on /games */
+body.games-theme-page .glass-navbar {
+  background: rgba(4, 36, 28, 0.6) !important;
+  border-color: rgba(32, 140, 115, 0.45) !important;
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.5), 
+    inset 0 1px 0 0 rgba(52, 211, 153, 0.15) !important;
+}
+
+body.games-theme-page .glass-navbar:hover {
+  border-color: rgba(52, 211, 153, 0.6) !important;
+  background: rgba(15, 64, 52, 0.75) !important;
+}
+
+body.games-theme-page .glass-navbar a {
+  color: #ecfdf5 !important;
+}
+
+body.games-theme-page .glass-navbar a:hover {
+  color: #34d399 !important;
+}
+
+body.games-theme-page footer {
+  color: #208c73 !important;
+}
+
+body.games-theme-page footer a {
+  color: #34d399 !important;
+}
+
+body.games-theme-page footer a:hover {
+  color: #a7f3d0 !important;
+}
+
 /* Clean Retro Games Room Container (No grid or mortar lines) */
 .pixel-games-container {
   background-color: transparent;
@@ -329,7 +384,7 @@ pre::-webkit-scrollbar-thumb:hover {
   image-rendering: pixelated;
   box-shadow: 
     0 25px 60px rgba(0, 0, 0, 0.95),
-    0 0 0 3px #1a0f08;
+    0 0 0 3px #0f4034;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -339,7 +394,8 @@ pre::-webkit-scrollbar-thumb:hover {
   position: absolute;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 6px;
   gap: 3px;
   overflow: visible;
   z-index: 20;
@@ -348,6 +404,7 @@ pre::-webkit-scrollbar-thumb:hover {
 /* Compact Standing CD Spines for User Shelf */
 .pixel-cd-case-compact {
   position: relative;
+  bottom: 4px;
   cursor: pointer;
   transform-origin: bottom center;
   transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.18s ease;
@@ -789,34 +846,136 @@ pre::-webkit-scrollbar-thumb:hover {
     0 0 16px rgba(239, 68, 68, 0.4);
 }
 
-/* CRT Screen Flash / Pixel Warp Animation Overlay */
-.crt-arcade-transition {
+/* =========================================================================
+   FLOATING RIGHT-EDGE GAMES BOOKMARK TAB (THEME-ALIGNED & VISIBLE AFTER TIMELINE)
+   ========================================================================= */
+.games-bookmark-tab {
   position: fixed;
-  inset: 0;
-  z-index: 99999;
-  pointer-events: none;
-  background: #ffffff;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(125%);
   opacity: 0;
-  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+  z-index: 45;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.crt-arcade-transition.active {
+/* Shown exclusively when scrolled past the timeline */
+.games-bookmark-tab.visible {
+  transform: translateY(-50%) translateX(0);
   opacity: 1;
-  background: radial-gradient(circle, #f87171 0%, #000000 85%);
-  animation: crtWarp 0.35s forwards;
+  pointer-events: auto;
 }
 
-@keyframes crtWarp {
-  0% {
-    transform: scaleY(0.005) scaleX(1);
-    filter: brightness(3.5);
+.games-bookmark-tab.visible:hover {
+  transform: translateY(-50%) translateX(-6px);
+}
+
+.bookmark-tab-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 13px 11px;
+  background: rgba(4, 36, 28, 0.88);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(32, 140, 115, 0.35);
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -4px 6px 20px rgba(0, 0, 0, 0.5),
+              0 0 14px rgba(32, 140, 115, 0.18);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.games-bookmark-tab:hover .bookmark-tab-inner {
+  background: rgba(15, 64, 52, 0.94);
+  border-color: rgba(32, 140, 115, 0.75);
+  box-shadow: -6px 8px 26px rgba(0, 0, 0, 0.65),
+              0 0 20px rgba(32, 140, 115, 0.4);
+}
+
+.bookmark-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bookmark-gamepad-icon {
+  width: 18px;
+  height: 18px;
+  color: #208c73;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(32, 140, 115, 0.35));
+}
+
+.games-bookmark-tab:hover .bookmark-gamepad-icon {
+  transform: scale(1.15) rotate(-6deg);
+  color: #34d399;
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.65));
+}
+
+/* Vertical Typography matching site heading font */
+.bookmark-tab-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-family: var(--font-heading, "Space Grotesk", sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(226, 232, 240, 0.85);
+  text-transform: uppercase;
+  transition: color 0.3s ease, letter-spacing 0.3s ease, text-shadow 0.3s ease;
+}
+
+.games-bookmark-tab:hover .bookmark-tab-label {
+  color: #ffffff;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 14px rgba(32, 140, 115, 0.45);
+}
+
+/* Subtle PLAY micro badge */
+.bookmark-badge-peek {
+  display: none;
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 8px;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(4, 36, 28, 0.8);
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  letter-spacing: 0.08em;
+}
+
+@media (min-width: 641px) {
+  .games-bookmark-tab:hover .bookmark-badge-peek {
+    display: inline-block;
+    animation: fadeIn 0.2s ease-in;
   }
-  45% {
-    transform: scaleY(1) scaleX(1);
-    filter: brightness(2);
+}
+
+@media (max-width: 640px) {
+  .bookmark-tab-inner {
+    padding: 10px 7px 10px 9px;
+    gap: 5px;
+    border-radius: 8px 0 0 8px;
   }
-  100% {
-    transform: scale(1);
-    filter: brightness(1);
+  .bookmark-gamepad-icon {
+    width: 15px;
+    height: 15px;
+  }
+  .bookmark-tab-label {
+    font-size: 8.5px;
+    letter-spacing: 0.12em;
   }
 }

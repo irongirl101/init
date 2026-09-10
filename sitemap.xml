@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>/init</loc>
+    <loc>/init/portfolio</loc>
+    <lastmod></lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/blog</loc>
     <lastmod></lastmod>
   </url>
   
@@ -12,138 +17,133 @@
   </url>
   
   <url>
-    <loc>/init</loc>
+    <loc>/init/games</loc>
     <lastmod></lastmod>
   </url>
   
   <url>
-    <loc>/init</loc>
+    <loc>/init/posts/kafka</loc>
+    <lastmod>2026-09-02</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/Ghidra</loc>
+    <lastmod>2026-05-22</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/crowdstrike</loc>
+    <lastmod>2026-08-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/Xalg</loc>
+    <lastmod>2026-05-15</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/localsend</loc>
+    <lastmod>2026-04-17</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/transmission</loc>
+    <lastmod>2026-06-05</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/qemu</loc>
+    <lastmod>2026-07-10</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/rover</loc>
+    <lastmod>2026-05-01</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/threejs</loc>
+    <lastmod>2026-04-24</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/maintainers</loc>
+    <lastmod>2026-05-08</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/langchain</loc>
+    <lastmod>2026-06-26</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/Lore</loc>
+    <lastmod>2026-07-17</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/linux</loc>
+    <lastmod>2026-08-28</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/k8s</loc>
+    <lastmod>2026-06-12</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/scrcpy</loc>
+    <lastmod>2026-05-29</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/quaternions</loc>
+    <lastmod>2026-09-09</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/apollo</loc>
+    <lastmod>2026-07-24</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/a2a</loc>
+    <lastmod>2026-04-10</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/opentofu</loc>
+    <lastmod>2026-08-21</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/pennylane</loc>
+    <lastmod>2026-07-03</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/ffmpeg</loc>
+    <lastmod>2026-06-19</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/ossfuzz</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/simian</loc>
+    <lastmod>2026-07-31</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/first-blog</loc>
     <lastmod></lastmod>
   </url>
   
   <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
-  </url>
-  
-  <url>
-    <loc>/init</loc>
-    <lastmod></lastmod>
+    <loc>/init/posts/swiss</loc>
+    <lastmod>2026-08-14</lastmod>
   </url>
   
 </urlset>

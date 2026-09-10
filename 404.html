@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Coordinates Not Found | init</title>
+  <link rel="stylesheet" href="/init/assets/main-BD08Ke9g.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col ">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio/">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+  <div class="relative mb-6">
+    <span class="text-8xl sm:text-9xl font-black font-mono tracking-tighter text-emerald-500/10 select-none">404</span>
+    <div class="absolute inset-0 flex flex-col items-center justify-center">
+      <span class="text-xs uppercase tracking-widest font-mono text-emerald-400 font-semibold px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+        Lost in Topography
+      </span>
+    </div>
+  </div>
+
+  <h1 class="text-3xl sm:text-4xl font-bold font-mono tracking-tight text-white mb-4">
+    Coordinates Not Found
+  </h1>
+  <p class="text-zinc-400 max-w-md text-sm sm:text-base leading-relaxed mb-8">
+    The sector you are navigating to has drifted outside recorded coordinates or no longer exists.
+  </p>
+
+  <div class="flex flex-wrap items-center justify-center gap-4">
+    <a href="/init/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/60 font-mono text-xs sm:text-sm tracking-wide transition-all shadow-lg shadow-emerald-950/40">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Return to Base
+    </a>
+    <a href="/init/blog/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-800/60 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono text-xs sm:text-sm tracking-wide transition-all">
+      Read Blog
+    </a>
+    <a href="/init/games/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-800/60 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono text-xs sm:text-sm tracking-wide transition-all">
+      Games Shelf
+    </a>
+  </div>
+</div>
+
+<script>
+  // Smart client-side redirect for clean GitHub Pages URLs
+  // Handles requests missing trailing slashes like /init/games -> /init/games/
+  (function() {
+    try {
+      var currentPath = window.location.pathname;
+      var rawBase = "/init".replace(/\/+$/, '');
+      
+      var routes = ['/blog', '/portfolio', '/games'];
+      for (var i = 0; i < routes.length; i++) {
+        var fullRoute = rawBase + routes[i];
+        if (currentPath === fullRoute || currentPath === fullRoute + '.html') {
+          window.location.replace(fullRoute + '/' + window.location.search + window.location.hash);
+          return;
+        }
+      }
+    } catch (e) {
+      // Fall through to 404 display
+    }
+  })();
+</script>
+
+  </main>
+
+  <!-- Floating Games Bookmark Tab on Right Edge (Visible After Timeline) -->
+  
+  <a href="/init/games/"
+     id="games-bookmark-tab"
+     class="games-bookmark-tab group"
+     aria-label="Enter Games Shelf"
+     title="Games Shelf">
+    <div class="bookmark-tab-inner">
+      <div class="bookmark-icon-container">
+        <svg class="bookmark-gamepad-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="4"></rect>
+          <path d="M6 12h4m-2-2v4"></path>
+          <circle cx="15" cy="11" r="1" fill="currentColor"></circle>
+          <circle cx="18" cy="13" r="1" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <span class="bookmark-tab-label">GAMES</span>
+      <span class="bookmark-badge-peek">PLAY</span>
+    </div>
+  </a>
+  
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-DVwKXikD.js"></script>
+</body>
+
+</html>
