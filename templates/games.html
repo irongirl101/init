@@ -6,32 +6,69 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
-<div class="pixel-games-container min-h-screen py-4 px-2 sm:px-4 font-mono select-none">
+<style>
+  body {
+    background-color: #031813 !important;
+    background-image: 
+      radial-gradient(ellipse 90% 55% at 50% -10%, rgba(32, 140, 115, 0.22), transparent 70%),
+      radial-gradient(ellipse 70% 60% at 50% 35%, rgba(15, 64, 52, 0.28), transparent 75%),
+      radial-gradient(circle at 50% 50%, transparent 55%, rgba(1, 15, 11, 0.92) 100%),
+      linear-gradient(180deg, #04241c 0%, #031a14 50%, #01100c 100%) !important;
+    background-attachment: fixed !important;
+    color: #ecfdf5 !important;
+  }
+  #res-canvas {
+    opacity: 0.35 !important;
+    display: block !important;
+  }
+  .glass-navbar {
+    background: rgba(4, 36, 28, 0.6) !important;
+    border-color: rgba(32, 140, 115, 0.45) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(52, 211, 153, 0.15) !important;
+  }
+  .glass-navbar a {
+    color: #ecfdf5 !important;
+  }
+  .glass-navbar a:hover {
+    color: #34d399 !important;
+  }
+  footer {
+    color: #208c73 !important;
+  }
+  footer a {
+    color: #34d399 !important;
+  }
+</style>
+
+<div class="pixel-games-container min-h-screen pt-4 sm:pt-8 pb-12 px-2 sm:px-4 font-mono select-none mt-6 sm:mt-10">
   
   <div class="max-w-5xl mx-auto flex flex-col items-center">
 
     <!-- =========================================================================
-         TOP ARCADE BAR: [◀ HOME] ... LIBRARY ... SFX TOGGLE
+         TOP ARCADE BAR: [◀ HOME] ... QUIPPY ARCADE TITLE ... SFX TOGGLE
          ========================================================================= -->
-    <div class="w-full bg-[#341b10] border-2 border-[#1e0d06] rounded-t-xl px-4 py-2.5 flex items-center justify-between shadow-2xl text-[#fef9c3] mb-0 relative z-20">
+    <div class="w-full bg-[#04241c]/95 border-2 border-[#208c73]/60 rounded-t-xl px-4 py-3 flex items-center justify-between shadow-2xl text-[#ecfdf5] mb-0 relative z-20 backdrop-blur-md">
       
       <!-- Left: Home Link -->
-      <a href="{{ site.base_url }}/" class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer text-[#f59e0b]" style="font-family: 'Press Start 2P', monospace; font-size: 11px;">
+      <a href="{{ site.base_url }}/" class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer text-[#34d399]" style="font-family: 'Press Start 2P', monospace; font-size: 11px;">
         <span>◀</span>
         <span>HOME</span>
       </a>
 
-      <!-- Center: LIBRARY Title -->
-      <div class="flex items-center gap-2">
-        <span class="text-base sm:text-2xl font-bold tracking-widest text-[#fef9c3] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]" style="font-family: 'Press Start 2P', monospace;">
-          LIBRARY
+      <!-- Center: Quippy Arcade Title -->
+      <div class="flex flex-col items-center justify-center cursor-pointer group px-2 text-center" id="arcade-title-wrapper" title="Click to shuffle quippy tag!">
+        <div class="flex items-center gap-2">
+          <span id="arcade-title-text" class="text-xs sm:text-lg font-bold tracking-wider text-[#ecfdf5] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] group-hover:text-[#6ee7b7] transition-colors" style="font-family: 'Press Start 2P', monospace;">
+            BACKLOG
+          </span>
+        </div>
+        <span id="arcade-title-quip" class="text-[7px] sm:text-[9px] text-[#34d399] tracking-wider uppercase font-mono mt-0.5 group-hover:text-emerald-200 transition-colors">
+          ✦ hours well wasted XD✦
         </span>
       </div>
 
-      <!-- Right: Audio SFX Toggle -->
       <div class="flex items-center gap-2">
-        <button id="sfx-toggle-btn" class="text-[9px] px-2.5 py-1 bg-[#22120a] hover:bg-[#432314] border border-[#a16207] rounded text-[#fde047] transition-all cursor-pointer flex items-center gap-1 shadow-sm" title="Toggle Sound Effects">
-          <span id="sfx-icon">🔊</span>
+        <button id="sfx-toggle-btn" class="text-[9px] px-2.5 py-1 bg-[#021813] hover:bg-[#093d31] border border-[#208c73]/60 rounded text-[#a7f3d0] transition-all cursor-pointer flex items-center gap-1 shadow-sm" title="Toggle Sound Effects">
           <span id="sfx-label">SFX: ON</span>
         </button>
       </div>
@@ -41,7 +78,7 @@
     <!-- =========================================================================
          THE RETRO PIXEL BOOKCASE (Using User's Custom Shelf Template)
          ========================================================================= -->
-    <div class="w-full overflow-x-auto no-scrollbar shadow-2xl rounded-b-xl border-x-2 border-b-2 border-[#1e0d06] bg-[#1a0f08]">
+    <div class="w-full overflow-x-auto no-scrollbar shadow-2xl rounded-b-xl border-x-2 border-b-2 border-[#208c73]/60 bg-[#021813]">
       
       <div class="pixel-user-shelf-container min-w-[640px] sm:min-w-full mx-auto" style="background-image: url('{{ site.base_url }}/assets/images/games/shelf-template.png');">
         
@@ -50,21 +87,21 @@
              ===================================================================== -->
         <!-- Cubby 1-1 (x: 6.6% to 30.5%) -->
         <div class="shelf-cubby" style="top: 8.8%; left: 6.6%; width: 23.9%; height: 19.0%; padding-bottom: 2px;">
-          {% for game in page.games[0:3] %}
+          {% for game in page.games[0:7] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 1-2 (x: 31.6% to 56.6%) -->
         <div class="shelf-cubby" style="top: 8.8%; left: 31.6%; width: 25.0%; height: 19.0%; padding-bottom: 2px;">
-          {% for game in page.games[3:6] %}
+          {% for game in page.games[7:14] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 1-3 (x: 57.9% to 80.5%) -->
         <div class="shelf-cubby" style="top: 8.8%; left: 57.9%; width: 22.6%; height: 19.0%; padding-bottom: 2px;">
-          {% for game in page.games[6:9] %}
+          {% for game in page.games[14:20] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
@@ -79,21 +116,21 @@
              ===================================================================== -->
         <!-- Cubby 2-1 (x: 6.6% to 38.4%) -->
         <div class="shelf-cubby" style="top: 30.8%; left: 6.6%; width: 31.8%; height: 17.8%; padding-bottom: 2px;">
-          {% for game in page.games[9:12] %}
+          {% for game in page.games[20:28] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 2-2 (x: 39.6% to 71.4%) -->
         <div class="shelf-cubby" style="top: 30.8%; left: 39.6%; width: 31.8%; height: 17.8%; padding-bottom: 2px;">
-          {% for game in page.games[12:16] %}
+          {% for game in page.games[28:36] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 2-3 (x: 72.7% to 97.7%) -->
         <div class="shelf-cubby" style="top: 30.8%; left: 72.7%; width: 25.0%; height: 17.8%; padding-bottom: 2px;">
-          {% for game in page.games[16:19] %}
+          {% for game in page.games[36:44] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
@@ -103,28 +140,28 @@
              ===================================================================== -->
         <!-- Cubby 3-1 (x: 6.6% to 27.0%) - Left holds user's pixel scroll & book, right holds games -->
         <div class="shelf-cubby" style="top: 51.1%; left: 6.6%; width: 20.4%; height: 18.8%; padding-bottom: 2px; justify-content: flex-end; padding-right: 6px;">
-          {% for game in page.games[19:20] %}
+          {% for game in page.games[44:48] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 3-2 (x: 28.3% to 51.0%) -->
         <div class="shelf-cubby" style="top: 51.1%; left: 28.3%; width: 22.7%; height: 18.8%; padding-bottom: 2px;">
-          {% for game in page.games[20:22] %}
+          {% for game in page.games[48:54] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 3-3 (x: 52.2% to 76.0%) -->
         <div class="shelf-cubby" style="top: 51.1%; left: 52.2%; width: 23.8%; height: 18.8%; padding-bottom: 2px;">
-          {% for game in page.games[22:24] %}
+          {% for game in page.games[54:60] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
 
         <!-- Cubby 3-4 (x: 77.2% to 97.7%) -->
         <div class="shelf-cubby" style="top: 51.1%; left: 77.2%; width: 20.5%; height: 18.8%; padding-bottom: 2px;">
-          {% for game in page.games[24:26] %}
+          {% for game in page.games[60:66] %}
             {% include "partials/cd_case_cubby.html" %}
           {% endfor %}
         </div>
@@ -138,7 +175,7 @@
           
           <!-- LEFT: Opened CD Jewel Case (Booklet Cover + Spinning CD Disc) -->
           <div class="flex items-center flex-shrink-0">
-            <div class="relative flex items-center bg-[#090503] border border-[#4a2615] rounded p-1 shadow-2xl">
+            <div class="relative flex items-center bg-[#021813] border border-[#208c73]/50 rounded p-1 shadow-2xl">
               
               <!-- Left: Booklet Cover Art -->
               <div id="active-cd-cover" 
@@ -153,7 +190,7 @@
 
                 <!-- Fallback Pixel Cover -->
                 <div id="active-cover-fallback" class="hidden absolute inset-0 z-0 p-1 flex flex-col justify-between bg-[#111827]">
-                  <span class="text-[5px] uppercase text-amber-300 font-mono truncate" id="fallback-developer">TEAM CHERRY</span>
+                  <span class="text-[5px] uppercase text-emerald-300 font-mono truncate" id="fallback-developer">TEAM CHERRY</span>
                   <div class="text-[7px] font-extrabold text-white leading-tight drop-shadow my-auto truncate" id="fallback-title" style="font-family: 'Press Start 2P', monospace;">
                     HOLLOW KNIGHT
                   </div>
@@ -169,7 +206,7 @@
 
               <!-- Right: Jewel Case Tray with Spinning Disc -->
               <div class="w-12 h-12 sm:w-16 sm:h-16 -ml-3.5 sm:-ml-5 relative flex-shrink-0 cursor-pointer group" id="active-disc-wrapper" title="Click disc to pause / spin">
-                <div class="w-full h-full bg-[#110a05] border border-[#3b1f11] rounded-xs p-0.5 shadow-inner flex items-center justify-center">
+                <div class="w-full h-full bg-[#010d0a] border border-[#0f4034] rounded-xs p-0.5 shadow-inner flex items-center justify-center">
                   <div id="active-disc" class="pixel-cd-disc animate-spin-cd w-full h-full flex items-center justify-center">
                     <div class="absolute text-[5px] font-bold text-white/95 uppercase truncate max-w-[45px] text-center pointer-events-none drop-shadow" id="active-disc-label" style="font-family: 'Press Start 2P', monospace; font-size: 4.5px;">
                       HOLLOW KNIGHT
@@ -186,12 +223,12 @@
             <div class="flex flex-col justify-between h-full py-1">
               
               <!-- Top line: Title & Stars & Platform -->
-              <div class="flex items-center justify-between gap-2 border-b border-[#4a2615] pb-0.5">
+              <div class="flex items-center justify-between gap-2 border-b border-[#208c73]/30 pb-0.5">
                 <div class="flex items-center gap-1.5 truncate">
-                  <h2 id="active-dialogue-title" class="text-[10px] sm:text-xs font-extrabold text-[#fde047] tracking-wide uppercase truncate" style="font-family: 'Press Start 2P', monospace;">
+                  <h2 id="active-dialogue-title" class="text-[10px] sm:text-xs font-extrabold text-[#ecfdf5] tracking-wide uppercase truncate" style="font-family: 'Press Start 2P', monospace;">
                     HOLLOW KNIGHT
                   </h2>
-                  <span id="active-dialogue-platform" class="text-[7px] px-1 py-0.2 bg-[#1e293b] border border-[#38bdf8] text-[#7dd3fc] rounded-xs uppercase font-mono hidden sm:inline-block">
+                  <span id="active-dialogue-platform" class="text-[7px] px-1 py-0.2 bg-[#062c22] border border-[#208c73] text-[#6ee7b7] rounded-xs uppercase font-mono hidden sm:inline-block">
                     PC / STEAM
                   </span>
                 </div>
@@ -201,14 +238,14 @@
               </div>
 
               <!-- Middle line: Quote / Review -->
-              <div class="text-[9px] sm:text-[11px] italic text-[#fde047] truncate">
+              <div class="text-[9px] sm:text-[11px] italic text-[#a7f3d0] truncate">
                 “<span id="active-dialogue-quote">HEGALE! GIT GUD! SHAWWW!</span>”
               </div>
 
               <!-- Bottom line: Badges & Prev/Next buttons -->
               <div class="flex items-center justify-between text-[8px] font-mono">
                 <div class="flex items-center gap-1.5">
-                  <span id="active-dialogue-hours" class="text-[#93c5fd] bg-[#172554] border border-[#3b82f6]/40 px-1 py-0.2 rounded-xs">
+                  <span id="active-dialogue-hours" class="text-[#a7f3d0] bg-[#062c22] border border-[#208c73]/40 px-1 py-0.2 rounded-xs">
                     145h logged
                   </span>
                   <span id="active-dialogue-status" class="text-emerald-300 bg-emerald-950 border border-emerald-500/40 px-1 py-0.2 rounded-xs hidden sm:inline-block font-bold">
@@ -216,11 +253,11 @@
                   </span>
                 </div>
                 <div class="flex items-center gap-1">
-                  <button id="active-prev-btn" class="px-1.5 py-0.5 bg-[#201007] hover:bg-[#3d1f11] border border-[#522c16] text-[#fef9c3] rounded-xs cursor-pointer transition-colors">
+                  <button id="active-prev-btn" class="px-1.5 py-0.5 bg-[#04241c] hover:bg-[#0f4034] border border-[#208c73]/60 text-[#ecfdf5] rounded-xs cursor-pointer transition-colors">
                     ◀ PREV
                   </button>
-                  <span class="text-[8px] text-[#ca8a04]" id="active-index-display">1 / 26</span>
-                  <button id="active-next-btn" class="px-1.5 py-0.5 bg-[#201007] hover:bg-[#3d1f11] border border-[#522c16] text-[#fef9c3] rounded-xs cursor-pointer transition-colors">
+                  <span class="text-[8px] text-[#34d399]" id="active-index-display">1 / 6</span>
+                  <button id="active-next-btn" class="px-1.5 py-0.5 bg-[#04241c] hover:bg-[#0f4034] border border-[#208c73]/60 text-[#ecfdf5] rounded-xs cursor-pointer transition-colors">
                     NEXT ▶
                   </button>
                 </div>
@@ -231,35 +268,6 @@
 
         </div>
 
-      </div>
-
-    </div>
-
-    <!-- =========================================================================
-         EXPANDED ARCADE FILTERS & SEARCH HUD
-         ========================================================================= -->
-    <div class="w-full max-w-5xl mt-3 bg-[#170e08]/95 border-2 border-[#381c10] rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono shadow-2xl">
-      
-      <!-- Quick Filter Buttons -->
-      <div class="flex flex-wrap items-center gap-1.5" id="shelf-filters">
-        <button class="filter-btn active-filter px-2.5 py-1 rounded bg-[#b45309] text-white border border-[#f59e0b] shadow cursor-pointer transition-all" data-filter="all">
-          [ALL GAMES]
-        </button>
-        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="playing">
-          [🟢 NOW PLAYING]
-        </button>
-        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="cleared">
-          [🏆 100% CLEARED]
-        </button>
-        <button class="filter-btn px-2.5 py-1 rounded bg-[#201007] hover:bg-[#341b10] text-[#fef9c3] border border-[#4a2615] cursor-pointer transition-all" data-filter="masterpiece">
-          [★ 10/10 GEMS]
-        </button>
-      </div>
-
-      <!-- Live Search Library -->
-      <div class="relative w-full sm:w-60">
-        <input type="text" id="shelf-search" placeholder="[🔍 SEARCH LIBRARY...]" 
-          class="w-full bg-[#0d0704] border border-[#4a2615] text-xs font-mono text-[#fef9c3] px-3 py-1.5 rounded focus:outline-none focus:border-[#f59e0b] shadow-inner placeholder-[#78350f]">
       </div>
 
     </div>
@@ -341,6 +349,32 @@
       initAudio();
       playTone(587.33, 0.06, "sine", 0.06);
       setTimeout(() => playTone(880, 0.1, "sine", 0.06), 60);
+    });
+  }
+
+  // Quippy Title Shuffle on Click
+  const quips = [
+    { title: "THE BACKLOG", quip: "✦ hours well wasted ✦" },
+    { title: "TOUCH GRASS?", quip: "✦ maybe tomorrow ✦" },
+    { title: "SIDE QUESTS", quip: "✦ main storyline who? ✦" },
+    { title: "SAVE POINT", quip: "✦ do not shut off console ✦" },
+    { title: "PILE OF GEMS", quip: "✦ 10/10 emotional damage ✦" },
+    { title: "INSERT COIN", quip: "✦ press start to procrastinate ✦" },
+    { title: "GIT GUD VAULT", quip: "✦ hesitation is defeat ✦" }
+  ];
+  let quipIdx = 0;
+  const titleWrapper = document.getElementById('arcade-title-wrapper');
+  const titleText = document.getElementById('arcade-title-text');
+  const titleQuip = document.getElementById('arcade-title-quip');
+
+  if (titleWrapper && titleText && titleQuip) {
+    titleWrapper.addEventListener('click', () => {
+      initAudio();
+      playTone(987.77, 0.04, "square", 0.04);
+      setTimeout(() => playTone(1318.51, 0.06, "square", 0.04), 45);
+      quipIdx = (quipIdx + 1) % quips.length;
+      titleText.textContent = quips[quipIdx].title;
+      titleQuip.textContent = quips[quipIdx].quip;
     });
   }
 
@@ -505,63 +539,6 @@
     });
   }
 
-  // Filter Buttons
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => {
-        b.classList.remove('bg-[#b45309]', 'text-white', 'border-[#f59e0b]');
-        b.classList.add('bg-[#201007]', 'text-[#fef9c3]', 'border-[#4a2615]');
-      });
-      btn.classList.add('bg-[#b45309]', 'text-white', 'border-[#f59e0b]');
-      btn.classList.remove('bg-[#201007]', 'text-[#fef9c3]', 'border-[#4a2615]');
-
-      const filterType = btn.getAttribute('data-filter');
-      applyFilter(filterType, searchInput ? searchInput.value : '');
-    });
-  });
-
-  // Search Input
-  const searchInput = document.getElementById('shelf-search');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const activeFilter = document.querySelector('.filter-btn.bg-\\[\\#b45309\\]')?.getAttribute('data-filter') || 'all';
-      applyFilter(activeFilter, e.target.value.trim().toLowerCase());
-    });
-  }
-
-  function applyFilter(filter, query = "") {
-    document.querySelectorAll('.pixel-cd-case-compact').forEach(el => {
-      const gId = el.getAttribute('data-id');
-      const game = games.find(g => g.id === gId);
-      if (!game) return;
-
-      let matchesFilter = true;
-      if (filter === 'playing') {
-        matchesFilter = !!game.is_currently_playing;
-      } else if (filter === 'cleared') {
-        matchesFilter = game.status && game.status.includes('100%');
-      } else if (filter === 'masterpiece') {
-        matchesFilter = game.score && game.score.includes('10/10');
-      }
-
-      let matchesQuery = true;
-      if (query) {
-        const text = `${game.title} ${game.developer} ${game.genre} ${game.platform}`.toLowerCase();
-        matchesQuery = text.includes(query);
-      }
-
-      if (matchesFilter && matchesQuery) {
-        el.style.opacity = '1';
-        el.style.pointerEvents = 'auto';
-        el.style.filter = 'none';
-      } else {
-        el.style.opacity = '0.15';
-        el.style.filter = 'grayscale(100%) brightness(0.5)';
-        el.style.pointerEvents = 'none';
-      }
-    });
-  }
 
   // Initialize with First Game (Hollow Knight)
   if (games.length > 0) {

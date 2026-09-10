@@ -49,7 +49,7 @@ timeline:
       description: "Learnt a lot about building a full product end to end, and explored my cybersecurity interests"
     - date: "Present "
       title: "So far, so good :)"
-      description: "Almost got placed, started my dream capstone project, and the FOSS community continues to grow :D"
+      description: "Almost got placed, started my dream capstone project, and the FOSS community continues to grow :D -- but still curious :)"
     
     
 

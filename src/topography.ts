@@ -507,18 +507,36 @@ function animate(): void {
     const targetY = Math.max(24, Math.min(cRect.height - 35, rawTargetY));
 
     // Smooth elastic travel along the web string
-    spideyWebY += (targetY - spideyWebY) * 0.08;
+    const travelDelta = targetY - spideyWebY;
+    spideyWebY += travelDelta * 0.08;
 
-    // Continuous organic up-and-down bobbing & hanging sway along the silk thread
-    const time = Date.now() * 0.003;
-    const bob = Math.sin(time) * 10; // Bobs up and down by ±10px
-    const sway = Math.sin(time * 0.75) * 3.5; // ±3.5deg gentle sway
+    // Spider-Man only moves up and down when scrolling. When stopped, he stays completely still.
+    // Dynamic tilt/sway responds naturally to movement velocity, smoothly resting at 0 when idle.
+    const sway = Math.max(-5, Math.min(5, travelDelta * 0.12));
 
-    const finalY = spideyWebY + bob;
-    silhouette.style.top = `${finalY}px`;
+    silhouette.style.top = `${spideyWebY}px`;
     silhouette.style.left = `0px`;
-    silhouette.style.transform = `translate(-50%, -50%) rotate(${sway}deg)`;
+    silhouette.style.transform = `translate(-50%, -50%) rotate(${sway.toFixed(2)}deg)`;
     silhouette.style.opacity = `${Math.max(0, Math.min(1, currentSpideyFactor * 1.25))}`;
+  }
+
+  // Floating Games Bookmark Tab visibility:
+  // Allowed ONLY to be seen after timeline section
+  const bookmarkTab = document.getElementById("games-bookmark-tab");
+  if (bookmarkTab) {
+    if (timelineSection) {
+      const tRect = timelineSection.getBoundingClientRect();
+      // Appears when the user reaches the end of the timeline or scrolls below it
+      const isAfterTimeline = tRect.bottom <= window.innerHeight * 0.85;
+      if (isAfterTimeline) {
+        bookmarkTab.classList.add("visible");
+      } else {
+        bookmarkTab.classList.remove("visible");
+      }
+    } else {
+      // Keep accessible on pages without timeline
+      bookmarkTab.classList.add("visible");
+    }
   }
 
   requestAnimationFrame(animate);
@@ -526,78 +544,24 @@ function animate(): void {
 
 animate();
 
-// =========================================================================
-// RETRO PIXEL ARCADE PORTAL (TACTILE CHIPTUNE AUDIO & CRT WARP)
-// =========================================================================
-function initArcadePortal(): void {
-  const arcadeBtn = document.getElementById("arcade-games-btn");
-  if (!arcadeBtn) return;
-
-  arcadeBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    const href = arcadeBtn.getAttribute("href") || "/games/";
-
-    // 1. Play authentic chiptune 8-bit arcade start beep (Web Audio API)
-    try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioCtx) {
-        const actx = new AudioCtx();
-        // Tone 1: 330 Hz (E4)
-        const osc1 = actx.createOscillator();
-        const gain1 = actx.createGain();
-        osc1.type = "square";
-        osc1.frequency.setValueAtTime(330, actx.currentTime);
-        gain1.gain.setValueAtTime(0.12, actx.currentTime);
-        gain1.gain.exponentialRampToValueAtTime(0.01, actx.currentTime + 0.09);
-        osc1.connect(gain1);
-        gain1.connect(actx.destination);
-        osc1.start(actx.currentTime);
-        osc1.stop(actx.currentTime + 0.09);
-
-        // Tone 2: 660 Hz (E5) ascending chiptune tone
-        const osc2 = actx.createOscillator();
-        const gain2 = actx.createGain();
-        osc2.type = "square";
-        osc2.frequency.setValueAtTime(660, actx.currentTime + 0.08);
-        gain2.gain.setValueAtTime(0.15, actx.currentTime + 0.08);
-        gain2.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.28);
-        osc2.connect(gain2);
-        gain2.connect(actx.destination);
-        osc2.start(actx.currentTime + 0.08);
-        osc2.stop(actx.currentTime + 0.28);
-      }
-    } catch {
-      // Audio fallback
+// Normalize bookmark link href for local development if running without /init base
+function normalizeBookmarkTabHref(): void {
+  const bookmarkTab = document.getElementById("games-bookmark-tab");
+  if (bookmarkTab && !window.location.pathname.startsWith("/init")) {
+    const rawHref = bookmarkTab.getAttribute("href");
+    if (rawHref && rawHref.startsWith("/init/")) {
+      bookmarkTab.setAttribute("href", rawHref.replace(/^\/init/, ""));
     }
-
-    // 2. Tactile button depressed state
-    arcadeBtn.classList.add("btn-pressed");
-
-    // 3. CRT arcade screen flash & warp transition
-    let crtOverlay = document.getElementById("crt-transition-overlay");
-    if (!crtOverlay) {
-      crtOverlay = document.createElement("div");
-      crtOverlay.id = "crt-transition-overlay";
-      crtOverlay.className = "crt-arcade-transition";
-      document.body.appendChild(crtOverlay);
-    }
-
-    requestAnimationFrame(() => {
-      crtOverlay?.classList.add("active");
-      setTimeout(() => {
-        window.location.href = href;
-      }, 260);
-    });
-  });
+  }
 }
 
 // Initialize modules on page load
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     initMuseumMaze();
-    initArcadePortal();
+    normalizeBookmarkTabHref();
   });
 } else {
   initMuseumMaze();
-  initArcadePortal();
+  normalizeBookmarkTabHref();
 }

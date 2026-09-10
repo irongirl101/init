@@ -179,7 +179,7 @@ const py_build_plugin = (baseUrl = '') => {
         console.log('Moving generated files to dist...');
         try {
           const generatedDirs = ['blog', 'posts', 'tags', 'portfolio', 'games'];
-          const generatedFiles = ['index.html', 'sitemap.xml'];
+          const generatedFiles = ['index.html', 'sitemap.xml', '404.html'];
 
           // Copy directories from root to dist
           for (const dir of generatedDirs) {
@@ -200,6 +200,37 @@ const py_build_plugin = (baseUrl = '') => {
             if (fs.existsSync(src)) {
               fs.copyFileSync(src, dst);
             }
+          }
+
+          // Deployment prerequisites:
+          // 1. .nojekyll prevents Jekyll processing on GitHub Pages
+          fs.writeFileSync(path.join(__dirname, 'dist', '.nojekyll'), '');
+
+          // 2. Clear .gitignore in dist for clean deployment
+          fs.writeFileSync(path.join(__dirname, 'dist', '.gitignore'), '# Deployed static bundle\n');
+
+          // 3. Ensure custom domain CNAME is copied if present
+          const cnameSrc = path.join(__dirname, 'CNAME');
+          const cnameDst = path.join(__dirname, 'dist', 'CNAME');
+          if (fs.existsSync(cnameSrc)) {
+            fs.copyFileSync(cnameSrc, cnameDst);
+          }
+
+          // 4. Ensure 404.html fallback exists if missing
+          const notFoundDst = path.join(__dirname, 'dist', '404.html');
+          const indexSrc = path.join(__dirname, 'dist', 'index.html');
+          if (!fs.existsSync(notFoundDst) && fs.existsSync(indexSrc)) {
+            fs.copyFileSync(indexSrc, notFoundDst);
+          }
+
+          // 5. Ensure robots.txt exists
+          const robotsDst = path.join(__dirname, 'dist', 'robots.txt');
+          const robotsSrc = path.join(__dirname, 'robots.txt');
+          if (fs.existsSync(robotsSrc)) {
+            fs.copyFileSync(robotsSrc, robotsDst);
+          } else if (!fs.existsSync(robotsDst)) {
+            const cleanBaseForRobots = (baseUrl || '').replace(/\/+$/, '');
+            fs.writeFileSync(robotsDst, `User-agent: *\nAllow: /\nSitemap: ${cleanBaseForRobots}/sitemap.xml\n`, 'utf-8');
           }
 
           // Copy CSS files from assets/css to dist/assets/css
@@ -253,6 +284,9 @@ const py_build_plugin = (baseUrl = '') => {
           const builtMainJs = builtAssets.find(f => f.includes('main'));
           const builtMainCss = builtCss.find(f => f.includes('main'));
 
+          const cleanBase = (baseUrl || '').replace(/\/+$/, '');
+          const assetBase = cleanBase ? `${cleanBase}/assets` : '/assets';
+
           for (const htmlFile of htmlFiles) {
             let content = fs.readFileSync(htmlFile, 'utf-8');
             let modified = false;
@@ -264,7 +298,7 @@ const py_build_plugin = (baseUrl = '') => {
               if (content.includes(targetScript)) {
                 content = content.replace(
                   targetScript,
-                  `src="${baseUrl}/assets/${jsAssetName}"`
+                  `src="${assetBase}/${jsAssetName}"`
                 );
                 modified = true;
               }
@@ -273,7 +307,7 @@ const py_build_plugin = (baseUrl = '') => {
             // Inject compiled CSS link before </head>
             if (builtMainCss) {
               const cssAssetName = path.basename(builtMainCss);
-              const linkTag = `<link rel="stylesheet" href="${baseUrl}/assets/${cssAssetName}">`;
+              const linkTag = `<link rel="stylesheet" href="${assetBase}/${cssAssetName}">`;
               if (!content.includes(linkTag)) {
                 content = content.replace(
                   '</head>',
@@ -402,69 +436,10 @@ export default defineConfig(async ({ command }) => {
   }
 
   if (command === 'build') {
-    console.log('Buiding static pages for production');
+    console.log('Building static pages for production');
     try {
       const output = execSync(`${pythonExecutable} src/main.py`);
       console.log(output.toString().trim());
-
-      // Move generated HTML files from docs to dist
-      const generatedDirs = ['blog', 'posts', 'tags', 'portfolio', 'games'];
-      const generatedFiles = ['index.html', 'sitemap.xml'];
-
-      // Ensure dist exists
-      if (!fs.existsSync('dist')) {
-        fs.mkdirSync('dist', { recursive: true });
-      }
-
-      // Move directories from docs to dist
-      for (const dir of generatedDirs) {
-        const src = path.join(__dirname, 'docs', dir);
-        const dst = path.join(__dirname, 'dist', dir);
-        if (fs.existsSync(src)) {
-          if (fs.existsSync(dst)) {
-            fs.rmSync(dst, { recursive: true });
-          }
-          fs.renameSync(src, dst);
-        }
-      }
-
-      // Move files from docs to dist
-      for (const file of generatedFiles) {
-        const src = path.join(__dirname, 'docs', file);
-        const dst = path.join(__dirname, 'dist', file);
-        if (fs.existsSync(src)) {
-          fs.copyFileSync(src, dst);
-          fs.unlinkSync(src);
-        }
-      }
-
-      // GitHub Pages deployment prerequisites:
-      // 1. .nojekyll prevents Jekyll processing so nested dirs and raw assets are preserved
-      fs.writeFileSync(path.join(__dirname, 'dist', '.nojekyll'), '');
-
-      // 2. Clear .gitignore in dist so gh-pages publishes all images and assets without ignoring them
-      fs.writeFileSync(path.join(__dirname, 'dist', '.gitignore'), '# Deployed GitHub Pages static bundle\n');
-
-      // 2. 404.html fallback allows clean routing on GitHub Pages
-      const indexSrc = path.join(__dirname, 'dist', 'index.html');
-      const notFoundDst = path.join(__dirname, 'dist', '404.html');
-      if (fs.existsSync(indexSrc) && !fs.existsSync(notFoundDst)) {
-        fs.copyFileSync(indexSrc, notFoundDst);
-      }
-
-      // 3. Ensure runtime data directory is copied to dist
-      const dataSrc = path.join(__dirname, 'data');
-      const dataDst = path.join(__dirname, 'dist', 'data');
-      if (fs.existsSync(dataSrc)) {
-        fs.cpSync(dataSrc, dataDst, { recursive: true });
-      }
-
-      // 4. Ensure assets/audio directory is copied to dist
-      const audioSrc = path.join(__dirname, 'assets', 'audio');
-      const audioDst = path.join(__dirname, 'dist', 'assets', 'audio');
-      if (fs.existsSync(audioSrc)) {
-        fs.cpSync(audioSrc, audioDst, { recursive: true });
-      }
     } catch (e) {
       console.error('Failed to generate static files:', e);
       throw e;

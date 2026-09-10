@@ -619,13 +619,16 @@ def parse_file(filepath, pygments_theme, markdown_config=None):
     # Normalize Windows paths
     url_path = url_path.replace(os.sep, "/")
 
-    if url_path == "index":
-        page_config["url"] = "/"
-    elif url_path.endswith("/index"):
-        # e.g. sub/index -> /sub/
-        page_config["url"] = "/" + url_path[:-5]
-    else:
-        page_config["url"] = "/" + url_path
+    if not page_config.get("url"):
+        if url_path == "index":
+            page_config["url"] = "/"
+        elif url_path == "404":
+            page_config["url"] = "/404.html"
+        elif url_path.endswith("/index"):
+            # e.g. sub/index -> /sub/
+            page_config["url"] = "/" + url_path[:-5]
+        else:
+            page_config["url"] = "/" + url_path
 
     # Normalize date to YYYY-MM-DD string
     if "date" in page_config and page_config["date"]:
@@ -693,6 +696,8 @@ def render_page(
 
     if page_config["url"] == "/":
         output_path = os.path.join(OUTPUT_DIR, "index.html")
+    elif page_config["url"].endswith(".html"):
+        output_path = os.path.join(OUTPUT_DIR, page_config["url"].lstrip("/"))
     else:
         output_path = os.path.join(
             OUTPUT_DIR, page_config["url"].lstrip("/"), "index.html"
@@ -1003,7 +1008,11 @@ def main():
                 current_slugs.add(slug_key)
 
                 pages.append({"data": page_data, "content": html_content})
-                sitemap_list.append(page_data["url"])
+                if page_data.get("url") != "/404.html" and not page_data.get("url", "").endswith("/404.html"):
+                    sitemap_list.append({
+                        "url": page_data["url"] if page_data["url"] != "/" else "",
+                        "lastmod": page_data.get("date", "")
+                    })
                 
                 layout = page_data.get("layout")
                 if layout:
@@ -1072,7 +1081,6 @@ def main():
             print("Warning: tags template not found; skipping tag page generation.")
 
         sitemap_template = env.get_template("sitemap.xml.j2")
-        sitemap_xml = sitemap_template.render(site=site_config, pages=sitemap_list)
         sitemap_xml = sitemap_template.render(site=site_config, pages=sitemap_list)
         try:
             with open(os.path.join(OUTPUT_DIR, "sitemap.xml"), "w") as f:

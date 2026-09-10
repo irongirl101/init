@@ -48,14 +48,15 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
       - name: Build static site with Vite & Python
         env:
           PY_EXECUTABLE: python3
-          BASE_URL: "/init"
+          BASE_URL: ${{ steps.pages.outputs.base_path || '/init' }}
         run: npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

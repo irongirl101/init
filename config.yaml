@@ -77,6 +77,4 @@ navigation:
   - name: "Blog"
     url: "/blog/"
   - name: "Art Portfolio"
-    url: "/portfolio"
-  - name: "Games"
-    url: "/games/"
+    url: "/portfolio/"
