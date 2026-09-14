@@ -42,6 +42,11 @@
   </url>
   
   <url>
+    <loc>/init/posts/prometheus</loc>
+    <lastmod>2026-09-11</lastmod>
+  </url>
+  
+  <url>
     <loc>/init/posts/localsend</loc>
     <lastmod>2026-04-17</lastmod>
   </url>
