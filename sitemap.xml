@@ -132,6 +132,11 @@
   </url>
   
   <url>
+    <loc>/init/posts/zeek</loc>
+    <lastmod>2026-09-04</lastmod>
+  </url>
+  
+  <url>
     <loc>/init/posts/ossfuzz</loc>
     <lastmod>2026-08-07</lastmod>
   </url>
