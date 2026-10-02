@@ -152,7 +152,7 @@ games:
     developer: "Nintendo"
     shelf: "bottom"
     status: "Completed"
-    is_currently_playing: false
+    is_currently_playing: true
     platform: "Nintendo Switch"
     platform_code: "switch"
     rating: 5
@@ -536,5 +536,4 @@ games:
     quote: "Well, Immortal. You Stand Before A True Immortal."
     review: "Controls are wonky, pretty forgettable game"
     tags: ["Adventure", "Metroidvania"]
-
 ---
