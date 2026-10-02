@@ -281,8 +281,9 @@ const py_build_plugin = (baseUrl = '') => {
           const builtAssets = glob.sync(path.join(__dirname, 'dist', 'assets', '*.js'));
           const builtCss = glob.sync(path.join(__dirname, 'dist', 'assets', '*.css'));
 
-          const builtMainJs = builtAssets.find(f => f.includes('main'));
-          const builtMainCss = builtCss.find(f => f.includes('main'));
+          const isAppBundle = file => /(?:main|topography)(?:[-.]|$)/.test(path.basename(file));
+          const builtMainJs = builtAssets.find(isAppBundle);
+          const builtMainCss = builtCss.find(isAppBundle);
 
           const cleanBase = (baseUrl || '').replace(/\/+$/, '');
           const assetBase = cleanBase ? `${cleanBase}/assets` : '/assets';
@@ -454,7 +455,7 @@ export default defineConfig(async ({ command }) => {
   const rollupInputFiles = command === 'build' ? { main: path.join(__dirname, 'src/topography.ts') } : inputFiles;
 
   return {
-    base: baseUrl,
+    base: command === 'serve' ? '/' : baseUrl,
     plugins: [
       py_build_plugin(baseUrl),
       tailwindcss(),
