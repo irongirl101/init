@@ -92,8 +92,18 @@
   </url>
   
   <url>
+    <loc>/init/posts/wasm-bindgen</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  
+  <url>
     <loc>/init/posts/k8s</loc>
     <lastmod>2026-06-12</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/airflow</loc>
+    <lastmod>2026-10-02</lastmod>
   </url>
   
   <url>
@@ -117,6 +127,11 @@
   </url>
   
   <url>
+    <loc>/init/posts/xeneva</loc>
+    <lastmod>2026-09-25</lastmod>
+  </url>
+  
+  <url>
     <loc>/init/posts/opentofu</loc>
     <lastmod>2026-08-21</lastmod>
   </url>
@@ -124,6 +139,11 @@
   <url>
     <loc>/init/posts/pennylane</loc>
     <lastmod>2026-07-03</lastmod>
+  </url>
+  
+  <url>
+    <loc>/init/posts/indiafoss26</loc>
+    <lastmod>2026-09-28</lastmod>
   </url>
   
   <url>

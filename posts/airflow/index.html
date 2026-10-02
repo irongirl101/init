@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #26 - Apache Airflow | init</title>
+  <link rel="stylesheet" href="/init/assets/main-BD08Ke9g.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col ">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio/">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #26 - Apache Airflow</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-10-02</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Apache.html">Apache</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Airflow.html">Airflow</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Big Data.html">Big Data</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>I think its about time we dive into something thats part of the Apache Frameworks. One of my favorite framework that I was introduced to in my Big Data class, is Airflow -- used to delegate tasks in the form of Directed Acyclic Graphs or DAGs. Airflow on its own never processes data, but only delegates tasks to 'worker' nodes.</p>
+<p>Airflow is a platform to programmatically author, schedule, and monitor workflows. When workflows are defined as code, they become more maintainable, versionable, testable, and collaborative. It works best with workflows that are mostly static and slowly changing. When the DAG structure is similar from one run to the next, it clarifies the unit of work and continuity. </p>
+<p>Beyond just traditional pipelines, it is widely used to orchestrate Machine Learning workflow - training, retraining, evaluation, and deployment, and increasingly used to orchestrate agentic and LLM workloads coordinating the steps of an AI pipeline (data prep, tool calls, model invocation, evaluation) rather than acting as the agent itself.</p>
+<p>One of the key advantages of using DAGs in Airflow for orchestration is that if a task fails during a workflow, the entire pipeline does not need to be rerun. Airflow can resume execution from the last successfully completed task, allowing the workflow to continue from the point of failure.</p>
+<p>Airflow is not a streaming solution, but it is often used to process real-time data, pulling data off streams in batches.</p>
+<p>Principles<br />
+- Dynamic: Pipelines are defined in code, enabling dynamic dag generation and parameterization.<br />
+- Extensible: The Airflow framework includes a wide range of built-in operators and can be extended to fit your needs.<br />
+- Flexible: Airflow leverages the Jinja templating engine, allowing rich customizations.</p>
+<p>A fun fact about airflow -- it was originally a project started by Airbnb in 2014, until it was taken under the apache umbrella in 2016 by being part of the Apache Incubator Project, and finally a top level project in 2019. </p>
+<p>(Also, funny thing, airflow can only run on Linux or MacOS machines XD) </p>
+<p>Repository Link: <a href="https://github.com/apache/airflow">Airflow</a></p>
+</article>
+
+  </main>
+
+  <!-- Floating Games Bookmark Tab on Right Edge (Visible After Timeline) -->
+  
+  <a href="/init/games/"
+     id="games-bookmark-tab"
+     class="games-bookmark-tab group"
+     aria-label="Enter Games Shelf"
+     title="Games Shelf">
+    <div class="bookmark-tab-inner">
+      <div class="bookmark-icon-container">
+        <svg class="bookmark-gamepad-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="4"></rect>
+          <path d="M6 12h4m-2-2v4"></path>
+          <circle cx="15" cy="11" r="1" fill="currentColor"></circle>
+          <circle cx="18" cy="13" r="1" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <span class="bookmark-tab-label">GAMES</span>
+      <span class="bookmark-badge-peek">PLAY</span>
+    </div>
+  </a>
+  
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-DVwKXikD.js"></script>
+</body>
+
+</html>

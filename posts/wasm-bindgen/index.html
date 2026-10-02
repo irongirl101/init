@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Source Friday #24 - wasm-bindgen | init</title>
+  <link rel="stylesheet" href="/init/assets/main-BD08Ke9g.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col ">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio/">Art Portfolio</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<article class="prose dark:prose-invert max-w-none">
+    <header>
+        <h1 class="mb-2">Open Source Friday #24 - wasm-bindgen</h1>
+        
+        <p class="text-sm opacity-70">Published on: 2026-09-18</p>
+        
+        
+        <p class="text-sm mt-2">
+            Tags:
+            
+            <a class="badge badge-sm" href="/init/tags/Rust.html">Rust</a>
+            
+            <a class="badge badge-sm" href="/init/tags/WASM.html">WASM</a>
+            
+            <a class="badge badge-sm" href="/init/tags/Tutorial.html">Tutorial</a>
+            
+            <a class="badge badge-sm" href="/init/tags/OSF.html">OSF</a>
+            
+        </p>
+        
+        <hr>
+    </header>
+
+    <p>It is a Rust CLI tool that facilitate high-level interactions between Wasm modules and JavaScript. The wasm-bindgen tool and crate are only one part of the Rust and WebAssembly ecosystem. (if you do not know what wasm is, its a portable binary instruction format for a stack-based virtual machine that lets you compile programs (like C/C++, C#, and Rust) to run efficiently in a web browser. It’s designed to run alongside JavaScript so both can work together in the same app) </p>
+<p>The wasm-bindgen tool is sort of half polyfill (it temporarily recreates and simulates features of an upcoming WebAssembly standard, specifically the Component Model that browsers don't natively support yet.) for features like the component model proposal and half features for empowering high-level interactions between JS and wasm-compiled code (currently mostly from Rust). More specifically this project allows JS/wasm to communicate with strings, JS objects, classes, etc, as opposed to purely integers and floats. Using wasm-bindgen for example you can define a JS class in Rust or take a string from JS or return one. (The functionality is growing as well!)</p>
+<p>A couple of features offered by them: <br />
+- Importing JS functionality in to Rust such as DOM manipulation, console logging, or performance monitoring.<br />
+- Exporting Rust functionality to JS such as classes, functions, etc.<br />
+- Working with rich types like strings, numbers, classes, closures, and objects rather than simply u32 and floats.<br />
+- Automatically generating TypeScript bindings for Rust code being consumed by JS.</p>
+<p>A fun fact about this project, it is a dual licensed project with both Apache 2.0 and the MIT License! </p>
+<p>Tutorial : <a href="https://wasm-bindgen.github.io/wasm-bindgen/">wasm-bindgen tutorial</a><br />
+Rust X Wasm Book: <a href="https://rustwasm.github.io/docs/book/game-of-life/introduction.html">BOOK</a><br />
+Repository Link: <a href="https://github.com/wasm-bindgen/wasm-bindgen">wasm-bingden</a></p>
+</article>
+
+  </main>
+
+  <!-- Floating Games Bookmark Tab on Right Edge (Visible After Timeline) -->
+  
+  <a href="/init/games/"
+     id="games-bookmark-tab"
+     class="games-bookmark-tab group"
+     aria-label="Enter Games Shelf"
+     title="Games Shelf">
+    <div class="bookmark-tab-inner">
+      <div class="bookmark-icon-container">
+        <svg class="bookmark-gamepad-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="4"></rect>
+          <path d="M6 12h4m-2-2v4"></path>
+          <circle cx="15" cy="11" r="1" fill="currentColor"></circle>
+          <circle cx="18" cy="13" r="1" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <span class="bookmark-tab-label">GAMES</span>
+      <span class="bookmark-badge-peek">PLAY</span>
+    </div>
+  </a>
+  
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-DVwKXikD.js"></script>
+</body>
+
+</html>
