@@ -47,10 +47,12 @@ timeline:
     - date: "June 2026 • Interning"
       title: "Interned at FiniteLoop"
       description: "Learnt a lot about building a full product end to end, and explored my cybersecurity interests"
+    - date: "October 2026 • End of an Era "
+      title: "Ended my leadership @ PES OS"
+      description: "Closed my leadership position at PES OS due to multiple reasons,but continuing to foster FOSS"
     - date: "Present "
       title: "So far, so good :)"
-      description: "Started my dream capstone project, and the FOSS community continues to grow alongside me :). To Infinity AND BEYOND!"
-    
+      description: "Started my dream capstone project, and I am growing every day :). To Infinity AND BEYOND!"
     
 
 ---
