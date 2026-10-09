@@ -8,7 +8,7 @@ tags:
     - "blog"
 ---
 # Begin
-It all started on a fine saturday, Oct 17th, 2025 -- where I attended a Hacktoberfest event (the good ol ones), called Hacknight 7.0 by ACM PESUECC. It was a typical contribution style hack, where I was able to contribute to open sourced, student maintained projects. My first introduction to open source. Although, I will admit -- there were a lot of ups and downs on that night, which ended up in me getting very sick. 
+It all started on a fine saturday, Oct 17th, 2025 -- where I attended a Hacktoberfest event (the good ol ones), called Hacknight 7.0 by ACM PESUECC. It was a typical contribution style hack, where I was able to contribute to open sourced, student maintained projects. My first introduction to open source. Although, I will admit -- there were a lot of ups and downs on that night. 
 
 But, that night, something fired in me. I wanted something similar like this in my own campus. I started to dig more, and I ended up realizing that, 'how does my campus not have a FOSS club?' 'how is there almost zero advocacy and zero knowledge on what open source is?' 'how is there no idea on what got computer science to this point?' 
 
@@ -16,11 +16,19 @@ My gears started to turn, I realized a true gap. I realized how important it was
 
 I went up to my friends on a random short break, @Arabhi and @Vishal, who had joined me to attend this event. They were like, 'shit, you are right, we have got to do something like this'. And we started to find other people. We got @Rohini (mah goat tech head) and @Saikavin on board. SK brought on Pranav Chandrashekar and Samar to help us with design and SMM. Arabhi got @Anshdeep to help with Tech. We also got on board @Aditya Vats and @Aiman and @Sanjit. And we started to look to evolve this group of people, into a proper club/community. 
 
+I also started to ask my good friends @Hemanth, @Vin and @Selva for how to create and manage a club from ground up, and I was basically grilled by all of em (especially Hemanth) for all the decisions I was going to make, and they were essentially my greatest support systems XD. They helped me define what I wanted out of the club -- which oh boy, was so painful but so worth it in the end. And I cannot count the number of times they screamed at me/us for trying to make a really stupid decision (tb to club names inspired by Spiderman)
+
 To get this under the college, we needed to find ourselves a faculty advisor. We first approached a professor who we thought would be a good fit -- but he fully dismissed us by saying that the concept of open source died year ago. That did make us re-evaluate everything we knew. It did not stop us. We approached the AIML department, and we quickly dismissed it as we would not be a club that is approachable by everyone. (We were SO EXTREMELY CLOSE TO BEING UNDER AIML -- it was a good opprtunity, but it did not work in our minds)
 
-We got in touch with two seniors @Pranavjeet and @Shailja -- who helped us with fueling our desire, and eventually pointed us to our Faculty Advisor. 
+We got in touch with two seniors @Pranavjeet and @Shailja -- who helped us with fueling our desire, and eventually pointed us to our Faculty Advisor, Rajesh Sir. 
 
-We worked with him for hours and hours, stayed back at college for so long just to meet him and get his ideas -- to understand what we lacked, the direction we wanted to go to, and helped us, to quote my inspiration, 'evangelize open source'. We came up with ideas of workshops, with projects, with talks, with firesides and what we eventually wanted to bring out of the club. 
+We worked with him for hours and hours, stayed back at college for so long just to meet him and get his ideas -- to understand what we lacked, the direction we wanted to go to, and helped us, to quote an inspiration, 'evangelize open source'. We came up with ideas of workshops, with projects, with talks, with firesides and what we eventually wanted to bring out of the club. Heck, we even asked him for his opinion on what we could name this club. 
+
+For the next step, we wanted to get a brand for ourselves, so a bunch of us bunked a class to talk with other people on how to get a club approved under the college, and to choose a name. The amount of names we found were so corny and so hilariously stupid, but we all ended up loving the name OSIRIS (it had a full name, but I do not remember anymore). 
+
+With all the knowledge we had, we decided to go to the dean, with help from our FA -- to which we were told that there was already an Open Source club (bruh), dead, under the Computer Science Department. At this point, it had been 4 months since I got the idea and we were starting to feel helpless. We almost got under ISFCR -- the security center, but we were talked into not by Pranavjeet (thank you XD). 
+
+By then, we had gotten in more people, like @Rithvik, @Niranjan, @Madhu, @Arjun, @Naomi to help us out with the departments we were originally lacking in. And we had decided the positions of people, and the structure of the current club. 
 
 
 
