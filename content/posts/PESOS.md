@@ -29,14 +29,16 @@ For the next step, we wanted to get a brand for ourselves, so a bunch of us bunk
 # The End of Beginning
 With all the knowledge we had, we decided to go to the dean, with help from our FA -- to which we were told that there was already an Open Source club (bruh), dead, under the Computer Science Department. We spoke with the original members of PES OS, asking if we could migrate the club under the university, than under CSE, and we got in touch with the OG OG members of PESOS. 
 
-At this point, it had been 4 months since I got the idea and we were starting to feel helpless. We almost got under ISFCR -- the security center, but we were talked into not by Pranavjeet (thank you XD). 
+At this point, it had been 4 months since I got the idea and we were starting to feel helpless. We almost got under ISFCR -- the security center, but we were talked into not by Pranavjeet (thank you XD) and it felt like it was overall a bad fit for us. 
 
 By then, we had gotten in more people, like @Rithvik, @Niranjan, @Madhu, @Arjun, @Naomi to help us out with the departments we were originally lacking in. And we had decided the positions of people, and the structure of the current club. 
 
 Finally, we marched down to the CSE Department, where again,we spent a lot of time waiting to meet the HOD, only to first get dismissed + to come back with better backing. And with much tag and war, we FINALLY got approved on Feb 6, 2026. Wow. 
 
 # The Start 
-With the club finally in our hands, we started to work on our first ever event -- Our Orientation (where we spoke about open source, why and what and how) and as GSoC was round the corner, we got a speaker @Sripad to speak about his journey as a GSSoCer, and we started to grow the interest in our club. The event was a success, garnering around 60~ people to attend, and our network of mentors started to grow as well. 
+With the club finally in our hands, we started to work on our first ever event -- Our Orientation (where we spoke about open source, why and what and how) and as GSoC was round the corner, we got a speaker @Sripad to speak about his journey as a GSSoCer, and we started to grow the interest in our club. The event was a success, garnering around 60~ people to attend, and our network of mentors started to grow as well, even if we kept postponing it again and again and again. 
+
+In the middle, we had an Aatmartrisha event, which was kind of away from the scope or vision of our club, and our core almost fell apart due to this. We were heavily overworked, and we started to realize other things.
 
 In april, I started the initiative called Open Source Fridays, where I highlight a repository every friday, encouraging people to go check out these repos, and eventually contribute to them on our community of currently over 900 people. This sparked a lot of discussion, and I am still writing them to this day. 
 
