@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museum Gallery | init</title>
-  <link rel="stylesheet" href="/init/assets/main-Bvz1ZbII.css">
+  <link rel="stylesheet" href="/init/assets/main-Bi5NP5gt.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col ">
@@ -110,8 +110,9 @@
                class="w-10 h-10 object-contain drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] select-none pointer-events-none"
                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/init/assets/images/hades_coin.png';}else{this.src='./assets/images/hades_coin.png';}" />
           <div>
-            <div class="font-mono font-bold text-base text-white tracking-wide leading-none">
+            <div class="flex items-center gap-1.5 font-mono font-bold text-base text-white tracking-wide leading-none">
               <span id="patron-display-balance">1,240</span> <span class="text-amber-400 text-xs font-semibold">TKN</span>
+              <span id="hud-balance-diff" class="text-[11px] font-mono font-bold opacity-0 transition-all duration-700 pointer-events-none"></span>
             </div>
             <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mt-1">
               Token Balance
@@ -1906,6 +1907,14 @@
               <span id="modal-leading-patron" class="block text-[11px] opacity-60">@Miles_M</span>
             </div>
           </div>
+          <div class="flex items-center justify-between text-xs pt-2 border-t border-white/5">
+            <span class="opacity-60">Your Current Commitment:</span>
+            <span id="modal-my-current-bid" class="font-mono text-xs text-primary font-bold">--</span>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="opacity-60">Your Available Credit:</span>
+            <span id="modal-patron-balance" class="font-mono font-bold text-emerald-300">2,500 TKN</span>
+          </div>
 
           <!-- Mini Bid History Log -->
           <div class="divider my-1 text-[10px] opacity-40 uppercase">Offer Ledger</div>
@@ -1946,9 +1955,29 @@
             <button class="btn btn-xs btn-outline btn-primary flex-1 quick-bid-btn" data-inc="250">+250</button>
           </div>
 
+          <!-- Real-Time Bid Difference & Balance Impact Breakdown -->
+          <div id="modal-bid-difference-card" class="rounded-xl bg-black/50 border border-white/10 p-2.5 space-y-1.5 text-xs font-mono">
+            <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-white/5 pb-1 flex items-center justify-between">
+              <span>Token Difference Breakdown</span>
+              <span id="modal-diff-badge" class="badge badge-xs badge-success font-mono">+50 TKN</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="opacity-70 text-[11px]">Difference over top offer:</span>
+              <span id="modal-diff-over-top" class="font-bold text-emerald-400">+50 TKN</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="opacity-70 text-[11px]">Difference deducted from balance:</span>
+              <span id="modal-diff-to-deduct" class="font-bold text-amber-300">-900 TKN</span>
+            </div>
+            <div class="flex items-center justify-between border-t border-white/5 pt-1">
+              <span class="opacity-70 text-[11px]">Available balance after bid:</span>
+              <span id="modal-balance-after" class="font-bold text-white">1,600 TKN</span>
+            </div>
+          </div>
+
           <!-- Action Button -->
-          <button id="submit-bid-btn" class="btn btn-primary btn-sm w-full font-bold shadow-lg shadow-primary/20">
-            Submit Bid (50 TKN Fee)
+          <button id="submit-bid-btn" class="btn btn-primary btn-sm w-full font-bold shadow-lg shadow-primary/20 transition-all">
+            Submit Bid (Deduct Difference)
           </button>
 
           <!-- Feedback message -->
@@ -1971,6 +2000,14 @@
               <div>
                 <span class="opacity-60 block text-[9px] uppercase">Patron Alias:</span>
                 <span id="slip-patron" class="text-white font-bold">@Aditi</span>
+              </div>
+              <div>
+                <span class="opacity-60 block text-[9px] uppercase">Difference Deducted:</span>
+                <span id="slip-diff" class="text-amber-400 font-bold">-150 TKN</span>
+              </div>
+              <div>
+                <span class="opacity-60 block text-[9px] uppercase">Remaining Balance:</span>
+                <span id="slip-balance" class="text-emerald-300 font-bold">2,350 TKN</span>
               </div>
             </div>
             <div class="flex gap-2 pt-1">
@@ -2160,7 +2197,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-ByjYkDPr.js"></script>
+  <script type="module" src="/init/assets/main-QlFarkI-.js"></script>
 </body>
 
 </html>
