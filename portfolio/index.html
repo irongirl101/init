@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Museum Gallery | init</title>
-  <link rel="stylesheet" href="/init/assets/main-DTj_N4fs.css">
+  <link rel="stylesheet" href="/init/assets/main-sl9AA-BY.css">
 </head>
 
 <body class="pt-24 min-h-screen flex flex-col ">
@@ -35,12 +35,6 @@
   <main class="flex-grow container mx-auto p-8">
     
 <style>
-  body {
-    background-color: #000000 !important;
-  }
-  #res-canvas {
-    display: none !important;
-  }
   .catalog-card {
     content-visibility: auto;
     contain-intrinsic-size: 0 420px;
@@ -84,17 +78,6 @@
           Auction Ledger
         </button>
       </div>
-
-      <!-- Spotify Hades OST Player Toggle -->
-      <button id="spotify-bgm-toggle-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-amber-500/40 text-amber-300 font-mono text-[11px] px-3 hover:border-amber-400 hover:bg-amber-500/10 flex items-center gap-1.5" title="Hades Soundtrack Player">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Hades OST</span>
-      </button>
-
-      <!-- SFX Toggle -->
-      <button id="museum-sfx-btn" class="btn btn-xs sm:btn-sm btn-ghost border border-base-content/10 font-mono text-[11px] px-3" title="Audio Ambience">
-        Audio On
-      </button>
     </div>
   </div>
 
@@ -2033,139 +2016,6 @@
   </form>
 </dialog>
 
-<!-- RETRO PIXEL-ART HADES MEDIA PLAYER (Outside Game Area, Draggable Floating Gadget) -->
-<div id="pixel-player-container" class="fixed bottom-6 right-6 z-40 select-none transition-shadow drop-shadow-[0_18px_45px_rgba(0,0,0,0.95)]" style="image-rendering: pixelated;">
-  <div class="relative w-[190px] sm:w-[215px] flex flex-col items-end">
-    
-    <!-- Drag Handle & Gadget Top Bar (Matches Homepage Emerald/Jade Scheme) -->
-    <div id="pixel-player-drag-handle" class="w-full flex items-center justify-between px-2 mb-1 text-[10px] font-mono bg-[#04241c]/95 backdrop-blur-md rounded-t-lg border-t border-x border-[#208c73]/40 py-1.5 cursor-grab active:cursor-grabbing shadow-lg">
-      <span class="flex items-center gap-1.5 pointer-events-none">
-        <span id="pixel-status-dot" class="w-2 h-2 bg-[#34d399] animate-pulse"></span>
-        <span class="tracking-widest uppercase font-bold text-[9px] text-[#34d399]">HADES.OST</span>
-      </span>
-      <div class="flex items-center gap-1.5">
-        <button id="pixel-mode-toggle-btn" class="text-[8px] font-mono px-1.5 py-0.5 bg-[#0f4034] text-[#a7f3d0] border border-[#208c73]/60 hover:bg-[#208c73]/40 transition-colors" title="Toggle Spotify Player">
-          SPOTIFY
-        </button>
-        <button id="pixel-player-minimize-btn" class="text-white/70 hover:text-white px-1 font-mono font-bold text-xs" title="Minimize">
-          ─
-        </button>
-      </div>
-    </div>
-
-    <!-- Handheld Chassis Body (Homepage Emerald #0f4034 & Stygian Gold Accents) -->
-    <div id="pixel-player-body" class="relative w-full aspect-[160/190] cursor-default transition-all duration-300">
-      <svg viewBox="0 0 160 190" class="w-full h-full block" style="shape-rendering: crispEdges;">
-        <!-- Outermost Black Pixel Border (Stepped Corners) -->
-        <rect x="8" y="4" width="136" height="182" fill="#000000" />
-        <rect x="4" y="8" width="144" height="174" fill="#000000" />
-
-        <!-- Right-Side Hardware Buttons (Obsidian with Gold Accent) -->
-        <rect x="148" y="32" width="6" height="26" fill="#000000" />
-        <rect x="146" y="34" width="6" height="22" fill="#04241c" />
-        <rect x="148" y="68" width="6" height="26" fill="#000000" />
-        <rect x="146" y="70" width="6" height="22" fill="#04241c" />
-
-        <!-- Chassis Main Body (Homepage Deep Emerald Jade #0f4034) -->
-        <rect x="10" y="10" width="132" height="170" fill="#0f4034" />
-        
-        <!-- Top & Left Pixel Highlights (Homepage Radiant Teal-Emerald #208c73) -->
-        <rect x="10" y="10" width="132" height="6" fill="#208c73" />
-        <rect x="10" y="10" width="6" height="170" fill="#208c73" />
-        
-        <!-- Bottom & Right Pixel Shadows (Homepage Deep Forest Abyss #04241c) -->
-        <rect x="10" y="174" width="132" height="6" fill="#04241c" />
-        <rect x="136" y="10" width="6" height="170" fill="#04241c" />
-
-        <!-- Screen Black Bezel -->
-        <rect x="22" y="20" width="108" height="150" fill="#000000" />
-        
-        <!-- Screen Inner Surface (Deep Abyssal Jade #031812) -->
-        <rect x="26" y="24" width="100" height="142" fill="#031812" />
-
-        <!-- Diagonal Pixel Glare / Reflection (Emerald Shaded) -->
-        <polygon points="26,24 82,24 26,80" fill="#092e24" />
-        <polygon points="26,24 62,24 26,60" fill="#114335" />
-        <polygon points="82,24 100,24 54,70 36,70" fill="#06221a" />
-        
-        <!-- Screen Corner Pixel Specks (Matching Reference Image) -->
-        <rect x="36" y="142" width="8" height="4" fill="#092e24" />
-        <rect x="32" y="150" width="6" height="4" fill="#092e24" />
-        <rect x="52" y="156" width="10" height="4" fill="#06221a" />
-        <rect x="114" y="138" width="6" height="6" fill="#092e24" />
-        <rect x="118" y="148" width="4" height="4" fill="#06221a" />
-
-        <!-- Neon Mint/Jade Audio Progress Line (Matching Reference Image) -->
-        <rect id="pixel-progress-line" x="32" y="108" width="88" height="4" fill="#34d399" />
-
-        <!-- Pixel Transport Buttons in Glowing Mint #34d399 -->
-        <!-- Prev Button (<) -->
-        <g id="pixel-btn-prev" class="cursor-pointer hover:opacity-75 transition-opacity">
-          <rect x="44" y="124" width="4" height="14" fill="#34d399" />
-          <rect x="48" y="121" width="4" height="20" fill="#34d399" />
-          <rect x="52" y="118" width="4" height="26" fill="#34d399" />
-          <rect x="48" y="125" width="4" height="12" fill="#031812" />
-        </g>
-
-        <!-- Play / Pause Button (|>) -->
-        <g id="pixel-btn-play" class="cursor-pointer hover:opacity-75 transition-opacity">
-          <!-- Play Triangle Glyph -->
-          <g id="pixel-glyph-play">
-            <rect x="72" y="118" width="4" height="26" fill="#34d399" />
-            <rect x="76" y="121" width="4" height="20" fill="#34d399" />
-            <rect x="80" y="124" width="4" height="14" fill="#34d399" />
-            <rect x="84" y="127" width="3" height="8" fill="#34d399" />
-          </g>
-          <!-- Pause Double-Bar Glyph -->
-          <g id="pixel-glyph-pause" class="hidden">
-            <rect x="72" y="118" width="5" height="26" fill="#34d399" />
-            <rect x="81" y="118" width="5" height="26" fill="#34d399" />
-          </g>
-        </g>
-
-        <!-- Next Button (>) -->
-        <g id="pixel-btn-next" class="cursor-pointer hover:opacity-75 transition-opacity">
-          <rect x="104" y="118" width="4" height="26" fill="#34d399" />
-          <rect x="100" y="121" width="4" height="20" fill="#34d399" />
-          <rect x="96" y="124" width="4" height="14" fill="#34d399" />
-          <rect x="100" y="125" width="4" height="12" fill="#031812" />
-        </g>
-      </svg>
-
-      <!-- Track Name In-Screen Pixel Display (Above the progress line) -->
-      <div class="absolute top-[64px] left-[28px] right-[28px] overflow-hidden pointer-events-none text-center">
-        <div id="pixel-track-title" class="text-[9px] font-mono text-[#34d399] whitespace-nowrap tracking-wider font-bold animate-pulse">
-          NO ESCAPE
-        </div>
-        <div id="pixel-track-artist" class="text-[7px] font-mono text-[#a7f3d0]/80 whitespace-nowrap tracking-widest uppercase">
-          FAINT BGM • DARREN KORB
-        </div>
-      </div>
-    </div>
-
-    <!-- Official Spotify Player Drawer (Directly playable Spotify album) -->
-    <div id="pixel-spotify-drawer" class="hidden w-full mt-2 bg-[#04241c] border-2 border-[#208c73] rounded-xl p-2 shadow-2xl transition-all duration-300">
-      <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[#208c73]/30 text-[9px] font-mono text-[#fbbf24]">
-        <span class="flex items-center gap-1">
-          <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-          <span>SPOTIFY STREAM</span>
-        </span>
-        <button id="pixel-spotify-close-drawer" class="text-white/60 hover:text-white">✕</button>
-      </div>
-      <p class="text-[8px] font-mono text-[#a7f3d0]/70 mb-1 leading-tight">Click play on Spotify to stream official audio:</p>
-      <iframe style="border-radius:8px; display: block;" src="https://open.spotify.com/embed/album/5jTYZA6b4VoSRnR5TMldgb?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
-
-    <!-- Minimized Pixel Badge (Shown when minimized) -->
-    <div id="pixel-player-badge" class="hidden cursor-pointer bg-[#04241c] border-2 border-[#208c73] px-3 py-1.5 rounded-lg shadow-xl flex items-center gap-2 hover:border-[#34d399] transition-colors">
-      <span class="w-2.5 h-2.5 bg-[#34d399] animate-pulse"></span>
-      <span class="text-[10px] font-mono font-bold text-[#34d399] tracking-wider">HADES.OST</span>
-      <span class="text-[10px] text-white/60 ml-1 font-mono">□</span>
-    </div>
-
-  </div>
-</div>
-
 <!-- Artwork data injected safely for the JS engine -->
 <script type="application/json" id="museum-artworks-data" data-base-url="/init">
   [{"category": "physical", "description": "I wonder if we ever think of each other, at the same time.", "dimensions": "A4 / Crosshatch \u0026 Stipple Study", "id": "torii", "image": "/assets/images/portfolio/physical/torii.jpg", "medium": "Micron Pen \u0026 Ink on Paper", "starting_bid": 500, "title": "Torii Gate", "year": "2024"}, {"category": "physical", "description": "Wall-E - Ta-dah!", "dimensions": "A4 / Detailed Alleyway Study", "id": "walle-ink", "image": "/assets/images/portfolio/physical/Wall-E-V2.jpg", "medium": "Fine-Line Ink \u0026 Hatching on Paper", "starting_bid": 600, "title": "WALL-E: INKed", "year": "2024"}, {"category": "physical", "description": "EVAAAAAAA!!!!", "dimensions": "A4 / Color Study", "id": "walle-color", "image": "/assets/images/portfolio/physical/Wall-E-v1.jpeg", "medium": "Colored Pencil", "starting_bid": 450, "title": "WALL-E", "year": "2024"}, {"category": "physical", "description": "HEGALE. GITGUD! GERANA. SHAWWWWWW!", "dimensions": "A4 / Line Art \u0026 Splatter", "id": "hornet-ink", "image": "/assets/images/portfolio/physical/hornet.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 450, "title": "Hornet: INKed", "year": "2024"}, {"category": "physical", "description": "Dance with me, my friend. The crowd awaits.", "dimensions": "A4 / Crosshatch Study", "id": "grimm-ink", "image": "/assets/images/portfolio/physical/grimm.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 650, "title": "Grimm: INKed", "year": "2024"}, {"category": "physical", "description": "no cost too great.", "dimensions": "A4 / Ink Illustration", "id": "pure-vessel-ink", "image": "/assets/images/portfolio/physical/purevessel.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Pure Vessel: INKed", "year": "2024"}, {"category": "physical", "description": "you told me, that there would not be any cameras.", "dimensions": "A4 / Chiaroscuro Study", "id": "master-chief", "image": "/assets/images/portfolio/physical/masterchief.jpg", "medium": "High-Density Crosshatch Ink on Paper", "starting_bid": 850, "title": "Master Chief: INKed", "year": "2024"}, {"category": "physical", "description": "I Love You 3000.", "dimensions": "A4 / Split-Portrait Study", "id": "love-you-3000", "image": "/assets/images/portfolio/physical/love-you-3000.jpg", "medium": "Graphite \u0026 Charcoal on Paper", "starting_bid": 700, "title": "I Love You 3000.", "year": "2020"}, {"category": "physical", "description": "I am nor good, nor evil, simply I am.", "dimensions": "A4 / Symbolic Ink Drawing", "id": "anubis", "image": "/assets/images/portfolio/physical/Anubis.jpeg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 550, "title": "Anubis: INked", "year": "2024"}, {"category": "physical", "description": "\u0027Fawkes is a Pheonix Harry.\u0027, said Dumbledore, calmly.", "dimensions": "A4 / Textured Impasto", "id": "fawkes", "image": "/assets/images/portfolio/physical/Fawkes.jpg", "medium": "Acrylic on Canvas", "starting_bid": 750, "title": "Fawkes", "year": "2021"}, {"category": "physical", "description": ":prayge:", "dimensions": "Canvas / Traditional Portrait", "id": "krishna", "image": "/assets/images/portfolio/physical/krishna.jpg", "medium": "Acrylic on Stretched Canvas", "starting_bid": 800, "title": "Krishna", "year": "2021"}, {"category": "physical", "description": "ror", "dimensions": "A4 / Colored Pencil Illustration", "id": "mike-wazowski", "image": "/assets/images/portfolio/physical/MIKE-WAZOWSKI.jpeg", "medium": "Colored Pencil on Paper", "starting_bid": 400, "title": "MiKe WaZoWsKi", "year": "2024"}, {"category": "physical", "description": "\u0027Ferrari will invent mirrors one day, I hope.\u0027", "dimensions": "A4 / High-Speed Ink Composition", "id": "op81-vegas", "image": "/assets/images/portfolio/physical/OP81.jpg", "medium": "Pen \u0026 Ink on Paper", "starting_bid": 800, "title": "Oscar Piastri #81: Las Vegas GP", "year": "2024"}, {"category": "physical", "description": "No stop signs, speed limit, Nobody\u0027s gonna slow me down", "dimensions": "A4 / Structural Perspective", "id": "highway-to-hell", "image": "/assets/images/portfolio/physical/Highway-to-hell.jpg", "medium": "Acrylic \u0026 Mixed Media on Canvas", "starting_bid": 600, "title": "Highway to Hell", "year": "2024"}, {"category": "physical", "description": "\u0027spread your wings and fly away\u0027", "dimensions": "A4 / Ink Rendering", "id": "melt", "image": "/assets/images/portfolio/physical/Melt.jpeg", "medium": "Gloss Ink \u0026 Wash on Paper", "starting_bid": 450, "title": "Gallium", "year": "2022"}, {"category": "physical", "description": "please have mercy on me, boyo", "dimensions": "A4 / Geometric Diamond Study", "id": "skelly", "image": "/assets/images/portfolio/physical/Skelly.jpg", "medium": "Stippling \u0026 Low-Poly Ink on Paper", "starting_bid": 550, "title": "Skelly: INKed", "year": "2022"}, {"category": "physical", "description": "Mars is the fourth planet from the Sun. It is also known as the \u0027Red Planet\u0027, for its ora- nvm. Its a chocolate bar.", "dimensions": "A4 / Hyperrealist Study", "id": "mars-bar", "image": "/assets/images/portfolio/physical/mmars.jpg", "medium": "Colored Pencil on Paper", "starting_bid": 500, "title": "Mars", "year": "2022"}, {"category": "physical", "description": "a smol charcoal study", "dimensions": "A4 / Atmospheric Charcoal Study", "id": "rainy-city", "image": "/assets/images/portfolio/physical/Unknown.jpg", "medium": "Charcoal \u0026 Powder on Paper", "starting_bid": 550, "title": "unknown.", "year": "2024"}, {"category": "physical", "description": "its pagoda, not pakoda", "dimensions": "A4 / Architectural Ink Study", "id": "mountain-pagoda", "image": "/assets/images/portfolio/physical/tera.jpg", "medium": "Pen \u0026 Ink Crosshatching", "starting_bid": 750, "title": "Tera", "year": "2024"}, {"category": "digital", "description": "Drawn entirely color blind, then converted to colors.", "dimensions": "High-Res Digital Canvas", "id": "neon-japan", "image": "/assets/images/portfolio/digital/Neon-Japan.jpg", "medium": "Digital Painting / Procreate", "starting_bid": 400, "title": "Neon Japan: Part 1", "year": "2024"}, {"category": "digital", "description": "The black and white version of Neon Japan", "dimensions": "High-Res Digital Canvas", "id": "bw-japan", "image": "/assets/images/portfolio/digital/BandW-Japan.jpg", "medium": "Digital Ink \u0026 Tonal Study", "starting_bid": 350, "title": "Neon Japan: Part 2", "year": "2024"}, {"category": "digital", "description": "its not king kong.", "dimensions": "High-Res Digital Canvas", "id": "details-hong-kong", "image": "/assets/images/portfolio/digital/DETAILS-Hong-Kong.jpg", "medium": "Digital Illustration", "starting_bid": 450, "title": "Hong Kong - DETAILS.", "year": "2024"}, {"category": "digital", "description": "Manga version of the colored version :)", "dimensions": "High-Res Digital Canvas", "id": "manga-hong-kong", "image": "/assets/images/portfolio/digital/Manga-Hong-Kong.jpg", "medium": "Digital Comic \u0026 Manga Art", "starting_bid": 420, "title": "Hong Kong, but Manga.", "year": "2024"}, {"category": "digital", "description": "make a wish.", "dimensions": "High-Res Digital Canvas", "id": "lantern", "image": "/assets/images/portfolio/digital/Lantern.jpg", "medium": "Digital Concept Art", "starting_bid": 380, "title": "Lantern", "year": "2024"}, {"category": "digital", "description": "ethereal", "dimensions": "High-Res Digital Canvas", "id": "ethereal", "image": "/assets/images/portfolio/digital/ethereal.jpg", "medium": "Digital Matte Painting", "starting_bid": 360, "title": "Ethereal", "year": "2024"}, {"category": "digital", "description": "always have hope.", "dimensions": "High-Res Digital Canvas", "id": "hope", "image": "/assets/images/portfolio/digital/hope.jpg", "medium": "Digital Painting", "starting_bid": 340, "title": "hope", "year": "2024"}, {"category": "digital", "description": "lit, unlit.", "dimensions": "High-Res Digital Canvas", "id": "unlit", "image": "/assets/images/portfolio/digital/unlit.jpg", "medium": "Digital Mood Study", "starting_bid": 320, "title": "Unlit at 10 PM", "year": "2024"}, {"category": "digital", "description": "dont know.", "dimensions": "High-Res Digital Canvas", "id": "idunno", "image": "/assets/images/portfolio/digital/idunno.jpg", "medium": "Digital Character Study", "starting_bid": 350, "title": "waiting", "year": "2024"}, {"category": "digital", "description": "gaveup", "dimensions": "High-Res Digital Canvas", "id": "gaveup", "image": "/assets/images/portfolio/digital/gaveup.jpg", "medium": "Digital Color Study", "starting_bid": 320, "title": "contemplation", "year": "2024"}, {"category": "digital", "description": "you\u0027re gonna need a bigger boat.", "dimensions": "High-Res Digital Canvas", "id": "jaws", "image": "/assets/images/portfolio/digital/JAWS.jpg", "medium": "Digital Marine Illustration", "starting_bid": 450, "title": "Jaws", "year": "2024"}, {"category": "digital", "description": "HE ATE THE LIGHT", "dimensions": "High-Res Digital Canvas", "id": "shark", "image": "/assets/images/portfolio/digital/SHARK.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Shark", "year": "2024"}, {"category": "digital", "description": "bang bang", "dimensions": "High-Res Digital Canvas", "id": "hammerhead", "image": "/assets/images/portfolio/digital/hammer.jpg", "medium": "Digital Marine Study", "starting_bid": 400, "title": "Hammerhead", "year": "2024"}, {"category": "digital", "description": "wowhoewho", "dimensions": "High-Res Digital Canvas", "id": "whale", "image": "/assets/images/portfolio/digital/WHALE.jpg", "medium": "Digital Oceanography Art", "starting_bid": 480, "title": "Leviathan", "year": "2024"}, {"category": "digital", "description": "a tale of the whale.", "dimensions": "High-Res Digital Canvas", "id": "whale-tale", "image": "/assets/images/portfolio/digital/whale-tale.jpg", "medium": "Digital Painting", "starting_bid": 420, "title": "Whale Tail Breach", "year": "2024"}, {"category": "digital", "description": "whistleee", "dimensions": "High-Res Digital Canvas", "id": "dolphin", "image": "/assets/images/portfolio/digital/dolpin.jpg", "medium": "Digital Marine Art", "starting_bid": 360, "title": "Dolpin", "year": "2024"}, {"category": "digital", "description": "nemo, has been found.", "dimensions": "High-Res Digital Canvas", "id": "found-nemo", "image": "/assets/images/portfolio/digital/i-found-nemo.jpg", "medium": "Digital Marine Illustration", "starting_bid": 340, "title": "i found nemo", "year": "2024"}, {"category": "digital", "description": "mah shtudents", "dimensions": "High-Res Digital Canvas", "id": "turtle", "image": "/assets/images/portfolio/digital/turlte.jpg", "medium": "Digital Wildlife Art", "starting_bid": 380, "title": "Sea Turtle", "year": "2024"}, {"category": "digital", "description": "peesh", "dimensions": "High-Res Digital Canvas", "id": "pish", "image": "/assets/images/portfolio/digital/pish.jpg", "medium": "Digital Character Illustration", "starting_bid": 300, "title": "Pish", "year": "2024"}, {"category": "digital", "description": "tebbie dareeee", "dimensions": "High-Res Digital Canvas", "id": "bear-v1", "image": "/assets/images/portfolio/digital/bear-V1.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 400, "title": "tebby dare I", "year": "2024"}, {"category": "digital", "description": "Frontal gaze of a grizzly bear capturing fur texture, raw power, and wilderness calm.", "dimensions": "tebbie dareeee", "id": "bear-v2", "image": "/assets/images/portfolio/digital/BEAR-V2.jpg", "medium": "Digital Wildlife Portrait", "starting_bid": 420, "title": "tebby dare II", "year": "2024"}, {"category": "digital", "description": "SQUAWK, SQUAWKETY, SQUAWK, SQUAWK!!! ", "dimensions": "High-Res Digital Canvas", "id": "toucan", "image": "/assets/images/portfolio/digital/toucan.jpg", "medium": "Digital Wildlife Art", "starting_bid": 390, "title": "Toucan", "year": "2024"}, {"category": "digital", "description": "Seagulls in leh, reference picture -- @suraj", "dimensions": "High-Res Digital Canvas", "id": "seagulls-leh", "image": "/assets/images/portfolio/digital/seagulls-from-leh.jpg", "medium": "Digital Wildlife Study", "starting_bid": 350, "title": "Leh", "year": "2024"}, {"category": "blender", "description": "No mind to think", "dimensions": "High-Poly 3D Render", "id": "blender-ghost", "image": "/assets/images/portfolio/blender/ghost.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 700, "title": "Ghost", "year": "2024"}, {"category": "blender", "description": "HEGALE. GITGUD! GERANA. SHAWWWWWW!", "dimensions": "High-Poly 3D Render", "id": "blender-hornet", "image": "/assets/images/portfolio/blender/hornet-3d.png", "medium": "Blender 3D Render / Cycles", "starting_bid": 750, "title": "Hornet", "year": "2024"}, {"category": "blender", "description": "*sings*.", "dimensions": "High-Poly 3D Render", "id": "blender-sherma", "image": "/assets/images/portfolio/blender/sherma.jpg", "medium": "Blender 3D Render / Cycles", "starting_bid": 680, "title": "Sherma", "year": "2024"}]
@@ -2200,7 +2050,7 @@
   <footer class="mt-auto w-full text-center py-6">
     Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
   </footer>
-  <script type="module" src="/init/assets/main-dk9N-tld.js"></script>
+  <script type="module" src="/init/assets/main-D_s51sBZ.js"></script>
 </body>
 
 </html>
