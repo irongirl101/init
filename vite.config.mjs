@@ -178,7 +178,7 @@ const py_build_plugin = (baseUrl = '') => {
         // For production builds, move generated files to dist before cleanup
         console.log('Moving generated files to dist...');
         try {
-          const generatedDirs = ['blog', 'posts', 'tags', 'portfolio', 'games'];
+          const generatedDirs = ['blog', 'posts', 'tags', 'portfolio', 'games', 'tech'];
           const generatedFiles = ['index.html', 'sitemap.xml', '404.html'];
 
           // Copy directories from root to dist

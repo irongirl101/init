@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  html, body {
+    background-color: #050811 !important;
+    overflow: hidden !important;
+    padding-top: 0 !important;
+    margin: 0 !important;
+    height: 100vh !important;
+  }
+  #res-canvas {
+    display: none !important;
+  }
+  main {
+    max-width: 100vw !important;
+    width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh !important;
+  }
+  footer {
+    display: none !important;
+  }
+  .glass-navbar {
+    background: rgba(5, 8, 17, 0.65) !important;
+    border-color: rgba(52, 211, 153, 0.25) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+</style>
+
+<div id="tech-observatory-root" class="relative w-screen h-screen overflow-hidden select-none font-mono">
+
+  <!-- 2D Canvas Surface -->
+  <canvas id="tech-canvas" class="absolute inset-0 w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+  <!-- Top-Left Floating Header Badge -->
+  <div class="absolute top-20 left-4 sm:left-6 z-30 pointer-events-auto">
+    <div class="flex items-center gap-2.5 bg-[#070b14]/85 backdrop-blur-xl px-3.5 py-2 rounded-xl border border-emerald-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.8)] text-slate-200">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <div>
+        <div class="font-bold text-xs tracking-wider text-white flex items-center gap-2">
+          <span>THE CELESTIAL STACK</span>
+          <span class="text-[10px] text-emerald-400 font-semibold">[EARTH VANTAGE POINT]</span>
+        </div>
+        <div class="text-[10px] text-slate-400 mt-0.5">
+          Scroll or drag up to ascend into space • Click planets & moons
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom-Left Earth Anchor Quick Return -->
+  <div class="absolute bottom-5 left-4 sm:left-6 z-30 pointer-events-auto">
+    <button id="btn-return-earth" onclick="window.dispatchEvent(new CustomEvent('return-earth'))" class="btn btn-xs sm:btn-sm bg-[#070b14]/90 hover:bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-mono text-[11px] rounded-xl shadow-lg flex items-center gap-1.5 backdrop-blur-md">
+      <span>🌍 Ground Zero (Earth)</span>
+    </button>
+  </div>
+
+  <!-- Project & Planet Modal Overlay -->
+  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+    <div class="relative w-full max-w-md bg-[#080d1a] border border-white/20 rounded-2xl p-6 shadow-2xl text-white">
+      
+      <!-- Close Button -->
+      <button id="modal-close-btn" class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3 text-slate-400 hover:text-white" aria-label="Close">
+        ✕
+      </button>
+
+      <!-- Badge & Category -->
+      <div class="mb-2">
+        <span id="modal-badge" class="badge badge-outline text-[10px] font-mono py-1 px-2.5">
+          PROJECT SATELLITE
+        </span>
+      </div>
+
+      <!-- Title & Subtitle -->
+      <h3 id="modal-title" class="text-xl font-bold font-sans tracking-tight text-white mb-1">
+        🌙 Project Title
+      </h3>
+      <p id="modal-subtitle" class="text-xs text-slate-400 font-mono mb-4">
+        Orbiting Planet Python
+      </p>
+
+      <!-- Description / Content -->
+      <div id="modal-desc" class="text-xs sm:text-sm text-slate-200 leading-relaxed mb-6 font-sans">
+        Project description goes here.
+      </div>
+
+      <!-- Action Button Container -->
+      <div id="modal-link-container"></div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
