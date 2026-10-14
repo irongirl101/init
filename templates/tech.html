@@ -27,6 +27,134 @@
     border-color: rgba(52, 211, 153, 0.25) !important;
     backdrop-filter: blur(14px) !important;
   }
+  #project-modal {
+    background:
+      radial-gradient(ellipse at 50% 45%, rgba(12, 20, 36, 0.48), rgba(2, 4, 10, 0.88)),
+      rgba(0, 0, 0, 0.55) !important;
+  }
+  .modal-panel {
+    --modal-accent: #34d399;
+    position: relative;
+    isolation: isolate;
+    border-color: color-mix(in srgb, var(--modal-accent) 36%, transparent) !important;
+    background:
+      radial-gradient(ellipse at 92% 0%, color-mix(in srgb, var(--modal-accent) 12%, transparent), transparent 36%),
+      linear-gradient(145deg, #0d1322 0%, #080d19 48%, #060a13 100%) !important;
+    box-shadow:
+      0 32px 100px rgba(0, 0, 0, 0.72),
+      0 0 60px color-mix(in srgb, var(--modal-accent) 10%, transparent),
+      inset 0 1px rgba(255, 255, 255, 0.07) !important;
+    transform: translateY(18px) scale(0.975);
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .modal-panel::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 5px,
+      rgba(255, 255, 255, 0.012) 6px
+    );
+    content: "";
+    pointer-events: none;
+  }
+  #project-modal.opacity-100 .modal-panel {
+    transform: translateY(0) scale(1);
+  }
+  .modal-topbar {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  .modal-close {
+    transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+  }
+  .modal-close:hover {
+    color: white !important;
+    background: color-mix(in srgb, var(--modal-accent) 16%, transparent) !important;
+    transform: rotate(90deg);
+  }
+  .modal-hero {
+    position: relative;
+    display: flex;
+    min-height: 150px;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.9rem;
+    background: linear-gradient(110deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.008) 70%);
+    padding: 1.25rem 1.4rem;
+  }
+  .modal-hero::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--modal-accent), transparent);
+    opacity: 0.65;
+    content: "";
+  }
+  .modal-hero-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    max-width: 78%;
+  }
+  .modal-planet-mark {
+    position: absolute;
+    top: 50%;
+    right: 1.3rem;
+    width: 112px;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--modal-accent) 38%, transparent);
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--modal-accent) 38%, white), var(--modal-accent) 30%, #111827 72%);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--modal-accent) 25%, transparent), inset -14px -10px 24px rgba(0, 0, 0, 0.55);
+    opacity: 0.72;
+    transform: translateY(-50%);
+  }
+  .modal-planet-mark::before,
+  .modal-planet-mark::after {
+    position: absolute;
+    inset: 22% -26%;
+    border: 1px solid color-mix(in srgb, var(--modal-accent) 65%, transparent);
+    border-radius: 50%;
+    content: "";
+    transform: rotate(-24deg) scaleY(0.3);
+  }
+  .modal-planet-mark::after {
+    inset: 10% -17%;
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: rotate(28deg) scaleY(0.24);
+  }
+  .modal-record-section {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014)) !important;
+  }
+  #modal-focus-planet,
+  #modal-link-container a {
+    min-height: 2.8rem;
+    border-radius: 0.7rem;
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  }
+  #modal-focus-planet:hover,
+  #modal-link-container a:hover {
+    background: color-mix(in srgb, var(--modal-accent) 14%, transparent);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--modal-accent) 15%, transparent);
+    transform: translateY(-1px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .modal-panel,
+    .modal-close,
+    #modal-focus-planet,
+    #modal-link-container a {
+      transition: none;
+    }
+  }
   @media (max-width: 1023px) {
     .glass-navbar {
       width: calc(100% - 2rem);
@@ -61,6 +189,13 @@
       line-height: 1.4;
       overflow-wrap: anywhere;
     }
+    .modal-hero-copy {
+      max-width: calc(100% - 76px);
+    }
+    .modal-planet-mark {
+      right: 0.8rem;
+      width: 78px;
+    }
   }
 </style>
 
@@ -93,43 +228,54 @@
   </div>
 
   <!-- Project & Planet Modal Overlay -->
-  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
-    <div class="relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-xl border border-emerald-400/20 bg-[#080d1a] shadow-2xl shadow-black/50 text-white">
-      <div class="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-5 py-3 pr-14 font-mono text-[9px] tracking-[0.18em] text-slate-400">
-        <span>CELESTIAL DATABASE / RECORD</span>
-        <span class="flex items-center gap-1.5 text-emerald-300">
-          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>ONLINE
+  <div id="project-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+    <div class="modal-panel relative max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border bg-[#080d1a] text-white">
+      <div class="modal-topbar sticky top-0 z-10 flex items-center justify-between border-b px-5 py-3 pr-14 font-mono text-[9px] tracking-[0.18em] text-slate-400 backdrop-blur-xl">
+        <span class="flex items-center gap-2.5">
+          <span class="grid h-6 w-6 place-items-center rounded-md border border-white/10 bg-white/[0.04] text-[10px] text-slate-300">C/7</span>
+          <span>CELESTIAL DATABASE <span class="text-slate-600">/</span> RECORD</span>
+        </span>
+        <span class="flex items-center gap-2 text-emerald-300">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+          </span>
+          ONLINE
         </span>
       </div>
-      <button id="modal-close-btn" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-1.5 text-slate-400 hover:text-white" aria-label="Close">
+      <button id="modal-close-btn" class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-1.5 z-20 text-slate-400" aria-label="Close">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <path d="m6 6 12 12M18 6 6 18"></path>
         </svg>
       </button>
-      <div class="p-5 sm:p-6">
+      <div class="space-y-5 p-4 sm:space-y-6 sm:p-7">
+        <section class="modal-hero">
+          <div class="modal-hero-copy">
+            <div class="mb-3">
+              <span id="modal-badge" class="badge badge-outline rounded-full px-3 py-3 font-mono text-[9px] tracking-[0.12em]">
+                PROJECT SATELLITE
+              </span>
+            </div>
+            <h3 id="modal-title" class="mb-1.5 text-2xl font-bold font-sans tracking-tight text-white sm:text-3xl">
+              Project Title
+            </h3>
+            <p id="modal-subtitle" class="max-w-lg text-[11px] leading-relaxed text-slate-400 font-mono sm:text-xs">
+              Orbiting Planet Python
+            </p>
+          </div>
+          <div class="modal-planet-mark" aria-hidden="true"></div>
+        </section>
 
-      <!-- Badge & Category -->
-      <div class="mb-2">
-        <span id="modal-badge" class="badge badge-outline text-[10px] font-mono py-1 px-2.5">
-          PROJECT SATELLITE
-        </span>
-      </div>
+        <div id="modal-desc" class="space-y-4 text-xs leading-relaxed text-slate-200 font-sans">
+          Project description goes here.
+        </div>
 
-      <!-- Title & Subtitle -->
-      <h3 id="modal-title" class="text-xl font-bold font-sans tracking-tight text-white mb-1">
-        Project Title
-      </h3>
-      <p id="modal-subtitle" class="text-xs text-slate-400 font-mono mb-4">
-        Orbiting Planet Python
-      </p>
+        <div class="flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-600">
+          <span>END OF RECORD</span>
+          <span>INIT / OBSERVATORY</span>
+        </div>
 
-      <!-- Description / Content -->
-      <div id="modal-desc" class="text-xs sm:text-sm text-slate-200 leading-relaxed mb-6 font-sans">
-        Project description goes here.
-      </div>
-
-      <!-- Action Button Container -->
-      <div id="modal-link-container"></div>
+        <div id="modal-link-container"></div>
       </div>
     </div>
   </div>

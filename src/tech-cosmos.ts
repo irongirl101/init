@@ -735,6 +735,7 @@ export function initTechCosmos(): void {
 
   // --- Project Modal Management ---
   const modalEl = document.getElementById("project-modal");
+  const modalPanelEl = modalEl?.querySelector<HTMLElement>(".modal-panel");
   const modalBadgeEl = document.getElementById("modal-badge");
   const modalTitleEl = document.getElementById("modal-title");
   const modalSubEl = document.getElementById("modal-subtitle");
@@ -742,13 +743,21 @@ export function initTechCosmos(): void {
   const modalLinkContainer = document.getElementById("modal-link-container");
   const modalCloseBtn = document.getElementById("modal-close-btn");
 
+  function setModalAccent(color: [number, number, number]): void {
+    const accent = `rgb(${color.join(",")})`;
+    modalPanelEl?.style.setProperty("--modal-accent", accent);
+    if (modalBadgeEl) {
+      modalBadgeEl.style.borderColor = accent;
+      modalBadgeEl.style.color = accent;
+    }
+  }
+
   function openMoonModal(planet: TechPlanet, moon: TechMoon) {
     if (!modalEl || !modalTitleEl || !modalDescEl) return;
 
+    setModalAccent(planet.palette.base);
     if (modalBadgeEl) {
       modalBadgeEl.textContent = moon.type.toUpperCase();
-      modalBadgeEl.style.borderColor = `rgb(${planet.palette.base.join(",")})`;
-      modalBadgeEl.style.color = `rgb(${planet.palette.base.join(",")})`;
     }
     modalTitleEl.textContent = moon.name;
     if (modalSubEl) {
@@ -756,16 +765,16 @@ export function initTechCosmos(): void {
     }
     modalDescEl.innerHTML = `
       <div class="grid grid-cols-2 gap-2">
-        <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+        <div class="modal-record-section rounded-lg border border-white/10 bg-white/[0.025] p-3">
           <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Satellite type</div>
           <div class="mt-1 text-xs font-semibold text-white">${moon.type}</div>
         </div>
-        <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+        <div class="modal-record-section rounded-lg border border-white/10 bg-white/[0.025] p-3">
           <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Parent system</div>
           <div class="mt-1 truncate text-xs font-semibold text-white">${planet.name}</div>
         </div>
       </div>
-      <section class="mt-3 rounded-lg border border-white/10 bg-black/20 p-3">
+      <section class="modal-record-section mt-3 rounded-lg border border-white/10 bg-black/20 p-3">
         <div class="mb-2 font-mono text-[10px] uppercase tracking-widest text-slate-400">Project record</div>
         <p class="text-xs leading-relaxed text-slate-200">${moon.summary}</p>
       </section>
@@ -792,10 +801,9 @@ export function initTechCosmos(): void {
   function openPlanetModal(planet: TechPlanet) {
     if (!modalEl || !modalTitleEl || !modalDescEl) return;
 
+    setModalAccent(planet.palette.base);
     if (modalBadgeEl) {
       modalBadgeEl.textContent = "CORE LANGUAGE / TECH";
-      modalBadgeEl.style.borderColor = `rgb(${planet.palette.base.join(",")})`;
-      modalBadgeEl.style.color = `rgb(${planet.palette.base.join(",")})`;
     }
     modalTitleEl.textContent = `Planet ${planet.name}`;
     if (modalSubEl) {
@@ -804,7 +812,7 @@ export function initTechCosmos(): void {
 
     modalDescEl.innerHTML = `
       <div class="space-y-4">
-        <section class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+        <section class="modal-record-section rounded-lg border border-white/10 bg-white/[0.025] p-3">
           <div class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-slate-400">
             <span>Stack / Frameworks</span>
             <span>${planet.frameworks.length} entries</span>
@@ -814,11 +822,11 @@ export function initTechCosmos(): void {
           </div>
         </section>
         <div class="grid grid-cols-2 gap-2">
-          <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+          <div class="modal-record-section rounded-lg border border-white/10 bg-white/[0.025] p-3">
             <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Project satellites</div>
             <div class="mt-1 text-lg font-semibold text-white">${planet.moons.length}</div>
           </div>
-          <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+          <div class="modal-record-section rounded-lg border border-white/10 bg-white/[0.025] p-3">
             <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Experience</div>
             <div class="mt-1 text-xs font-semibold text-white">${planet.experience}</div>
           </div>
