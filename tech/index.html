@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="frank">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Stack & Celestial Orbit | init</title>
+  <link rel="stylesheet" href="/init/assets/main-DTj_N4fs.css">
+</head>
+
+<body class="pt-24 min-h-screen flex flex-col ">
+  <canvas id="res-canvas"></canvas>
+  <div class="glass-navbar fixed top-4 left-0 right-0 mx-auto z-50">
+    <div class="navbar">
+    <div class="flex-1">
+      <a href="/init/" class="btn btn-ghost text-xl">init</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        
+        <li><a href="/init/">Home</a></li>
+        
+        <li><a href="/init/blog/">Blog</a></li>
+        
+        <li><a href="/init/portfolio/">Art Portfolio</a></li>
+        
+        <li><a href="/init/tech/">Tech Stack</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <main class="flex-grow container mx-auto p-8">
+    
+<style>
+  html, body {
+    background-color: #050811 !important;
+    overflow: hidden !important;
+    padding-top: 0 !important;
+    margin: 0 !important;
+    height: 100vh !important;
+  }
+  #res-canvas {
+    display: none !important;
+  }
+  main {
+    max-width: 100vw !important;
+    width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh !important;
+  }
+  footer {
+    display: none !important;
+  }
+  .glass-navbar {
+    background: rgba(5, 8, 17, 0.65) !important;
+    border-color: rgba(52, 211, 153, 0.25) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+  #project-modal {
+    background: rgba(3, 6, 12, 0.82) !important;
+    align-items: flex-start !important;
+    overflow-y: auto;
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .modal-panel {
+    --modal-accent: #34d399;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    margin-block: auto;
+    max-height: calc(100dvh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    border-color: #303744 !important;
+    background: #0b0e14 !important;
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.58) !important;
+    transform: translateY(18px) scale(0.975);
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  #project-modal.opacity-100 .modal-panel {
+    transform: translateY(0) scale(1);
+  }
+  .modal-topbar {
+    flex: 0 0 auto;
+    background: #0e121a !important;
+    border-color: #252c37 !important;
+  }
+  .modal-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .modal-close {
+    transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+  }
+  .modal-close:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: rotate(90deg);
+  }
+  .modal-hero {
+    position: relative;
+    display: flex;
+    min-height: 132px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #252c37;
+    padding: 0.5rem 0.35rem 1.25rem;
+  }
+  .modal-hero-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    max-width: 78%;
+  }
+  .modal-tech-logo {
+    position: absolute;
+    top: 50%;
+    right: 1.3rem;
+    width: 104px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    transform: translateY(-50%);
+  }
+  .modal-tech-logo svg,
+  .modal-tech-logo img {
+    width: 54px;
+    height: 54px;
+    color: var(--tech-logo-color, white);
+  }
+  .modal-tech-logo img {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .modal-record-section {
+    border-color: #252c37 !important;
+    border-radius: 0.55rem !important;
+    background: #10141c !important;
+  }
+  #modal-focus-planet,
+  #modal-link-container a {
+    min-height: 2.8rem;
+    border-radius: 0.7rem;
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  }
+  #modal-focus-planet:hover,
+  #modal-link-container a:hover {
+    background: color-mix(in srgb, var(--modal-accent) 10%, #0b0e14);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .modal-panel,
+    .modal-close,
+    #modal-focus-planet,
+    #modal-link-container a {
+      transition: none;
+    }
+  }
+  @media (max-width: 1023px) {
+    .glass-navbar {
+      width: calc(100% - 2rem);
+    }
+    .glass-navbar .navbar {
+      min-width: 0;
+      flex-wrap: wrap;
+      padding-inline: 0.5rem;
+    }
+    .glass-navbar .navbar > .flex-1 {
+      min-width: 0;
+    }
+    .glass-navbar .navbar > .flex-none {
+      width: 100%;
+      min-width: 0;
+      justify-content: flex-start;
+    }
+    .glass-navbar .menu {
+      flex-wrap: wrap;
+    }
+    .tech-header-badge {
+      top: 7.5rem;
+      left: 1rem;
+      width: fit-content;
+      max-width: min(calc(100vw - 2rem), 17rem);
+    }
+    .tech-header-badge > div {
+      width: auto;
+      max-width: 100%;
+    }
+    .tech-header-badge p {
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+    .modal-hero-copy {
+      max-width: calc(100% - 76px);
+    }
+    .modal-tech-logo {
+      right: 0.8rem;
+      width: 78px;
+    }
+    .modal-tech-logo svg {
+      width: 38px;
+      height: 38px;
+    }
+    .modal-tech-logo img {
+      width: 78px;
+      height: 78px;
+    }
+  }
+</style>
+
+<div id="tech-observatory-root" class="relative w-screen h-screen overflow-hidden select-none font-mono">
+
+  <!-- 2D Canvas Surface -->
+  <canvas id="tech-canvas" class="absolute inset-0 w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+  <!-- Top-Left Floating Header Badge -->
+
+  <div class="tech-header-badge absolute top-24 left-5 sm:left-9 z-30 pointer-events-auto max-w-[calc(100vw-2rem)]">
+    <div class="flex items-start gap-2.5 w-full max-w-full bg-[#070b14]/85 backdrop-blur-xl px-3.5 py-2 rounded-xl border border-emerald-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.8)] text-slate-200">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <div class="min-w-0">
+        <div class="font-bold text-xs tracking-wider text-white flex items-center gap-2">
+          <span>Keep your feet to the ground and keep reaching for the stars.</span>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-0.5 whitespace-normal">
+          Scroll or drag up to ascend into space • Click planets & moons
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom-Left Earth Anchor Quick Return -->
+  <div class="absolute bottom-5 left-4 sm:left-6 z-30 pointer-events-auto">
+    <button id="btn-return-earth" onclick="window.dispatchEvent(new CustomEvent('return-earth'))" class="btn btn-xs sm:btn-sm bg-[#070b14]/90 hover:bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-mono text-[11px] rounded-xl shadow-lg flex items-center gap-1.5 backdrop-blur-md">
+      <span>Ground yourself</span>
+    </button>
+  </div>
+
+  <!-- Project & Planet Modal Overlay -->
+  <div id="project-modal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto p-4 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+    <div class="modal-panel relative max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border bg-[#080d1a] text-white">
+      <div class="modal-topbar sticky top-0 z-10 flex items-center justify-between border-b px-5 py-3 pr-14 font-mono text-[9px] tracking-[0.18em] text-slate-400 backdrop-blur-xl">
+        <span>TECH <span class="text-slate-600">/</span> PROFILE</span>
+      </div>
+      <button id="modal-close-btn" class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-1.5 z-20 text-slate-400" aria-label="Close">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18"></path>
+        </svg>
+      </button>
+      <div class="modal-content space-y-5 p-4 sm:space-y-6 sm:p-7">
+        <section class="modal-hero">
+          <div class="modal-hero-copy">
+            <div class="mb-3">
+              <span id="modal-badge" class="badge badge-outline rounded px-2.5 py-2.5 font-mono text-[9px] tracking-[0.12em]">
+                PROJECT SATELLITE
+              </span>
+            </div>
+            <h3 id="modal-title" class="mb-1.5 text-2xl font-bold font-sans tracking-tight text-white sm:text-3xl">
+              Project Title
+            </h3>
+            <p id="modal-subtitle" class="max-w-lg text-[11px] leading-relaxed text-slate-400 font-mono sm:text-xs">
+              Python · Backend & Systems Tooling
+            </p>
+          </div>
+          <div id="modal-tech-logo" class="modal-tech-logo" aria-hidden="true"></div>
+        </section>
+
+        <div id="modal-desc" class="space-y-4 text-xs leading-relaxed text-slate-200 font-sans">
+          Project description goes here.
+        </div>
+
+        <div class="flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-600">
+          <span>INIT</span>
+          <span>TECH STACK</span>
+        </div>
+
+        <div id="modal-link-container"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script id="tech-planet-data" type="application/json">[{"color": "#10b981", "distance": 140, "experience": "3+ Years \u2022 Primary", "frameworks": ["Django", "FastAPI", "Jinja2", "Pygments", "AWS S3 SDK"], "glow_color": "#34d399", "id": "python", "moons": [{"color": "#6ee7b7", "distance": 16, "id": "django-portal", "link": "https://github.com/irongirl101/tbsboxoffice", "name": "tbsboxoffice", "orbit_speed": 0.03, "size": 1.8, "summary": "First Django app built in 12th grade for school usage -- where my engineering passion ignited.", "type": "Django"}, {"color": "#6ee7b7", "distance": 16, "id": "sentry", "link": "https://github.com/irongirl101/sentry", "name": "sentry", "orbit_speed": 0.03, "size": 1.8, "summary": "layered detection agent, that sits on the network interface and identifies port scanning behaviour in real time. A internship project.", "type": "RAG"}, {"color": "#6ee7b7", "distance": 16, "id": "panel-detection", "link": "https://github.com/irongirl101/panel-detection", "name": "panel", "orbit_speed": 0.03, "size": 1.8, "summary": "A highly optimized, CPU-friendly, and lightweight classical Computer Vision pipeline built in Python using OpenCV to detect comic book panels (and sequence them in reading order) from page scans.", "type": "ML"}], "name": "Python", "orbit_speed": 0.0035, "short_name": "PY", "size": 6.5, "tagline": "what is not there to love?", "texture_type": "bands"}, {"color": "#38bdf8", "distance": 210, "experience": "2+ Years", "frameworks": ["TypeScript", "HTML5 Canvas", "Three.js", "Vite", "Tailwind CSS", "Perlin Noise"], "glow_color": "#60a5fa", "has_rings": true, "id": "typescript", "moons": [{"color": "#93c5fd", "distance": 18, "id": "init", "link": "/init/portfolio/", "name": "init", "orbit_speed": 0.028, "size": 2.1, "summary": "mah portfolio :D -- interactive Hades style game, blogs, tech stack", "type": "portfolio"}, {"color": "#93c5fd", "distance": 18, "id": "codefusion", "link": "https://github.com/irongirl101/codefusion", "name": "codefusion", "orbit_speed": 0.028, "size": 1, "summary": "won second place (how) with this", "type": "hack"}], "name": "UI/UX", "orbit_speed": 0.0024, "short_name": "TS", "size": 7.2, "tagline": "whoooo UI/UX", "texture_type": "rings"}, {"color": "#f97316", "distance": 280, "experience": "1+ Year", "frameworks": ["SwiftUI", "AppKit", "macOS MenuBar", "CoreAnimation"], "glow_color": "#fb923c", "id": "swift", "moons": [{"color": "#fdba74", "distance": 17, "id": "notch", "link": "https://github.com/irongirl101/notch", "name": "notch", "orbit_speed": 0.026, "size": 2.0, "summary": "A dynamic island, for MacOS.", "type": "Desktop App"}, {"color": "#fdba74", "distance": 20, "id": "panels", "link": "https://github.com/irongirl101/panels", "name": "panels", "orbit_speed": 0.026, "size": 1.2, "summary": "A native macOS comic book reader with automatic panel detection.", "type": "Desktop App"}], "name": "Swift", "orbit_speed": 0.0018, "short_name": "SW", "size": 5.6, "tagline": "apples or oranges?", "texture_type": "aurora"}, {"color": "#c084fc", "distance": 345, "experience": "1+ years", "frameworks": ["C", "Libcurl", "POSIX", "Memory Management", "GDB"], "glow_color": "#d8b4fe", "id": "c-systems", "moons": [{"color": "#e9d5ff", "distance": 16, "id": "cabalyze", "link": "https://github.com/irongirl101/cabalyze", "name": "cabalyze", "orbit_speed": 0.032, "size": 1.8, "summary": "Comparing prices across various sources, especially looking into  API integrations using curl.", "type": "Systems Networking"}], "name": "C / Systems", "orbit_speed": 0.0013, "short_name": "C", "size": 5.2, "tagline": "oof what a ride", "texture_type": "magma"}, {"color": "#818cf8", "distance": 410, "experience": "Community Founder \u0026 Contributor", "frameworks": ["Git", "Linux", "Bash", "Docker", "QEMU", "OpenTofu", "Kafka"], "glow_color": "#a5b4fc", "id": "foss-devops", "moons": [{"color": "#c7d2fe", "distance": 18, "id": "pes-os-club", "link": "/init/posts/PESOS/", "name": "PES OS Community", "orbit_speed": 0.024, "size": 2.2, "summary": "Co-founded and scaled campus open-source student club to 900+ active developers.", "type": "FOSS Leadership"}, {"color": "#818cf8", "distance": 35, "id": "open-source-fridays", "link": "/init/blog/", "name": "Open Source Fridays", "orbit_speed": 0.013, "size": 1.6, "summary": "Weekly deep-dive articles breaking down architectures of global open-source projects.", "type": "Publication"}], "name": "FOSS \u0026 DevOps", "orbit_speed": 0.0009, "short_name": "OS", "size": 6.0, "tagline": "Open Source Stewardship \u0026 Linux", "texture_type": "nodes"}, {"color": "#f43f5e", "distance": 470, "experience": "Creative Computing \u0026 Asset Pipelines", "frameworks": ["Blender", "3D Shaders", "AR/VR", "Godot", "FiniteLoop"], "glow_color": "#fb7185", "id": "gamedev-3d", "moons": [{"color": "#fda4af", "distance": 17, "id": "gamejam-2025", "link": "https://github.com/irongirl101", "name": "GameJam 2025", "orbit_speed": 0.026, "size": 2.0, "summary": "Handmade game assets, environment design, and 3D modeling fueling AR/VR love.", "type": "Game Project"}], "name": "Game Dev \u0026 3D", "orbit_speed": 0.0007, "short_name": "3D", "size": 5.6, "tagline": "Interactive 3D Art \u0026 AR/VR", "texture_type": "terrestrial"}]</script>
+
+
+  </main>
+
+  <!-- Floating Games Bookmark Tab on Right Edge (Visible After Timeline) -->
+  
+  <a href="/init/games/"
+     id="games-bookmark-tab"
+     class="games-bookmark-tab group"
+     aria-label="Enter Games Shelf"
+     title="Games Shelf">
+    <div class="bookmark-tab-inner">
+      <div class="bookmark-icon-container">
+        <svg class="bookmark-gamepad-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="12" rx="4"></rect>
+          <path d="M6 12h4m-2-2v4"></path>
+          <circle cx="15" cy="11" r="1" fill="currentColor"></circle>
+          <circle cx="18" cy="13" r="1" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <span class="bookmark-tab-label">GAMES</span>
+      <span class="bookmark-badge-peek">PLAY</span>
+    </div>
+  </a>
+  
+
+  <footer class="mt-auto w-full text-center py-6">
+    Generated using <a href = "https://github.com/Andy34G7/mettu">mettu<a>, with ❤️
+  </footer>
+  <script type="module" src="/init/assets/main-dk9N-tld.js"></script>
+</body>
+
+</html>
