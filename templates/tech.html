@@ -28,75 +28,58 @@
     backdrop-filter: blur(14px) !important;
   }
   #project-modal {
-    background:
-      radial-gradient(ellipse at 50% 45%, rgba(12, 20, 36, 0.48), rgba(2, 4, 10, 0.88)),
-      rgba(0, 0, 0, 0.55) !important;
+    background: rgba(3, 6, 12, 0.82) !important;
+    align-items: flex-start !important;
+    overflow-y: auto;
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
   .modal-panel {
     --modal-accent: #34d399;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    margin-block: auto;
+    max-height: calc(100dvh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
     isolation: isolate;
-    border-color: color-mix(in srgb, var(--modal-accent) 36%, transparent) !important;
-    background:
-      radial-gradient(ellipse at 92% 0%, color-mix(in srgb, var(--modal-accent) 12%, transparent), transparent 36%),
-      linear-gradient(145deg, #0d1322 0%, #080d19 48%, #060a13 100%) !important;
-    box-shadow:
-      0 32px 100px rgba(0, 0, 0, 0.72),
-      0 0 60px color-mix(in srgb, var(--modal-accent) 10%, transparent),
-      inset 0 1px rgba(255, 255, 255, 0.07) !important;
+    border-color: #303744 !important;
+    background: #0b0e14 !important;
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.58) !important;
     transform: translateY(18px) scale(0.975);
     transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .modal-panel::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    border-radius: inherit;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 5px,
-      rgba(255, 255, 255, 0.012) 6px
-    );
-    content: "";
-    pointer-events: none;
   }
   #project-modal.opacity-100 .modal-panel {
     transform: translateY(0) scale(1);
   }
   .modal-topbar {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    flex: 0 0 auto;
+    background: #0e121a !important;
+    border-color: #252c37 !important;
+  }
+  .modal-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .modal-close {
     transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
   }
   .modal-close:hover {
     color: white !important;
-    background: color-mix(in srgb, var(--modal-accent) 16%, transparent) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     transform: rotate(90deg);
   }
   .modal-hero {
     position: relative;
     display: flex;
-    min-height: 150px;
+    min-height: 132px;
     align-items: center;
     justify-content: space-between;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.9rem;
-    background: linear-gradient(110deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.008) 70%);
-    padding: 1.25rem 1.4rem;
-  }
-  .modal-hero::after {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--modal-accent), transparent);
-    opacity: 0.65;
-    content: "";
+    border-bottom: 1px solid #252c37;
+    padding: 0.5rem 0.35rem 1.25rem;
   }
   .modal-hero-copy {
     position: relative;
@@ -104,36 +87,32 @@
     min-width: 0;
     max-width: 78%;
   }
-  .modal-planet-mark {
+  .modal-tech-logo {
     position: absolute;
     top: 50%;
     right: 1.3rem;
-    width: 112px;
+    width: 104px;
     aspect-ratio: 1;
-    border: 1px solid color-mix(in srgb, var(--modal-accent) 38%, transparent);
-    border-radius: 50%;
-    background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--modal-accent) 38%, white), var(--modal-accent) 30%, #111827 72%);
-    box-shadow: 0 0 30px color-mix(in srgb, var(--modal-accent) 25%, transparent), inset -14px -10px 24px rgba(0, 0, 0, 0.55);
-    opacity: 0.72;
+    display: grid;
+    place-items: center;
     transform: translateY(-50%);
   }
-  .modal-planet-mark::before,
-  .modal-planet-mark::after {
-    position: absolute;
-    inset: 22% -26%;
-    border: 1px solid color-mix(in srgb, var(--modal-accent) 65%, transparent);
-    border-radius: 50%;
-    content: "";
-    transform: rotate(-24deg) scaleY(0.3);
+  .modal-tech-logo svg,
+  .modal-tech-logo img {
+    width: 54px;
+    height: 54px;
+    color: var(--tech-logo-color, white);
   }
-  .modal-planet-mark::after {
-    inset: 10% -17%;
-    border-color: rgba(255, 255, 255, 0.35);
-    transform: rotate(28deg) scaleY(0.24);
+  .modal-tech-logo img {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    image-rendering: pixelated;
   }
   .modal-record-section {
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014)) !important;
+    border-color: #252c37 !important;
+    border-radius: 0.55rem !important;
+    background: #10141c !important;
   }
   #modal-focus-planet,
   #modal-link-container a {
@@ -143,9 +122,7 @@
   }
   #modal-focus-planet:hover,
   #modal-link-container a:hover {
-    background: color-mix(in srgb, var(--modal-accent) 14%, transparent);
-    box-shadow: 0 0 24px color-mix(in srgb, var(--modal-accent) 15%, transparent);
-    transform: translateY(-1px);
+    background: color-mix(in srgb, var(--modal-accent) 10%, #0b0e14);
   }
   @media (prefers-reduced-motion: reduce) {
     .modal-panel,
@@ -192,9 +169,17 @@
     .modal-hero-copy {
       max-width: calc(100% - 76px);
     }
-    .modal-planet-mark {
+    .modal-tech-logo {
       right: 0.8rem;
       width: 78px;
+    }
+    .modal-tech-logo svg {
+      width: 38px;
+      height: 38px;
+    }
+    .modal-tech-logo img {
+      width: 78px;
+      height: 78px;
     }
   }
 </style>
@@ -211,7 +196,7 @@
       <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
       <div class="min-w-0">
         <div class="font-bold text-xs tracking-wider text-white flex items-center gap-2">
-          <span>My Tech stack hehe</span>
+          <span>{{ page.subtitle }}</span>
         </div>
         <p class="text-[10px] text-slate-400 mt-0.5 whitespace-normal">
           Scroll or drag up to ascend into space • Click planets & moons
@@ -223,36 +208,26 @@
   <!-- Bottom-Left Earth Anchor Quick Return -->
   <div class="absolute bottom-5 left-4 sm:left-6 z-30 pointer-events-auto">
     <button id="btn-return-earth" onclick="window.dispatchEvent(new CustomEvent('return-earth'))" class="btn btn-xs sm:btn-sm bg-[#070b14]/90 hover:bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-mono text-[11px] rounded-xl shadow-lg flex items-center gap-1.5 backdrop-blur-md">
-      <span>Ground Zero (Earth)</span>
+      <span>Ground yourself</span>
     </button>
   </div>
 
   <!-- Project & Planet Modal Overlay -->
-  <div id="project-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+  <div id="project-modal" class="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto p-4 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
     <div class="modal-panel relative max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border bg-[#080d1a] text-white">
       <div class="modal-topbar sticky top-0 z-10 flex items-center justify-between border-b px-5 py-3 pr-14 font-mono text-[9px] tracking-[0.18em] text-slate-400 backdrop-blur-xl">
-        <span class="flex items-center gap-2.5">
-          <span class="grid h-6 w-6 place-items-center rounded-md border border-white/10 bg-white/[0.04] text-[10px] text-slate-300">C/7</span>
-          <span>CELESTIAL DATABASE <span class="text-slate-600">/</span> RECORD</span>
-        </span>
-        <span class="flex items-center gap-2 text-emerald-300">
-          <span class="relative flex h-2 w-2">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-40"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
-          </span>
-          ONLINE
-        </span>
+        <span>TECH <span class="text-slate-600">/</span> PROFILE</span>
       </div>
       <button id="modal-close-btn" class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-1.5 z-20 text-slate-400" aria-label="Close">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <path d="m6 6 12 12M18 6 6 18"></path>
         </svg>
       </button>
-      <div class="space-y-5 p-4 sm:space-y-6 sm:p-7">
+      <div class="modal-content space-y-5 p-4 sm:space-y-6 sm:p-7">
         <section class="modal-hero">
           <div class="modal-hero-copy">
             <div class="mb-3">
-              <span id="modal-badge" class="badge badge-outline rounded-full px-3 py-3 font-mono text-[9px] tracking-[0.12em]">
+              <span id="modal-badge" class="badge badge-outline rounded px-2.5 py-2.5 font-mono text-[9px] tracking-[0.12em]">
                 PROJECT SATELLITE
               </span>
             </div>
@@ -260,10 +235,10 @@
               Project Title
             </h3>
             <p id="modal-subtitle" class="max-w-lg text-[11px] leading-relaxed text-slate-400 font-mono sm:text-xs">
-              Orbiting Planet Python
+              Python · Backend & Systems Tooling
             </p>
           </div>
-          <div class="modal-planet-mark" aria-hidden="true"></div>
+          <div id="modal-tech-logo" class="modal-tech-logo" aria-hidden="true"></div>
         </section>
 
         <div id="modal-desc" class="space-y-4 text-xs leading-relaxed text-slate-200 font-sans">
@@ -271,8 +246,8 @@
         </div>
 
         <div class="flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-600">
-          <span>END OF RECORD</span>
-          <span>INIT / OBSERVATORY</span>
+          <span>INIT</span>
+          <span>TECH STACK</span>
         </div>
 
         <div id="modal-link-container"></div>
@@ -281,4 +256,7 @@
   </div>
 
 </div>
+
+<script id="tech-planet-data" type="application/json">{{ page.planets | tojson }}</script>
+
 {% endblock %}

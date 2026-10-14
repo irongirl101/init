@@ -1,12 +1,12 @@
 ---
 title: "Tech Stack & Celestial Orbit"
 layout: "tech"
-subtitle: "An Earth-anchored 3D observatory. Each planet is a core language or technology, orbited by moons representing launched projects."
+subtitle: "Keep your feet to the ground and keep reaching for the stars."
 planets:
   - id: "python"
     name: "Python"
     short_name: "PY"
-    tagline: "Core Backend & Tooling Systems"
+    tagline: "what is not there to love?"
     experience: "3+ Years • Primary"
     color: "#10b981"
     glow_color: "#34d399"
@@ -22,20 +22,40 @@ planets:
       - "AWS S3 SDK"
     moons:
       - id: "django-portal"
-        name: "School Django Portal"
-        type: "Full Stack"
-        summary: "First Django app built in 12th grade for school usage — where the engineering passion ignited."
-        link: "https://github.com/irongirl101"
+        name: "tbsboxoffice"
+        type: "Django"
+        summary: "First Django app built in 12th grade for school usage -- where my engineering passion ignited."
+        link: "https://github.com/irongirl101/tbsboxoffice"
         distance: 16
         orbit_speed: 0.03
         color: "#6ee7b7"
         size: 1.8
-
+      
+      - id: "sentry" 
+        name: "sentry"
+        type: "RAG" 
+        summary: "layered detection agent, that sits on the network interface and identifies port scanning behaviour in real time. A internship project."
+        link: "https://github.com/irongirl101/sentry" 
+        distance: 16
+        orbit_speed: 0.03
+        color: "#6ee7b7"
+        size: 1.8
+      
+      - id: "panel-detection" 
+        name: "panel"
+        type: "ML" 
+        summary: "A highly optimized, CPU-friendly, and lightweight classical Computer Vision pipeline built in Python using OpenCV to detect comic book panels (and sequence them in reading order) from page scans."
+        link: "https://github.com/irongirl101/panel-detection" 
+        distance: 16
+        orbit_speed: 0.03
+        color: "#6ee7b7"
+        size: 1.8
+      
   - id: "typescript"
-    name: "TypeScript / Web"
+    name: "UI/UX"
     short_name: "TS"
-    tagline: "Interactive Canvas & Modern Frontend"
-    experience: "2+ Years • Advanced"
+    tagline: "whoooo UI/UX"
+    experience: "2+ Years"
     color: "#38bdf8"
     glow_color: "#60a5fa"
     distance: 210
@@ -51,39 +71,31 @@ planets:
       - "Tailwind CSS"
       - "Perlin Noise"
     moons:
-      - id: "hades-gallery"
-        name: "Underworld Art Gallery"
-        type: "Interactive Canvas"
-        summary: "House of Hades art exhibition maze with mini-map radar and live auction ledger."
+      - id: "init"
+        name: "init"
+        type: "portfolio"
+        summary: "mah portfolio :D -- interactive Hades style game, blogs, tech stack"
         link: "/init/portfolio/"
         distance: 18
         orbit_speed: 0.028
         color: "#93c5fd"
         size: 2.1
-      - id: "retro-arcade"
-        name: "16-Bit Gaming Shelf"
-        type: "Pixel Web App"
-        summary: "Physical pixel-art bookshelf featuring tactile CD/disc spines and live review dossier."
-        link: "/init/games/"
-        distance: 26
-        orbit_speed: -0.018
-        color: "#60a5fa"
-        size: 2.0
-      - id: "topography-engine"
-        name: "Topography Noise Lattice"
-        type: "Generative Physics"
-        summary: "Interactive Perlin noise contour field with fluid particle repulsion and lattice webs."
-        link: "/init/"
-        distance: 34
-        orbit_speed: 0.014
-        color: "#bae6fd"
-        size: 1.7
+      
+      - id: "codefusion" 
+        name: "codefusion"
+        type: "hack"
+        summary: "won second place (how) with this"
+        link: "https://github.com/irongirl101/codefusion"
+        distance: 18
+        orbit_speed: 0.028
+        color: "#93c5fd"
+        size: 1
 
   - id: "swift"
     name: "Swift"
     short_name: "SW"
-    tagline: "Native Apple Ecosystem & SwiftUI"
-    experience: "1+ Year • macOS & iOS"
+    tagline: "apples or oranges?"
+    experience: "1+ Year"
     color: "#f97316"
     glow_color: "#fb923c"
     distance: 280
@@ -96,21 +108,31 @@ planets:
       - "macOS MenuBar"
       - "CoreAnimation"
     moons:
-      - id: "macos-island"
-        name: "macOS Dynamic Island"
+      - id: "notch"
+        name: "notch"
         type: "Desktop App"
-        summary: "Interactive dynamic island utility designed for macOS notch displays using SwiftUI."
-        link: "https://github.com/irongirl101"
+        summary: "A dynamic island, for MacOS."
+        link: "https://github.com/irongirl101/notch"
         distance: 17
         orbit_speed: 0.026
         color: "#fdba74"
         size: 2.0
+      
+      - id: "panels"
+        name: "panels"
+        type: "Desktop App"
+        summary: "A native macOS comic book reader with automatic panel detection."
+        link: "https://github.com/irongirl101/panels"
+        distance: 20
+        orbit_speed: 0.026
+        color: "#fdba74"
+        size: 1.2
 
   - id: "c-systems"
     name: "C / Systems"
     short_name: "C"
-    tagline: "Low-Level Systems & Networking"
-    experience: "Academic & Systems Deep-Dives"
+    tagline: "oof what a ride"
+    experience: "1+ years"
     color: "#c084fc"
     glow_color: "#d8b4fe"
     distance: 345
@@ -124,11 +146,11 @@ planets:
       - "Memory Management"
       - "GDB"
     moons:
-      - id: "curl-client"
-        name: "Libcurl API Client"
+      - id: "cabalyze"
+        name: "cabalyze"
         type: "Systems Networking"
-        summary: "Low-level C network application performing raw HTTP requests and API integrations."
-        link: "https://github.com/irongirl101"
+        summary: "Comparing prices across various sources, especially looking into  API integrations using curl."
+        link: "https://github.com/irongirl101/cabalyze"
         distance: 16
         orbit_speed: 0.032
         color: "#e9d5ff"
@@ -163,15 +185,6 @@ planets:
         orbit_speed: 0.024
         color: "#c7d2fe"
         size: 2.2
-      - id: "gitgud-workshop"
-        name: "GitGud Workshop"
-        type: "Education"
-        summary: "Hands-on Git & GitHub bootcamp training 150+ students in collaborative workflows."
-        link: "/init/posts/first-blog/"
-        distance: 27
-        orbit_speed: -0.019
-        color: "#a5b4fc"
-        size: 1.9
       - id: "open-source-fridays"
         name: "Open Source Fridays"
         type: "Publication"
@@ -198,7 +211,6 @@ planets:
       - "3D Shaders"
       - "AR/VR"
       - "Godot"
-      - "FiniteLoop"
     moons:
       - id: "gamejam-2025"
         name: "GameJam 2025"
@@ -209,13 +221,4 @@ planets:
         orbit_speed: 0.026
         color: "#fda4af"
         size: 2.0
-      - id: "finiteloop-intern"
-        name: "FiniteLoop Product & Cyber"
-        type: "Internship"
-        summary: "Built full product end-to-end and explored cyber defense & systems engineering."
-        link: "/init/"
-        distance: 26
-        orbit_speed: -0.018
-        color: "#f43f5e"
-        size: 1.8
 ---

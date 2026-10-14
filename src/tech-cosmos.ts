@@ -12,12 +12,31 @@
  *   - Hover/click on any white moon to open project details with live links.
  */
 
+import blenderLogo from "simple-icons/icons/blender.svg?raw";
+import cLogo from "simple-icons/icons/c.svg?raw";
+import linuxLogo from "simple-icons/icons/linux.svg?raw";
+import pythonPixelLogo from "./assets/tech/python-pixel-logo.png?url";
+import swiftLogo from "simple-icons/icons/swift.svg?raw";
+import typescriptLogo from "simple-icons/icons/typescript.svg?raw";
+
+type TechPlanetId = "python" | "typescript" | "swift" | "c-systems" | "foss-devops" | "gamedev-3d";
+
+const techLogos: Record<TechPlanetId, { svg?: string; src?: string; color: string }> = {
+  python: { src: pythonPixelLogo, color: "#3776ab" },
+  typescript: { svg: typescriptLogo, color: "#3178c6" },
+  swift: { svg: swiftLogo, color: "#f05138" },
+  "c-systems": { svg: cLogo, color: "#a8b9cc" },
+  "foss-devops": { svg: linuxLogo, color: "#fcc624" },
+  "gamedev-3d": { svg: blenderLogo, color: "#e87d0d" },
+};
+
 export interface TechMoon {
   id: string;
   name: string;
   type: string;
   summary: string;
   link?: string;
+  color?: [number, number, number];
   semiMajor: number;   // Elliptical major axis (a)
   semiMinor: number;   // Elliptical minor axis (b)
   inclination: number; // Tilt angle in radians
@@ -27,7 +46,7 @@ export interface TechMoon {
 }
 
 export interface TechPlanet {
-  id: string;
+  id: TechPlanetId;
   name: string;
   shortName: string;
   tagline: string;
@@ -48,6 +67,123 @@ export interface TechPlanet {
   rotationOffset: number;
   frameworks: string[];
   moons: TechMoon[];
+}
+
+interface TechContentMoon {
+  id: string;
+  name: string;
+  type: string;
+  summary: string;
+  link?: string;
+  distance: number;
+  orbit_speed: number;
+  color: string;
+  size: number;
+}
+
+interface TechContentPlanet {
+  id: TechPlanetId;
+  name: string;
+  short_name: string;
+  tagline: string;
+  experience: string;
+  color: string;
+  glow_color: string;
+  distance: number;
+  orbit_speed: number;
+  size: number;
+  texture_type?: string;
+  has_rings?: boolean;
+  frameworks: string[];
+  moons: TechContentMoon[];
+}
+
+const techPlanetIds: TechPlanetId[] = [
+  "python",
+  "typescript",
+  "swift",
+  "c-systems",
+  "foss-devops",
+  "gamedev-3d",
+];
+
+function isPositiveNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isTechPlanetId(value: unknown): value is TechPlanetId {
+  return typeof value === "string" && techPlanetIds.some((id) => id === value);
+}
+
+function isTechContentMoon(value: unknown): value is TechContentMoon {
+  return isRecord(value)
+    && typeof value.id === "string"
+    && typeof value.name === "string"
+    && typeof value.type === "string"
+    && typeof value.summary === "string"
+    && (value.link === undefined || typeof value.link === "string")
+    && isPositiveNumber(value.distance)
+    && typeof value.orbit_speed === "number"
+    && Number.isFinite(value.orbit_speed)
+    && typeof value.color === "string"
+    && isPositiveNumber(value.size);
+}
+
+function isTechContentPlanet(value: unknown): value is TechContentPlanet {
+  return isRecord(value)
+    && isTechPlanetId(value.id)
+    && typeof value.name === "string"
+    && typeof value.short_name === "string"
+    && typeof value.tagline === "string"
+    && typeof value.experience === "string"
+    && typeof value.color === "string"
+    && typeof value.glow_color === "string"
+    && isPositiveNumber(value.distance)
+    && typeof value.orbit_speed === "number"
+    && Number.isFinite(value.orbit_speed)
+    && isPositiveNumber(value.size)
+    && (value.texture_type === undefined || typeof value.texture_type === "string")
+    && (value.has_rings === undefined || typeof value.has_rings === "boolean")
+    && Array.isArray(value.frameworks)
+    && value.frameworks.every((framework) => typeof framework === "string")
+    && Array.isArray(value.moons)
+    && value.moons.every(isTechContentMoon);
+}
+
+function readTechContentPlanets(): TechContentPlanet[] {
+  const dataElement = document.getElementById("tech-planet-data");
+  if (!dataElement?.textContent) {
+    throw new Error("Tech planet data is missing from the generated page.");
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(dataElement.textContent);
+  } catch (error) {
+    throw new Error("Tech planet data is not valid JSON.", { cause: error });
+  }
+
+  if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.every(isTechContentPlanet)) {
+    throw new Error("Tech planet data does not match the expected content format.");
+  }
+  return parsed;
+}
+
+function parseHexColor(value: string): [number, number, number] {
+  const match = /^#([0-9a-f]{6})$/i.exec(value);
+  if (!match) {
+    throw new Error(`Invalid tech planet color: ${value}`);
+  }
+  const hex = match[1];
+  return [
+    Number.parseInt(hex.slice(0, 2), 16),
+    Number.parseInt(hex.slice(2, 4), 16),
+    Number.parseInt(hex.slice(4, 6), 16),
+  ];
 }
 
 export function initTechCosmos(): void {
@@ -78,7 +214,7 @@ export function initTechCosmos(): void {
   earthSprite.src = new URL("./assets/tech/earth-spritesheet.png", import.meta.url).href;
 
   // --- Deep-Fold Style Procedural Pixel Planets ---
-  const planets: TechPlanet[] = [
+  const planetDefaults: TechPlanet[] = [
     {
       id: "python",
       name: "Python",
@@ -389,6 +525,71 @@ export function initTechCosmos(): void {
     },
   ];
 
+  const defaultsById = new Map(planetDefaults.map((planet) => [planet.id, planet]));
+  const planetTypeByTexture: Partial<Record<string, TechPlanet["planetType"]>> = {
+    bands: "gas",
+    rings: "ice",
+    aurora: "desert",
+    magma: "magma",
+    nodes: "alien",
+    terrestrial: "terran",
+  };
+  const planets: TechPlanet[] = readTechContentPlanets().map((contentPlanet, index) => {
+    const defaults = defaultsById.get(contentPlanet.id);
+    if (!defaults) {
+      throw new Error(`No visual configuration exists for tech planet "${contentPlanet.id}".`);
+    }
+
+    const baseColor = parseHexColor(contentPlanet.color);
+    const glowColor = parseHexColor(contentPlanet.glow_color);
+    const texture = contentPlanet.texture_type;
+    const planetType = texture ? planetTypeByTexture[texture] : undefined;
+    if (texture && !planetType) {
+      throw new Error(`Unknown texture type "${texture}" for tech planet "${contentPlanet.id}".`);
+    }
+    const palette = {
+      ...defaults.palette,
+      base: baseColor,
+      detail: glowColor,
+    };
+    if (contentPlanet.has_rings === true) {
+      palette.ring = glowColor;
+    } else if (contentPlanet.has_rings === false) {
+      delete palette.ring;
+    }
+
+    return {
+      ...defaults,
+      name: contentPlanet.name,
+      shortName: contentPlanet.short_name,
+      tagline: contentPlanet.tagline,
+      experience: contentPlanet.experience,
+      planetType: planetType ?? defaults.planetType,
+      palette,
+      size: contentPlanet.size * 7.5,
+      altitude: contentPlanet.distance * 4.5,
+      rotationSpeed: contentPlanet.orbit_speed * 2,
+      frameworks: [...contentPlanet.frameworks],
+      moons: contentPlanet.moons.map((contentMoon, moonIndex) => {
+        const moonDefaults = defaults.moons.find((moon) => moon.id === contentMoon.id);
+        return {
+          id: contentMoon.id,
+          name: contentMoon.name,
+          type: contentMoon.type,
+          summary: contentMoon.summary,
+          link: contentMoon.link,
+          color: parseHexColor(contentMoon.color),
+          semiMajor: contentMoon.distance * 4.5,
+          semiMinor: contentMoon.distance * 1.8,
+          inclination: moonDefaults?.inclination ?? (moonIndex % 2 === 0 ? 0.2 : -0.2),
+          speed: contentMoon.orbit_speed * 0.14,
+          angle: moonDefaults?.angle ?? (moonIndex * 2.1),
+          size: contentMoon.size * 4.5,
+        };
+      }),
+    };
+  });
+
   for (const planet of planets) {
     planet.xOffset = (Math.random() - 0.5) * 1.5;
     planet.altitude += (Math.random() - 0.5) * 180;
@@ -398,7 +599,7 @@ export function initTechCosmos(): void {
     }
   }
 
-  const maxAltitude = 2300;
+  const maxAltitude = Math.max(...planets.map((planet) => planet.altitude)) + 200;
 
   // --- Background Starfield ---
   interface Star {
@@ -735,7 +936,10 @@ export function initTechCosmos(): void {
 
   // --- Project Modal Management ---
   const modalEl = document.getElementById("project-modal");
+  if (modalEl) document.body.appendChild(modalEl);
   const modalPanelEl = modalEl?.querySelector<HTMLElement>(".modal-panel");
+  const modalContentEl = modalEl?.querySelector<HTMLElement>(".modal-content");
+  const modalLogoEl = document.getElementById("modal-tech-logo");
   const modalBadgeEl = document.getElementById("modal-badge");
   const modalTitleEl = document.getElementById("modal-title");
   const modalSubEl = document.getElementById("modal-subtitle");
@@ -752,16 +956,27 @@ export function initTechCosmos(): void {
     }
   }
 
+  function setModalLogo(planet: TechPlanet): void {
+    if (!modalLogoEl) return;
+    const logo = techLogos[planet.id];
+    modalLogoEl.style.setProperty("--tech-logo-color", logo.color);
+    modalLogoEl.innerHTML = logo.src
+      ? `<img src="${logo.src}" alt="" draggable="false">`
+      : logo.svg?.replace("<svg ", '<svg fill="currentColor" ') ?? "";
+  }
+
   function openMoonModal(planet: TechPlanet, moon: TechMoon) {
     if (!modalEl || !modalTitleEl || !modalDescEl) return;
 
+    if (modalContentEl) modalContentEl.scrollTop = 0;
     setModalAccent(planet.palette.base);
+    setModalLogo(planet);
     if (modalBadgeEl) {
       modalBadgeEl.textContent = moon.type.toUpperCase();
     }
     modalTitleEl.textContent = moon.name;
     if (modalSubEl) {
-      modalSubEl.textContent = `Orbiting Planet ${planet.name} (${planet.tagline})`;
+      modalSubEl.textContent = `${planet.name} · ${planet.tagline}`;
     }
     modalDescEl.innerHTML = `
       <div class="grid grid-cols-2 gap-2">
@@ -801,11 +1016,13 @@ export function initTechCosmos(): void {
   function openPlanetModal(planet: TechPlanet) {
     if (!modalEl || !modalTitleEl || !modalDescEl) return;
 
+    if (modalContentEl) modalContentEl.scrollTop = 0;
     setModalAccent(planet.palette.base);
+    setModalLogo(planet);
     if (modalBadgeEl) {
       modalBadgeEl.textContent = "CORE LANGUAGE / TECH";
     }
-    modalTitleEl.textContent = `Planet ${planet.name}`;
+    modalTitleEl.textContent = planet.name;
     if (modalSubEl) {
       modalSubEl.textContent = `${planet.tagline} • ${planet.experience}`;
     }
@@ -1248,6 +1465,10 @@ export function initTechCosmos(): void {
     ctx.save();
     const scale = pos.isBehind ? 0.85 : 1.0;
     const mRadius = m.size * scale;
+    const moonColor = m.color ?? [184, 216, 232];
+    const moonShadow = moonColor.map((channel) => Math.round(channel * 0.16));
+    const moonMid = moonColor.map((channel) => Math.round(channel * 0.72));
+    const moonHighlight = moonColor.map((channel) => Math.min(255, Math.round(channel * 1.25)));
     ctx.globalAlpha = pos.isBehind ? 0.7 : 1.0;
     const pixelSize = Math.max(2, Math.round(mRadius / 4));
     const left = Math.floor((s.x - mRadius) / pixelSize) * pixelSize;
@@ -1261,12 +1482,12 @@ export function initTechCosmos(): void {
         if (distance > mRadius + pixelSize * 0.45) continue;
 
         ctx.fillStyle = distance > mRadius - pixelSize
-          ? "#10243b"
+          ? `rgb(${moonShadow.join(",")})`
           : dx > mRadius * 0.2 && dy > 0
-            ? "#6693ad"
+            ? `rgb(${moonMid.join(",")})`
             : dx < -mRadius * 0.3 && dy < -mRadius * 0.2
-              ? "#effaff"
-              : "#b8d8e8";
+              ? `rgb(${moonHighlight.join(",")})`
+              : `rgb(${moonColor.join(",")})`;
         ctx.fillRect(x, y, pixelSize, pixelSize);
       }
     }
