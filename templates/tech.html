@@ -27,6 +27,41 @@
     border-color: rgba(52, 211, 153, 0.25) !important;
     backdrop-filter: blur(14px) !important;
   }
+  @media (max-width: 1023px) {
+    .glass-navbar {
+      width: calc(100% - 2rem);
+    }
+    .glass-navbar .navbar {
+      min-width: 0;
+      flex-wrap: wrap;
+      padding-inline: 0.5rem;
+    }
+    .glass-navbar .navbar > .flex-1 {
+      min-width: 0;
+    }
+    .glass-navbar .navbar > .flex-none {
+      width: 100%;
+      min-width: 0;
+      justify-content: flex-start;
+    }
+    .glass-navbar .menu {
+      flex-wrap: wrap;
+    }
+    .tech-header-badge {
+      top: 7.5rem;
+      left: 1rem;
+      width: fit-content;
+      max-width: min(calc(100vw - 2rem), 17rem);
+    }
+    .tech-header-badge > div {
+      width: auto;
+      max-width: 100%;
+    }
+    .tech-header-badge p {
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+  }
 </style>
 
 <div id="tech-observatory-root" class="relative w-screen h-screen overflow-hidden select-none font-mono">
@@ -35,17 +70,17 @@
   <canvas id="tech-canvas" class="absolute inset-0 w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
 
   <!-- Top-Left Floating Header Badge -->
-  <div class="absolute top-20 left-4 sm:left-6 z-30 pointer-events-auto">
-    <div class="flex items-center gap-2.5 bg-[#070b14]/85 backdrop-blur-xl px-3.5 py-2 rounded-xl border border-emerald-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.8)] text-slate-200">
+
+  <div class="tech-header-badge absolute top-24 left-5 sm:left-9 z-30 pointer-events-auto max-w-[calc(100vw-2rem)]">
+    <div class="flex items-start gap-2.5 w-full max-w-full bg-[#070b14]/85 backdrop-blur-xl px-3.5 py-2 rounded-xl border border-emerald-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.8)] text-slate-200">
       <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-      <div>
+      <div class="min-w-0">
         <div class="font-bold text-xs tracking-wider text-white flex items-center gap-2">
-          <span>THE CELESTIAL STACK</span>
-          <span class="text-[10px] text-emerald-400 font-semibold">[EARTH VANTAGE POINT]</span>
+          <span>My Tech stack hehe</span>
         </div>
-        <div class="text-[10px] text-slate-400 mt-0.5">
+        <p class="text-[10px] text-slate-400 mt-0.5 whitespace-normal">
           Scroll or drag up to ascend into space • Click planets & moons
-        </div>
+        </p>
       </div>
     </div>
   </div>
@@ -53,18 +88,25 @@
   <!-- Bottom-Left Earth Anchor Quick Return -->
   <div class="absolute bottom-5 left-4 sm:left-6 z-30 pointer-events-auto">
     <button id="btn-return-earth" onclick="window.dispatchEvent(new CustomEvent('return-earth'))" class="btn btn-xs sm:btn-sm bg-[#070b14]/90 hover:bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-mono text-[11px] rounded-xl shadow-lg flex items-center gap-1.5 backdrop-blur-md">
-      <span>🌍 Ground Zero (Earth)</span>
+      <span>Ground Zero (Earth)</span>
     </button>
   </div>
 
   <!-- Project & Planet Modal Overlay -->
-  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
-    <div class="relative w-full max-w-md bg-[#080d1a] border border-white/20 rounded-2xl p-6 shadow-2xl text-white">
-      
-      <!-- Close Button -->
-      <button id="modal-close-btn" class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3 text-slate-400 hover:text-white" aria-label="Close">
-        ✕
+  <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200">
+    <div class="relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-xl border border-emerald-400/20 bg-[#080d1a] shadow-2xl shadow-black/50 text-white">
+      <div class="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-5 py-3 pr-14 font-mono text-[9px] tracking-[0.18em] text-slate-400">
+        <span>CELESTIAL DATABASE / RECORD</span>
+        <span class="flex items-center gap-1.5 text-emerald-300">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>ONLINE
+        </span>
+      </div>
+      <button id="modal-close-btn" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-1.5 text-slate-400 hover:text-white" aria-label="Close">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18"></path>
+        </svg>
       </button>
+      <div class="p-5 sm:p-6">
 
       <!-- Badge & Category -->
       <div class="mb-2">
@@ -75,7 +117,7 @@
 
       <!-- Title & Subtitle -->
       <h3 id="modal-title" class="text-xl font-bold font-sans tracking-tight text-white mb-1">
-        🌙 Project Title
+        Project Title
       </h3>
       <p id="modal-subtitle" class="text-xs text-slate-400 font-mono mb-4">
         Orbiting Planet Python
@@ -88,6 +130,7 @@
 
       <!-- Action Button Container -->
       <div id="modal-link-container"></div>
+      </div>
     </div>
   </div>
 

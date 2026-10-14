@@ -60,6 +60,23 @@ export function initTechCosmos(): void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const earthSprite = new Image();
+  let earthFrameSize = 0;
+  let earthFrameCount = 0;
+  earthSprite.addEventListener("load", () => {
+    earthFrameSize = earthSprite.naturalHeight;
+    if (earthFrameSize === 0 || earthSprite.naturalWidth % earthFrameSize !== 0) {
+      earthFrameSize = 0;
+      console.error("The Earth spritesheet must contain evenly sized square frames.");
+      return;
+    }
+    earthFrameCount = earthSprite.naturalWidth / earthFrameSize;
+  });
+  earthSprite.addEventListener("error", () => {
+    console.error("Unable to load the Earth animation spritesheet.");
+  });
+  earthSprite.src = new URL("./assets/tech/earth-spritesheet.png", import.meta.url).href;
+
   // --- Deep-Fold Style Procedural Pixel Planets ---
   const planets: TechPlanet[] = [
     {
@@ -132,11 +149,11 @@ export function initTechCosmos(): void {
       experience: "2+ Years • Advanced",
       planetType: "ice",
       palette: {
-        base: [147, 197, 253],   // Soft pastel sky-blue (matching user sketch)
-        detail: [59, 130, 246],  // Sapphire blue
+        base: [59, 130, 246],    // Ocean blue
+        detail: [191, 219, 254], // Pale cloud bands
         shadow: [30, 58, 138],   // Deep navy shadow
         outline: [10, 25, 47],
-        ring: [191, 219, 254],   // Pixelated icy ring
+        ring: [191, 219, 254],   // Pale pixel ring
       },
       size: 48,
       res: 48,
@@ -372,6 +389,15 @@ export function initTechCosmos(): void {
     },
   ];
 
+  for (const planet of planets) {
+    planet.xOffset = (Math.random() - 0.5) * 1.5;
+    planet.altitude += (Math.random() - 0.5) * 180;
+    planet.size *= 0.55 + Math.random() * 1.1;
+    for (const moon of planet.moons) {
+      moon.size *= 0.55 + Math.random() * 1.1;
+    }
+  }
+
   const maxAltitude = 2300;
 
   // --- Background Starfield ---
@@ -429,7 +455,7 @@ export function initTechCosmos(): void {
 
   // --- Coordinates Helper ---
   function worldToScreen(wx: number, wy: number): { x: number; y: number } {
-    const earthBaseY = height - 60;
+    const earthBaseY = height;
     return {
       x: width * 0.5 + wx,
       y: earthBaseY - (wy - cameraAltitude),
@@ -437,27 +463,57 @@ export function initTechCosmos(): void {
   }
 
   function screenToWorld(sx: number, sy: number): { x: number; y: number } {
-    const earthBaseY = height - 60;
+    const earthBaseY = height;
     return {
       x: sx - width * 0.5,
       y: earthBaseY - sy + cameraAltitude,
     };
   }
 
+  function getEarthRadius(): number {
+    return Math.min(width * 0.38, 200);
+  }
+
+  const minEarthPlanetGap = 100;
+
   function getPlanetWorldPos(p: TechPlanet): { x: number; y: number } {
     const horizontalSpread = Math.min(width * 0.38, 280);
+    const orbitScale = getMoonOrbitScale(p);
+    const orbitExtent = Math.max(...p.moons.map((moon) => moon.semiMajor * orbitScale + moon.size));
+    const ringExtent = p.palette.ring ? p.size * 1.65 : p.size;
+    const verticalSystemExtent = Math.max(
+      p.size,
+      ...p.moons.map((moon) =>
+        Math.hypot(
+          moon.semiMajor * orbitScale * Math.sin(moon.inclination),
+          moon.semiMinor * orbitScale * Math.cos(moon.inclination)
+        ) + moon.size
+      )
+    );
+    const labelExtent = Math.max(42, p.name.length * 4.5);
+    const maxOffset = Math.max(0, width * 0.5 - Math.max(ringExtent, orbitExtent, labelExtent) - 14);
+    const desiredOffset = p.xOffset * horizontalSpread;
+    const earthRadius = getEarthRadius();
     return {
-      x: p.xOffset * horizontalSpread,
-      y: p.altitude,
+      x: Math.max(-maxOffset, Math.min(maxOffset, desiredOffset)),
+      y: Math.max(p.altitude, earthRadius + verticalSystemExtent + minEarthPlanetGap),
     };
+  }
+
+  function getMoonOrbitScale(p: TechPlanet): number {
+    const largestOrbit = Math.max(...p.moons.map((moon) => moon.semiMajor));
+    const largestMoon = Math.max(...p.moons.map((moon) => moon.size));
+    const availableWidth = Math.max(0, width * 0.5 - p.size - largestMoon - 18);
+    return Math.min(1, availableWidth / largestOrbit);
   }
 
   // Elliptical orbit calculation with inclination tilt!
   function getMoonWorldPos(p: TechPlanet, m: TechMoon): { x: number; y: number; isBehind: boolean } {
     const pPos = getPlanetWorldPos(p);
+    const orbitScale = getMoonOrbitScale(p);
     // Unrotated ellipse position:
-    const ex = Math.cos(m.angle) * m.semiMajor;
-    const ey = Math.sin(m.angle) * m.semiMinor;
+    const ex = Math.cos(m.angle) * m.semiMajor * orbitScale;
+    const ey = Math.sin(m.angle) * m.semiMinor * orbitScale;
 
     // Rotate by inclination angle:
     const cosI = Math.cos(m.inclination);
@@ -481,8 +537,9 @@ export function initTechCosmos(): void {
     [0.75, 0.25],
   ];
 
-  // Offscreen canvas cache for pixel planets
+  // Offscreen canvas cache for chunky pixel planets
   const planetCanvases = new Map<string, HTMLCanvasElement>();
+  const planetImageData = new Map<string, ImageData>();
 
   function getOffscreenCanvas(id: string, size: number): HTMLCanvasElement {
     let off = planetCanvases.get(id);
@@ -497,12 +554,16 @@ export function initTechCosmos(): void {
 
   // --- Procedural Deep-Fold Pixel Planet Generator ---
   function renderPixelPlanet(p: TechPlanet): HTMLCanvasElement {
-    const res = p.res;
+    const res = Math.min(p.res, 32);
     const offCanvas = getOffscreenCanvas(p.id, res);
     const offCtx = offCanvas.getContext("2d");
     if (!offCtx) return offCanvas;
 
-    const imgData = offCtx.createImageData(res, res);
+    let imgData = planetImageData.get(p.id);
+    if (!imgData) {
+      imgData = offCtx.createImageData(res, res);
+      planetImageData.set(p.id, imgData);
+    }
     const data = imgData.data;
 
     const R = (res * 0.5) - 2; // radius with 1px border margin
@@ -572,9 +633,9 @@ export function initTechCosmos(): void {
             isDetail = true;
           }
         } else if (p.planetType === "ice") {
-          // Icy striated bands
-          const bandVal = Math.sin(lat * 10 + Math.cos(lon * 2) * 0.5);
-          if (bandVal > 0.2) isDetail = true;
+          // Chunky ocean-and-cloud bands echo Earth's blue oceans and pale cloud belts.
+          const cloudBand = Math.floor((lat + Math.sin(lon * 2) * 0.14) * 9);
+          isDetail = cloudBand % 3 === 0 || (cloudBand % 7 === 1 && Math.sin(lon * 5) > 0.25);
         } else if (p.planetType === "desert") {
           // Sand dune contours
           const duneVal = Math.sin(lon * 5 + lat * 4);
@@ -612,20 +673,64 @@ export function initTechCosmos(): void {
 
     offCtx.putImageData(imgData, 0, 0);
 
-    // If planet has rings (TypeScript), draw pixel rings
-    if (p.palette.ring) {
-      offCtx.save();
-      offCtx.translate(cx, cy);
-      offCtx.rotate(-0.32);
-      offCtx.strokeStyle = `rgb(${p.palette.ring[0]}, ${p.palette.ring[1]}, ${p.palette.ring[2]})`;
-      offCtx.lineWidth = 3;
-      offCtx.beginPath();
-      offCtx.ellipse(0, 0, R * 1.5, R * 0.38, 0, 0, Math.PI * 2);
-      offCtx.stroke();
-      offCtx.restore();
-    }
-
     return offCanvas;
+  }
+
+  function drawPixelOrbit(
+    centerX: number,
+    centerY: number,
+    semiMajor: number,
+    semiMinor: number,
+    inclination: number,
+    alpha = 0.2
+  ) {
+    const pixelSize = 2;
+    const steps = 64;
+    const cosI = Math.cos(inclination);
+    const sinI = Math.sin(inclination);
+    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+    ctx.beginPath();
+    for (let i = 0; i < steps; i++) {
+      const angle = (i / steps) * Math.PI * 2;
+      const ex = Math.cos(angle) * semiMajor;
+      const ey = Math.sin(angle) * semiMinor;
+      const x = Math.round(centerX + ex * cosI - ey * sinI);
+      const y = Math.round(centerY + ex * sinI + ey * cosI);
+      ctx.rect(x - pixelSize / 2, y - pixelSize / 2, pixelSize, pixelSize);
+    }
+    ctx.fill();
+  }
+
+  function drawPixelRing(p: TechPlanet, centerX: number, centerY: number, front: boolean) {
+    if (!p.palette.ring) return;
+
+    const radiusX = p.size * 1.55;
+    const radiusY = p.size * 0.48;
+    const pixelSize = Math.max(2, Math.round(p.size / 16));
+    const steps = 144;
+    const rotation = -0.32;
+    const cosRotation = Math.cos(rotation);
+    const sinRotation = Math.sin(rotation);
+    const bands = [
+      { scale: 1, color: p.palette.shadow },
+      { scale: 0.91, color: p.palette.ring },
+      { scale: 0.82, color: p.palette.base },
+    ];
+
+    for (const band of bands) {
+      ctx.fillStyle = `rgb(${band.color[0]}, ${band.color[1]}, ${band.color[2]})`;
+      ctx.beginPath();
+      for (let i = 0; i < steps; i++) {
+        const angle = (i / steps) * Math.PI * 2;
+        if ((Math.sin(angle) > 0) !== front) continue;
+        const ellipseX = Math.cos(angle) * radiusX * band.scale;
+        const ellipseY = Math.sin(angle) * radiusY * band.scale;
+        const x = Math.round(centerX + ellipseX * cosRotation - ellipseY * sinRotation);
+        const y = Math.round(centerY + ellipseX * sinRotation + ellipseY * cosRotation);
+        ctx.rect(x - pixelSize / 2, y - pixelSize / 2, pixelSize, pixelSize);
+      }
+      ctx.fill();
+    }
   }
 
   // --- Project Modal Management ---
@@ -645,11 +750,26 @@ export function initTechCosmos(): void {
       modalBadgeEl.style.borderColor = `rgb(${planet.palette.base.join(",")})`;
       modalBadgeEl.style.color = `rgb(${planet.palette.base.join(",")})`;
     }
-    modalTitleEl.textContent = `🌙 ${moon.name}`;
+    modalTitleEl.textContent = moon.name;
     if (modalSubEl) {
       modalSubEl.textContent = `Orbiting Planet ${planet.name} (${planet.tagline})`;
     }
-    modalDescEl.textContent = moon.summary;
+    modalDescEl.innerHTML = `
+      <div class="grid grid-cols-2 gap-2">
+        <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+          <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Satellite type</div>
+          <div class="mt-1 text-xs font-semibold text-white">${moon.type}</div>
+        </div>
+        <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+          <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Parent system</div>
+          <div class="mt-1 truncate text-xs font-semibold text-white">${planet.name}</div>
+        </div>
+      </div>
+      <section class="mt-3 rounded-lg border border-white/10 bg-black/20 p-3">
+        <div class="mb-2 font-mono text-[10px] uppercase tracking-widest text-slate-400">Project record</div>
+        <p class="text-xs leading-relaxed text-slate-200">${moon.summary}</p>
+      </section>
+    `;
 
     if (modalLinkContainer) {
       if (moon.link) {
@@ -677,24 +797,47 @@ export function initTechCosmos(): void {
       modalBadgeEl.style.borderColor = `rgb(${planet.palette.base.join(",")})`;
       modalBadgeEl.style.color = `rgb(${planet.palette.base.join(",")})`;
     }
-    modalTitleEl.textContent = `🪐 Planet ${planet.name}`;
+    modalTitleEl.textContent = `Planet ${planet.name}`;
     if (modalSubEl) {
       modalSubEl.textContent = `${planet.tagline} • ${planet.experience}`;
     }
 
-    const moonsList = planet.moons.map((m) => `• 🌙 ${m.name} (${m.type})`).join("\n");
     modalDescEl.innerHTML = `
-      <div class="space-y-3">
-        <div>
-          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Stack & Frameworks</div>
+      <div class="space-y-4">
+        <section class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+          <div class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-slate-400">
+            <span>Stack / Frameworks</span>
+            <span>${planet.frameworks.length} entries</span>
+          </div>
           <div class="flex flex-wrap gap-1.5">
-            ${planet.frameworks.map((f) => `<span class="badge badge-xs text-[10px] py-1 px-2 border" style="border-color: rgb(${planet.palette.base.join(",")}); color: #fff;">${f}</span>`).join("")}
+            ${planet.frameworks.map((framework) => `<span class="rounded border border-white/10 bg-black/20 px-2 py-1 font-mono text-[10px] text-slate-200">${framework}</span>`).join("")}
+          </div>
+        </section>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+            <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Project satellites</div>
+            <div class="mt-1 text-lg font-semibold text-white">${planet.moons.length}</div>
+          </div>
+          <div class="rounded-lg border border-white/10 bg-white/[0.025] p-3">
+            <div class="font-mono text-[9px] uppercase tracking-widest text-slate-500">Experience</div>
+            <div class="mt-1 text-xs font-semibold text-white">${planet.experience}</div>
           </div>
         </div>
-        <div>
-          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Orbiting Moons (${planet.moons.length})</div>
-          <div class="text-xs text-slate-300 whitespace-pre-line leading-relaxed">${moonsList}</div>
-        </div>
+        <section>
+          <div class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-slate-400">
+            <span>Orbiting projects</span>
+            <span>NAME / TYPE</span>
+          </div>
+          <div class="space-y-1.5">
+            ${planet.moons.map((moon, index) => `
+              <div class="flex items-center gap-3 rounded-lg border border-white/10 bg-black/20 px-3 py-2">
+                <span class="font-mono text-[10px] text-slate-500">${String(index + 1).padStart(2, "0")}</span>
+                <span class="min-w-0 flex-1 truncate text-xs text-slate-100">${moon.name}</span>
+                <span class="shrink-0 font-mono text-[9px] uppercase text-slate-500">${moon.type}</span>
+              </div>
+            `).join("")}
+          </div>
+        </section>
       </div>
     `;
 
@@ -794,7 +937,10 @@ export function initTechCosmos(): void {
 
     // 3. Check Earth Base
     if (!foundPlanet && !foundMoon) {
-      if (worldPos.y < 90 && Math.abs(worldPos.x) < 320) {
+      const earthRadius = getEarthRadius();
+      const earthCenter = worldToScreen(0, 0);
+      const earthDistance = Math.hypot(mouseScreenX - earthCenter.x, mouseScreenY - earthCenter.y);
+      if (mouseScreenY <= height && earthDistance <= earthRadius) {
         foundPlanet = "earth";
       }
     }
@@ -954,57 +1100,53 @@ export function initTechCosmos(): void {
     ctx.restore();
   }
 
-  // --- DRAW: EARTH (MINT GREEN BASE DOME) ---
+  // --- DRAW: EARTH (PIXEL-PLANET HORIZON) ---
   function drawEarth() {
-    const s = worldToScreen(0, 0);
-    const rx = Math.min(width * 0.45, 340);
-    const ry = 145;
+    const earthCenter = worldToScreen(0, 0);
+    const centerX = earthCenter.x;
+    const centerY = earthCenter.y;
+    const radius = getEarthRadius();
+    if (centerY - radius * 1.35 > height) return;
 
     ctx.save();
-    // Atmospheric Halo Glow
-    const glowGrad = ctx.createRadialGradient(s.x, s.y, ry * 0.8, s.x, s.y, ry * 1.6);
+    const glowGrad = ctx.createRadialGradient(centerX, centerY, radius * 0.55, centerX, centerY, radius * 1.35);
     glowGrad.addColorStop(0, "rgba(52, 211, 153, 0.35)");
     glowGrad.addColorStop(0.7, "rgba(16, 185, 129, 0.1)");
     glowGrad.addColorStop(1, "transparent");
     ctx.fillStyle = glowGrad;
     ctx.beginPath();
-    ctx.ellipse(s.x, s.y, rx * 1.25, ry * 1.4, 0, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, radius * 1.35, 0, Math.PI * 2);
     ctx.fill();
 
-    // Earth Body (Mint / Celestial Green with clean dark outline like sketch)
-    const earthGrad = ctx.createLinearGradient(s.x, s.y - ry, s.x, s.y + ry);
-    earthGrad.addColorStop(0, "#a7f3d0");
-    earthGrad.addColorStop(0.6, "#6ee7b7");
-    earthGrad.addColorStop(1, "#34d399");
-    ctx.fillStyle = earthGrad;
+    if (earthSprite.complete && earthFrameCount > 0) {
+      const frameIndex = Math.floor(animClock * 3) % earthFrameCount;
+      ctx.imageSmoothingEnabled = false;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(
+        earthSprite,
+        frameIndex * earthFrameSize,
+        0,
+        earthFrameSize,
+        earthFrameSize,
+        centerX - radius,
+        centerY - radius,
+        radius * 2,
+        radius * 2
+      );
+      ctx.restore();
+    }
 
-    ctx.beginPath();
-    ctx.ellipse(s.x, s.y, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Crisp hand-drawn dark outline matching sketch
-    ctx.strokeStyle = "#042f2e";
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
-
-    // Subtle continent curve
-    ctx.save();
-    ctx.clip();
-    ctx.fillStyle = "rgba(5, 150, 105, 0.25)";
-    ctx.beginPath();
-    ctx.arc(s.x - rx * 0.3, s.y - ry * 0.2, rx * 0.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    // Center Origin Badge
     ctx.font = "bold 13px ui-monospace, SFMono-Regular, monospace";
     ctx.textAlign = "center";
-    ctx.fillStyle = "#022c22";
-    ctx.fillText("EARTH", s.x, s.y - ry * 0.35);
+    ctx.fillStyle = "#042f2e";
+    ctx.fillText("EARTH", centerX, centerY - radius * 0.48);
 
     ctx.font = "10px ui-monospace, SFMono-Regular, monospace";
-    ctx.fillStyle = "#065f46";
-    ctx.fillText("GROUND ZERO • VANTAGE POINT", s.x, s.y - ry * 0.15);
+    ctx.fillStyle = "#064e3b";
+    ctx.fillText("", centerX, centerY - radius * 0.34);
 
     ctx.restore();
   }
@@ -1013,27 +1155,35 @@ export function initTechCosmos(): void {
   function drawPlanetAndMoons(p: TechPlanet) {
     const pPos = getPlanetWorldPos(p);
     const s = worldToScreen(pPos.x, pPos.y);
-
-    // Skip if far off screen
-    if (s.y < -140 || s.y > height + 140) return;
+    const orbitScale = getMoonOrbitScale(p);
+    const screenExtent = Math.max(
+      p.size + 42,
+      ...p.moons.map((moon) =>
+        Math.hypot(
+          moon.semiMajor * orbitScale * Math.sin(moon.inclination),
+          moon.semiMinor * orbitScale * Math.cos(moon.inclination)
+        ) + moon.size
+      )
+    );
+    if (s.y + screenExtent < 0 || s.y - screenExtent > height) return;
 
     ctx.save();
 
-    // 1. Draw Faint Elliptical Orbit Paths for each moon
+    // 1. Draw pixel-step elliptical orbit paths for each moon
     for (const m of p.moons) {
-      ctx.save();
-      ctx.translate(s.x, s.y);
-      ctx.rotate(m.inclination);
-      ctx.beginPath();
-      ctx.ellipse(0, 0, m.semiMajor, m.semiMinor, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 4]);
-      ctx.stroke();
-      ctx.restore();
+      drawPixelOrbit(
+        s.x,
+        s.y,
+        m.semiMajor * orbitScale,
+        m.semiMinor * orbitScale,
+        m.inclination
+      );
     }
 
-    // 2. LAYER 1: Draw Moons that are currently BEHIND the planet
+    // 2. Draw the far side of the planet's pixel ring
+    drawPixelRing(p, s.x, s.y, false);
+
+    // 3. Draw moons behind the planet
     for (const m of p.moons) {
       const pos = getMoonWorldPos(p, m);
       if (pos.isBehind) {
@@ -1041,29 +1191,18 @@ export function initTechCosmos(): void {
       }
     }
 
-    // 3. LAYER 2: Draw Deep-Fold Pixel Planet Sprite
-    // Generate/render procedural pixel sprite
+    // 4. Draw the chunky pixel planet
     const pixelCanvas = renderPixelPlanet(p);
 
     ctx.save();
-    // Soft Atmospheric Aura behind planet
-    const glow = ctx.createRadialGradient(s.x, s.y, p.size * 0.7, s.x, s.y, p.size * 1.8);
-    glow.addColorStop(0, `rgba(${p.palette.base.join(",")}, 0.3)`);
-    glow.addColorStop(1, "transparent");
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, p.size * 1.8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Draw the pixel-art planet with crisp pixel scaling (no smoothing)
     ctx.imageSmoothingEnabled = false;
     const destSize = p.size * 2;
     ctx.drawImage(
       pixelCanvas,
       0,
       0,
-      p.res,
-      p.res,
+      pixelCanvas.width,
+      pixelCanvas.height,
       s.x - p.size,
       s.y - p.size,
       destSize,
@@ -1071,7 +1210,8 @@ export function initTechCosmos(): void {
     );
     ctx.restore();
 
-    // 4. LAYER 3: Draw Moons that are currently IN FRONT of the planet
+    // 5. Draw the near side of the ring and foreground moons
+    drawPixelRing(p, s.x, s.y, true);
     for (const m of p.moons) {
       const pos = getMoonWorldPos(p, m);
       if (!pos.isBehind) {
@@ -1079,7 +1219,7 @@ export function initTechCosmos(): void {
       }
     }
 
-    // 5. Planet Labels
+    // 6. Pixel-font planet labels
     ctx.font = "bold 13px ui-monospace, SFMono-Regular, monospace";
     ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
@@ -1098,47 +1238,44 @@ export function initTechCosmos(): void {
     const isHovered = m.id === hoveredMoonId;
 
     ctx.save();
-    // If behind, slightly smaller with slight dimmer opacity for realistic depth
     const scale = pos.isBehind ? 0.85 : 1.0;
     const mRadius = m.size * scale;
-
     ctx.globalAlpha = pos.isBehind ? 0.7 : 1.0;
+    const pixelSize = Math.max(2, Math.round(mRadius / 4));
+    const left = Math.floor((s.x - mRadius) / pixelSize) * pixelSize;
+    const top = Math.floor((s.y - mRadius) / pixelSize) * pixelSize;
 
-    // Pure White Moon Body
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, mRadius, 0, Math.PI * 2);
-    ctx.fill();
+    for (let y = top; y <= s.y + mRadius; y += pixelSize) {
+      for (let x = left; x <= s.x + mRadius; x += pixelSize) {
+        const dx = x + pixelSize * 0.5 - s.x;
+        const dy = y + pixelSize * 0.5 - s.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance > mRadius + pixelSize * 0.45) continue;
 
-    // Subtle crescent pixel shadow on the moon (bottom-right)
-    ctx.save();
-    ctx.clip();
-    ctx.fillStyle = "#94a3b8";
-    ctx.beginPath();
-    ctx.arc(s.x + mRadius * 0.45, s.y + mRadius * 0.45, mRadius * 0.9, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+        ctx.fillStyle = distance > mRadius - pixelSize
+          ? "#10243b"
+          : dx > mRadius * 0.2 && dy > 0
+            ? "#6693ad"
+            : dx < -mRadius * 0.3 && dy < -mRadius * 0.2
+              ? "#effaff"
+              : "#b8d8e8";
+        ctx.fillRect(x, y, pixelSize, pixelSize);
+      }
+    }
 
-    // Crisp Dark Outline
-    ctx.strokeStyle = "#020617";
-    ctx.lineWidth = 1.8;
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, mRadius, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Hover Highlight Ring
     if (isHovered) {
       ctx.strokeStyle = `rgb(${p.palette.base.join(",")})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, mRadius + 4, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Floating name tag
-      ctx.font = "bold 10px ui-monospace, SFMono-Regular, monospace";
-      ctx.fillStyle = "#ffffff";
-      ctx.textAlign = "center";
-      ctx.fillText(m.name, s.x, s.y - mRadius - 6);
+      ctx.lineWidth = pixelSize;
+      for (let i = 0; i < 24; i++) {
+        const angle = (i / 24) * Math.PI * 2;
+        ctx.fillStyle = `rgb(${p.palette.base.join(",")})`;
+        ctx.fillRect(
+          Math.round(s.x + Math.cos(angle) * (mRadius + 4)),
+          Math.round(s.y + Math.sin(angle) * (mRadius + 4)),
+          pixelSize,
+          pixelSize
+        );
+      }
     }
 
     ctx.restore();
@@ -1150,27 +1287,23 @@ export function initTechCosmos(): void {
 
     let title = "";
     let sub = "";
-    let color = "#38bdf8";
 
     if (hoveredMoonId && hoveredPlanetParentId) {
       const p = planets.find((planet) => planet.id === hoveredPlanetParentId);
       const m = p?.moons.find((moon) => moon.id === hoveredMoonId);
       if (p && m) {
-        title = `🌙 ${m.name}`;
-        sub = `${m.type} • Click to View Project`;
-        color = `rgb(${p.palette.base.join(",")})`;
+        title = m.name;
+        sub = "Click to view project";
       }
     } else if (hoveredPlanetId) {
       if (hoveredPlanetId === "earth") {
-        title = "🌍 Earth (Origin)";
-        sub = "Ground Zero • Click to Return";
-        color = "#34d399";
+        title = "Earth";
+        sub = "Click to return to ground zero";
       } else {
         const p = planets.find((planet) => planet.id === hoveredPlanetId);
         if (p) {
-          title = `🪐 Planet ${p.name}`;
-          sub = `${p.moons.length} Orbiting Moons • Click for Info`;
-          color = `rgb(${p.palette.base.join(",")})`;
+          title = p.name;
+          sub = `${p.moons.length} projects · Click to inspect`;
         }
       }
     }
@@ -1178,27 +1311,31 @@ export function initTechCosmos(): void {
     if (!title) return;
 
     ctx.save();
-    const tx = Math.min(width - 180, Math.max(10, mouseScreenX + 16));
-    const ty = Math.min(height - 45, Math.max(20, mouseScreenY - 26));
-
     ctx.font = "bold 11px ui-monospace, SFMono-Regular, monospace";
-    const textW = Math.max(ctx.measureText(title).width, ctx.measureText(sub).width) + 20;
+    const titleWidth = ctx.measureText(title).width;
+    ctx.font = "10px ui-monospace, SFMono-Regular, monospace";
+    const subWidth = ctx.measureText(sub).width;
+    const tooltipWidth = Math.min(width - 20, Math.max(titleWidth, subWidth) + 20);
+    const tooltipHeight = 38;
+    const tx = Math.max(10, Math.min(width - tooltipWidth - 10, mouseScreenX + 14));
+    const ty = Math.max(10, Math.min(height - tooltipHeight - 10, mouseScreenY - tooltipHeight - 10));
 
-    ctx.fillStyle = "rgba(4, 10, 20, 0.92)";
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.2;
+    ctx.fillStyle = "rgba(5, 8, 17, 0.94)";
+    ctx.strokeStyle = "rgba(148, 163, 184, 0.35)";
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(tx, ty, textW, 38, 8);
+    ctx.roundRect(tx, ty, tooltipWidth, tooltipHeight, 5);
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = color;
+    ctx.fillStyle = "#f8fafc";
     ctx.textAlign = "left";
-    ctx.fillText(title, tx + 10, ty + 16);
+    ctx.font = "bold 11px ui-monospace, SFMono-Regular, monospace";
+    ctx.fillText(title, tx + 10, ty + 15, tooltipWidth - 20);
 
-    ctx.font = "9px ui-monospace, SFMono-Regular, monospace";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-    ctx.fillText(sub, tx + 10, ty + 30);
+    ctx.font = "10px ui-monospace, SFMono-Regular, monospace";
+    ctx.fillStyle = "#94a3b8";
+    ctx.fillText(sub, tx + 10, ty + 30, tooltipWidth - 20);
     ctx.restore();
   }
 
