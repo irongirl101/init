@@ -30,24 +30,6 @@ planets:
         orbit_speed: 0.03
         color: "#6ee7b7"
         size: 1.8
-      - id: "mettu-ssg"
-        name: "Mettu Site Engine"
-        type: "SSG Engine"
-        summary: "Custom markdown-to-static pipeline with Python parsing and Vite compilation."
-        link: "https://github.com/Andy34G7/mettu"
-        distance: 24
-        orbit_speed: -0.02
-        color: "#a7f3d0"
-        size: 2.0
-      - id: "py-automation"
-        name: "Automation Scripts"
-        type: "CLI & Tooling"
-        summary: "Utilities for background media preprocessing, hashing, and build verification."
-        link: "https://github.com/irongirl101"
-        distance: 31
-        orbit_speed: 0.015
-        color: "#34d399"
-        size: 1.5
 
   - id: "typescript"
     name: "TypeScript / Web"
