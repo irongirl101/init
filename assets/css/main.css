@@ -159,28 +159,6 @@ footer {
               border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Dynamic cursor radial spotlight inside card */
-.spidey-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    280px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(230, 36, 41, 0.14),
-    rgba(0, 85, 255, 0.06) 40%,
-    transparent 80%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  border-radius: inherit;
-  z-index: 1;
-}
-
-.spidey-card:hover::after {
-  opacity: 1;
-}
-
 .spidey-card:hover {
   border-color: rgba(230, 36, 41, 0.45) !important;
   box-shadow: 0 12px 28px -10px rgba(230, 36, 41, 0.2), 0 0 20px rgba(0, 85, 255, 0.1) !important;

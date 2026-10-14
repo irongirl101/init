@@ -1,5 +1,5 @@
 ---
-title: "Tech Stack & Celestial Orbit"
+title: "Tech Stack"
 layout: "tech"
 subtitle: "Keep your feet to the ground and keep reaching for the stars."
 planets:

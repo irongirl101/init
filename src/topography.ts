@@ -24,44 +24,6 @@ let targetMouseY = -9999;
 let mouseX = -9999;
 let mouseY = -9999;
 
-// Interactive background spider-web lattice grid
-interface WebPoint {
-  origX: number;
-  origY: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-}
-
-let webGrid: WebPoint[][] = [];
-const webSpacing = 50;
-
-function initWebPattern(): void {
-  webGrid = [];
-  const webCols = Math.ceil(width / webSpacing) + 2;
-  const webRows = Math.ceil(height / webSpacing) + 2;
-
-  for (let r = 0; r <= webRows; r++) {
-    const row: WebPoint[] = [];
-    const isOdd = r % 2 === 1;
-    for (let c = 0; c <= webCols; c++) {
-      const offsetX = isOdd ? webSpacing * 0.5 : 0;
-      const ox = (c - 1) * webSpacing + offsetX;
-      const oy = (r - 1) * webSpacing;
-      row.push({
-        origX: ox,
-        origY: oy,
-        x: ox,
-        y: oy,
-        vx: 0,
-        vy: 0,
-      });
-    }
-    webGrid.push(row);
-  }
-}
-
 let currentThreshold = 0;
 let noiseMin = 100;
 let noiseMax = 0;
@@ -74,9 +36,9 @@ let currentSpideyFactor = 0;
 let spideyWebY = 30;
 
 // Dynamic background color blending values
-let startR = 4;
-let startG = 36;
-let startB = 28;
+const startR = 4;
+const startG = 36;
+const startB = 28;
 
 window.addEventListener("mousemove", (e) => {
   targetMouseX = e.clientX;
@@ -98,7 +60,6 @@ function resizeCanvas(): void {
   cols = Math.floor(width / res) + 1;
   rows = Math.floor(height / res) + 1;
 
-  initWebPattern();
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -268,158 +229,7 @@ function renderTopography(opacity: number): void {
   ctx.stroke();
 }
 
-function renderWebPattern(opacity: number, isMouseInTimeline: boolean): void {
-  if (opacity <= 0.01 || webGrid.length === 0) return;
-
-  // Only allow mouse to interact with the web grid if cursor is actually inside the timeline
-  const hasMouse = targetMouseX !== -9999 && targetMouseY !== -9999 && isMouseInTimeline;
-  const mouseRadius = 140;
-  const mouseRadiusSq = mouseRadius * mouseRadius;
-
-  const webRows = webGrid.length;
-  const webCols = webGrid[0]?.length || 0;
-
-  // 1. Interactive spring physics simulation across the background web lattice
-  for (let r = 0; r < webRows; r++) {
-    const row = webGrid[r];
-    for (let c = 0; c < webCols; c++) {
-      const p = row[c];
-
-      // Cursor elastic perturbation
-      if (hasMouse) {
-        const dx = p.x - targetMouseX;
-        const dy = p.y - targetMouseY;
-        const distSq = dx * dx + dy * dy;
-
-        if (distSq < mouseRadiusSq && distSq > 0.01) {
-          const dist = Math.sqrt(distSq);
-          const force = (1 - dist / mouseRadius) * 12;
-          const angle = Math.atan2(dy, dx);
-          p.vx += Math.cos(angle) * force * 0.35;
-          p.vy += Math.sin(angle) * force * 0.35;
-        }
-      }
-
-      // High-tension silk spring-back to rest position
-      p.vx += (p.origX - p.x) * 0.09;
-      p.vy += (p.origY - p.y) * 0.09;
-      p.vx *= 0.85; // Damping
-      p.vy *= 0.85;
-
-      p.x += p.vx;
-      p.y += p.vy;
-    }
-  }
-
-  // 2. Render background spider-web mesh lines
-  ctx.beginPath();
-  for (let r = 0; r < webRows; r++) {
-    const row = webGrid[r];
-    const isOdd = r % 2 === 1;
-
-    for (let c = 0; c < webCols; c++) {
-      const p = row[c];
-
-      // Horizontal web strand
-      if (c < webCols - 1) {
-        const right = row[c + 1];
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(right.x, right.y);
-      }
-
-      // Downward diagonal web threads (creating triangular/hexagonal spider webbing)
-      if (r < webRows - 1) {
-        const downRight = isOdd ? webGrid[r + 1][c + 1] : webGrid[r + 1][c];
-        if (downRight) {
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(downRight.x, downRight.y);
-        }
-
-        const downLeft = isOdd ? webGrid[r + 1][c] : (c > 0 ? webGrid[r + 1][c - 1] : null);
-        if (downLeft) {
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(downLeft.x, downLeft.y);
-        }
-      }
-    }
-  }
-  ctx.strokeStyle = `rgba(255, 255, 255, ${0.055 * opacity})`;
-  ctx.lineWidth = 0.5;
-  ctx.stroke();
-
-  // 3. Highlighted active web strands & cursor illumination
-  if (hasMouse) {
-    ctx.beginPath();
-    for (let r = 0; r < webRows; r++) {
-      const row = webGrid[r];
-      const isOdd = r % 2 === 1;
-
-      for (let c = 0; c < webCols; c++) {
-        const p = row[c];
-        const dist = Math.hypot(p.x - targetMouseX, p.y - targetMouseY);
-        if (dist < mouseRadius * 1.15) {
-          if (c < webCols - 1) {
-            const right = row[c + 1];
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(right.x, right.y);
-          }
-          if (r < webRows - 1) {
-            const downRight = isOdd ? webGrid[r + 1][c + 1] : webGrid[r + 1][c];
-            if (downRight) {
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(downRight.x, downRight.y);
-            }
-          }
-        }
-      }
-    }
-    ctx.strokeStyle = `rgba(186, 230, 253, ${0.18 * opacity})`;
-    ctx.lineWidth = 0.75;
-    ctx.stroke();
-
-    // Subtle localized moonlight aura
-    const aura = ctx.createRadialGradient(
-      targetMouseX, targetMouseY, 0,
-      targetMouseX, targetMouseY, mouseRadius
-    );
-    aura.addColorStop(0, `rgba(147, 197, 253, ${0.06 * opacity})`);
-    aura.addColorStop(0.5, `rgba(230, 36, 41, ${0.02 * opacity})`);
-    aura.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = aura;
-    ctx.beginPath();
-    ctx.arc(targetMouseX, targetMouseY, mouseRadius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // 4. Subtle silk intersection micro-droplets
-  ctx.beginPath();
-  for (let r = 0; r < webRows; r += 2) {
-    const row = webGrid[r];
-    for (let c = 0; c < webCols; c += 2) {
-      const p = row[c];
-      ctx.moveTo(p.x + 0.7, p.y);
-      ctx.arc(p.x, p.y, 0.7, 0, Math.PI * 2);
-    }
-  }
-  ctx.fillStyle = `rgba(215, 238, 255, ${0.1 * opacity})`;
-  ctx.fill();
-}
-
 function animate(): void {
-  // Check if we are on the Art Portfolio page (user wants ONLY portfolio page to be black)
-  const isPortfolioPage = !!document.getElementById("portfolio-root") || !!document.getElementById("museum-view");
-
-  if (isPortfolioPage) {
-    document.body.style.backgroundColor = "#000000";
-    if (canvas) canvas.style.display = "none";
-    const glassNavbar = document.querySelector(".glass-navbar") as HTMLElement;
-    if (glassNavbar) {
-      glassNavbar.style.setProperty("--navbar-bg-rgb", "0, 0, 0");
-    }
-    // Performance: Completely terminate topography animation loop on portfolio page to free 100% CPU/GPU resources
-    return;
-  }
-
   ctx.clearRect(0, 0, width, height);
 
   // Background organic slow evolution
@@ -448,39 +258,13 @@ function animate(): void {
     glassNavbar.style.setProperty("--navbar-bg-rgb", `${r}, ${g}, ${b}`);
   }
 
-  const hasMouse = targetMouseX !== -9999 && targetMouseY !== -9999;
-
-  // Determine area context based on cursor position relative to timeline
-  let isMouseInTimeline = false;
-  if (timelineSection && hasMouse) {
-    const rect = timelineSection.getBoundingClientRect();
-    // Spans vertically across the timeline section across the viewport width
-    if (targetMouseY >= rect.top - 60 && targetMouseY <= rect.bottom + 60) {
-      isMouseInTimeline = true;
-    }
-  }
-
-  // Update card cursor spotlights whenever in timeline
-  if (timelineSection && currentSpideyFactor > 0.04) {
-    const cards = timelineSection.querySelectorAll(".spidey-card");
-    cards.forEach((c) => {
-      const cardEl = c as HTMLElement;
-      const cRect = cardEl.getBoundingClientRect();
-      const cx = targetMouseX - cRect.left;
-      const cy = targetMouseY - cRect.top;
-      cardEl.style.setProperty("--mouse-x", `${cx}px`);
-      cardEl.style.setProperty("--mouse-y", `${cy}px`);
-    });
-  }
-
   // Draw topographic contours
   generateNoise();
   const roundedNoiseMin = Math.floor(noiseMin / thresholdIncrement) * thresholdIncrement;
   const roundedNoiseMax = Math.ceil(noiseMax / thresholdIncrement) * thresholdIncrement;
 
-  // Topography stays active: vibrant 100% in hero/blog, keeping a subtle 15% depth in timeline
-  // so the terrain is always interactive across every area
-  const topoOpacity = Math.max(0.15, 1 - currentSpideyFactor * 0.85);
+  // Preserve enough contrast for topographic contours to remain visible behind the timeline.
+  const topoOpacity = Math.max(0.65, 1 - currentSpideyFactor * 0.35);
 
   for (
     let threshold = roundedNoiseMin;
@@ -490,9 +274,6 @@ function animate(): void {
     currentThreshold = threshold;
     renderTopography(topoOpacity);
   }
-
-  // Draw interactive background web pattern strictly with timeline opacity
-  renderWebPattern(currentSpideyFactor, isMouseInTimeline);
 
   // Spider-Man Mascot on the Timeline Web String: slides and bobs up and down
   const silhouette = document.getElementById("spidey-silhouette");
