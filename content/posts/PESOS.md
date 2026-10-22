@@ -36,7 +36,7 @@ By then, we had gotten in more people, like @Rithvik, @Niranjan, @Madhu, @Arjun,
 Finally, we marched down to the CSE Department, where again,we spent a lot of time waiting to meet the HOD, only to first get dismissed + to come back with better backing. And with much tag and war, we FINALLY got approved on Feb 6, 2026. Wow. 
 
 # The Start 
-With the club finally in our hands, we started to work on our first ever event -- Our Orientation (where we spoke about open source, why and what and how) and as GSoC was round the corner, we got a speaker @Sripad to speak about his journey as a GSSoCer, and we started to grow the interest in our club. The event was a success, garnering around 60~ people to attend, and our network of mentors started to grow as well, even if we kept postponing it again and again and again. 
+With the club finally in our hands, we started to work on our first ever event -- Our Orientation (where we spoke about open source, why and what and how) and as GSoC was round the corner, we got a speaker @Sripad to speak about his journey as a GSoCer, and we started to grow the interest in our club. The event was a success, garnering around 60~ people to attend, and our network of mentors started to grow as well, even if we kept postponing it again and again and again. 
 
 In the middle, we had an Aatmartrisha event, which was kind of away from the scope or vision of our club, and our core almost fell apart due to this. We were heavily overworked, and we started to realize other things.
 
